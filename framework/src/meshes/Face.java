@@ -26,7 +26,7 @@ public class Face extends HEElement {
 	
 	
 	/**
-	 * Iterate over the vertices on the face.
+	 * Iterate over the vertices of the face.
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorFV(){
@@ -38,9 +38,7 @@ public class Face extends HEElement {
 	 * @return
 	 */
 	public Iterator<HalfEdge> iteratorFE(){
-		//Implement this
-
-		return null;
+		return new IteratorFE(anEdge);
 	}
 	
 	public String toString(){
@@ -58,43 +56,9 @@ public class Face extends HEElement {
 	}
 	
 	
+	abstract class IteratorF {
+		HalfEdge start, current;
 
-	/**
-	 * Iterator to iterate over the vertices on a face
-	 * @author Alf
-	 *
-	 */
-	public final class IteratorFV implements Iterator<Vertex> {
-		
-		
-		private HalfEdge first, actual;
-
-		public IteratorFV(HalfEdge anEdge) {
-			first = anEdge;
-			actual = null;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return actual == null || actual.next != first;
-		}
-
-		@Override
-		public Vertex next() {
-			//make sure eternam iteration is impossible
-			if(!hasNext()){
-				throw new NoSuchElementException();
-			}
-
-			//update what edge was returned last
-			actual = (actual == null?
-						first:
-						actual.next);
-			return actual.incident_v;
-		}
-
-		
-		@Override
 		public void remove() {
 			//we don't support removing through the iterator.
 			throw new UnsupportedOperationException();
@@ -105,8 +69,61 @@ public class Face extends HEElement {
 		 * @return
 		 */
 		public Face face() {
-			return first.incident_f;
+			return start.incident_f;
+		}
+		
+		public boolean hasNext() {
+			return current == null || current.next != start;
+		}
+	}
+	
+	/**
+	 * Iterator to iterate over the vertices on a face
+	 * @author Alf
+	 *
+	 */
+	public final class IteratorFV extends IteratorF implements Iterator<Vertex>  {	
+
+		public IteratorFV(HalfEdge anEdge) {
+			start = anEdge;
+			current = null;
+		}
+
+		@Override
+		public Vertex next() {
+			//make sure eternam iteration is impossible
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+
+			//update what edge was returned last
+			current = (current == null?
+						start:
+						current.next);
+			return current.incident_v;
 		}
 	}
 
+	public final class IteratorFE extends IteratorF implements Iterator<HalfEdge> {
+		HalfEdge start, current;
+		
+		public IteratorFE(HalfEdge anEdge) {
+			start = anEdge;
+			current = null;
+		}
+
+		@Override
+		public HalfEdge next() {
+			//make sure eternam iteration is impossible
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+
+			//update what edge was returned last
+			current = (current == null?
+						start:
+						current.next);
+			return current;
+		}
+	}
 }

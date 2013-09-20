@@ -15,7 +15,7 @@ import meshes.reader.ObjReader;
 
 /**
  * 
- * @author Alf
+ * @author smoser
  *
  */
 public class Assignment1 {
