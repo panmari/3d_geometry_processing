@@ -38,7 +38,7 @@ public class Vertex extends HEElement{
 	}
 	
 	/**
-	 * Get an iterator which iterates over the 1-neighbouhood
+	 * Get an iterator which iterates over the 1-neighbourhood
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorVV(){
@@ -51,8 +51,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<HalfEdge> iteratorVE(){
-		//TODO: Implement this...
-		return null;
+		return new IteratorVE(anEdge);
 	}
 	
 	/**
@@ -60,6 +59,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF(){
+		
 		//TODO: Implement this.
 		return null;
 	}
@@ -83,4 +83,38 @@ public class Vertex extends HEElement{
 		return isAdj;
 	}
 
+	//TODO: test this!
+	public final class IteratorVE implements Iterator<HalfEdge> {
+
+		HalfEdge start, current;
+		
+		public IteratorVE(HalfEdge anEdge) {
+			start = anEdge;
+			current = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return start == null || anEdge.opposite.next != start;
+		}
+
+		@Override
+		public HalfEdge next() {
+			//make sure eternam iteration is impossible
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			//update what edge was returned last
+			current = (current == null?
+						start:
+						current.next);
+			return current;
+		}
+
+		public void remove() {
+			//we don't support removing through the iterator.
+			throw new UnsupportedOperationException();
+		}
+		
+	}
 }

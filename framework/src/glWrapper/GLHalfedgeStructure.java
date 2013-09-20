@@ -24,7 +24,6 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		float[] verts = new float[m.getVertices().size()*3];
 		int[] ind = new int[m.getFaces().size()*3];
 		
-		//TODO: fill ind/verts with stuff by traversing m
 		int idx = 0;
 		for (Vertex v: m.getVertices()) {
 			Point3f p = v.getPos();
