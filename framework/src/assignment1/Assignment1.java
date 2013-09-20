@@ -1,7 +1,12 @@
 package assignment1;
 
+import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLWireframeMesh;
+
 import java.io.IOException;
 
+import openGL.MyDisplay;
+import openGL.gl.GLDisplayable;
 import meshes.HalfEdgeStructure;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
@@ -33,6 +38,12 @@ public class Assignment1 {
 		
 		//... do something with it, display it ....
 				
+		MyDisplay disp = new MyDisplay();
+		GLDisplayable teapot = new GLHalfedgeStructure(hs);
+		teapot.configurePreferredShader("shaders/default.vert", 
+				"shaders/default.frag", 
+				null);
+		disp.addToDisplay(teapot);
 	}
 	
 
