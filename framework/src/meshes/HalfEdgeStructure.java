@@ -213,7 +213,7 @@ public class HalfEdgeStructure {
 /**
  * Assign consecutive values 0...vertices.size()-1 to the Vertex.index fields.
  */
-	public void enumerateVertices() {
+	private void enumerateVertices() {
 		int idx =0;
 		for(Vertex v: vertices){
 			v.index= idx++;

@@ -51,7 +51,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<HalfEdge> iteratorVE(){
-		//Implement this...
+		//TODO: Implement this...
 		return null;
 	}
 	
@@ -60,7 +60,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF(){
-		//Implement this.
+		//TODO: Implement this.
 		return null;
 	}
 	
