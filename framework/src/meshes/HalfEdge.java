@@ -118,7 +118,7 @@ public class HalfEdge extends HEElement{
 	}
 	
 	public String toString(){
-		return "( " + start().toString() + " --> " + end().toString() + ")";
+		return "(" + start().toString() + " --> " + end().toString() + ")";
 	}
 
 }

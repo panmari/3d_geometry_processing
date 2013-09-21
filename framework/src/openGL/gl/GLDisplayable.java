@@ -269,5 +269,10 @@ public abstract class GLDisplayable {
 		POSITION, USERSPECIFIED
 	}
 	
+	public String toString() {
+		//TODO: add useful tostring
+		return super.toString();
+	}
+	
 
 }
