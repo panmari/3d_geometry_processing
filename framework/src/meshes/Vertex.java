@@ -10,7 +10,7 @@ import javax.vecmath.Tuple3f;
  * Implementation of a vertex for the {@link HalfEdgeStructure}
  */
 public class Vertex extends HEElement{
-	
+
 	/**position*/
 	Point3f pos;
 	/**adjacent edge: this vertex is startVertex of anEdge*/
@@ -42,8 +42,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorVV(){
-		//Implement this...
-		return null;
+		return new IteratorVV(anEdge);
 	}
 	
 	/**
@@ -59,9 +58,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF(){
-		
-		//TODO: Implement this.
-		return null;
+		return new IteratorVF(anEdge);
 	}
 	
 	
@@ -82,12 +79,21 @@ public class Vertex extends HEElement{
 		}
 		return isAdj;
 	}
-
-	//TODO: test this!
-	public final class IteratorVE implements Iterator<HalfEdge> {
-
+	
+	/**
+	 * Abstract iterator class for internal iterators. 
+	 * @panmari
+	 */
+	private abstract class IteratorV {
 		HalfEdge start, current;
-		
+	
+		public void remove() {
+			//we don't support removing through the iterator.
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	public final class IteratorVE extends IteratorV implements Iterator<HalfEdge> {	
 		public IteratorVE(HalfEdge anEdge) {
 			start = anEdge.opposite;
 			current = null;
@@ -110,11 +116,44 @@ public class Vertex extends HEElement{
 						current.next.opposite);
 			return current;
 		}
+	}
+	public final class IteratorVV extends IteratorV implements Iterator<Vertex> {
 
-		public void remove() {
-			//we don't support removing through the iterator.
-			throw new UnsupportedOperationException();
+		private IteratorVE iter;
+
+		public IteratorVV(HalfEdge anEdge) {
+			iter = new IteratorVE(anEdge);
 		}
+		@Override
+		public boolean hasNext() {
+			return iter.hasNext();
+		}
+
+		@Override
+		public Vertex next() {
+			return iter.next().start();
+		}
+
+	}
+	
+	//TODO
+	public final class IteratorVF extends IteratorV implements Iterator<Face> {
+
+		public IteratorVF(HalfEdge anEdge) {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Face next() {
+			// TODO Auto-generated method stub
+			return null;
+		}	
 		
 	}
 }
