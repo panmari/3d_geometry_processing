@@ -129,6 +129,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 	 */
 	public void updateDisplay(){
 		renderPanel.getCanvas().repaint();
+		//whatsOnDisplay.validate();
 	}
 	
 	
