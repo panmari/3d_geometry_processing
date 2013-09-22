@@ -19,11 +19,11 @@ import meshes.reader.ObjReader;
  * @author smoser
  *
  */
-public class ValenceShaderDemo {
+public class SmoothingDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/teapot.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/bunny5k.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
 		//create a half-edge structure out of the wireframe description.
@@ -39,9 +39,11 @@ public class ValenceShaderDemo {
 		
 		//... do something with it, display it ....
 		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
+		teapot.smooth(100);
 		
 		MyDisplay disp = new MyDisplay();
-		teapot.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);
+		teapot.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
+		//teapot.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		disp.addToDisplay(teapot);
 	}
 }
