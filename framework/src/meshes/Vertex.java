@@ -69,15 +69,12 @@ public class Vertex extends HEElement{
 	
 
 	public boolean isAdjascent(Vertex w) {
-		boolean isAdj = false;
-		Vertex v = null;
 		Iterator<Vertex> it = iteratorVV();
-		for( v = it.next() ; it.hasNext(); v = it.next()){
-			if( v==w){
-				isAdj=true;
-			}
+		while(it.hasNext()) {
+			if(it.next() == w)
+				return true;
 		}
-		return isAdj;
+		return false;
 	}
 	
 	/**
@@ -136,23 +133,34 @@ public class Vertex extends HEElement{
 
 	}
 	
-	//TODO
 	public final class IteratorVF extends IteratorV implements Iterator<Face> {
 
+		private IteratorVE iter;
+		private Face next;
+
 		public IteratorVF(HalfEdge anEdge) {
-			// TODO Auto-generated constructor stub
+			iter = new IteratorVE(anEdge);
 		}
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			while (next == null){
+				if (!iter.hasNext())
+					return false;
+				next = iter.next().getFace();
+			}
+			return true;
 		}
 
 		@Override
 		public Face next() {
-			// TODO Auto-generated method stub
-			return null;
+			//make sure eternam iteration is impossible
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			Face returnFace = next;
+			next = null;
+			return returnFace;
 		}	
 		
 	}
