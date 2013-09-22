@@ -66,6 +66,15 @@ public class Vertex extends HEElement{
 		return "" + index;
 	}
 	
+	public int getValence() {
+		Iterator<HalfEdge> i = new IteratorVE(anEdge);
+		int valence = 0;
+		while(i.hasNext()) {
+			i.next();
+			valence++;
+		}
+		return valence;
+	}
 	
 
 	public boolean isAdjascent(Vertex w) {

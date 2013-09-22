@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import openGL.MyDisplay;
 import openGL.gl.GLDisplayable;
+import meshes.HEData1d;
 import meshes.HalfEdgeStructure;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
@@ -18,7 +19,7 @@ import meshes.reader.ObjReader;
  * @author smoser
  *
  */
-public class Assignment1 {
+public class ValenceShaderDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
@@ -40,11 +41,7 @@ public class Assignment1 {
 				
 		MyDisplay disp = new MyDisplay();
 		GLDisplayable teapot = new GLHalfedgeStructure(hs);
-		teapot.configurePreferredShader("shaders/default.vert", 
-				"shaders/default.frag", 
-				null);
+		teapot.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);
 		disp.addToDisplay(teapot);
 	}
-	
-
 }
