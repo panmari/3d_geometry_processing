@@ -5,8 +5,12 @@ import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import meshes.Face;
+import meshes.HEData3d;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import openGL.gl.GLDisplayable;
@@ -22,11 +26,26 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		this.m = m;
 		
 		//Add Vertices
+		setPositionVertices(m.iteratorV());
+		
+		int[] ind = new int[m.getFaces().size()*3];
+		
+		//Add fces
+		int idx = 0;
+		for (Face f: m.getFaces()) {
+			Iterator<Vertex> iter = f.iteratorFV();
+			while (iter.hasNext())
+				ind[idx++] = iter.next().index;
+		}
+		
+		//Here the position coordinates are passed a second time to the shader as color
+		this.addIndices(ind);
+	}
+	
+	private void setPositionVertices(Iterator<Vertex> vertices) {
 		float[] verts = new float[m.getVertices().size()*3];
 		float[] valence = new float[m.getVertices().size()];
 
-		int[] ind = new int[m.getFaces().size()*3];
-		
 		int idx = 0;
 		for (Vertex v: m.getVertices()) {
 			Point3f p = v.getPos();
@@ -39,22 +58,37 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			verts[idx*3 + 1] = p.y;
 			verts[idx*3 + 2] = p.z;
 			idx++;
-			
 		}
-		idx = 0;
-		for (Face f: m.getFaces()) {
-			Iterator<Vertex> iter = f.iteratorFV();
-			while (iter.hasNext())
-				ind[idx++] = iter.next().index;
-		}
-		
 		this.addElement(verts, Semantic.POSITION , 3);
-		//Here the position coordinates are passed a second time to the shader as color
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
-		this.addIndices(ind);
 	}
 
+	public void smooth(int iterations) {
+		HEData3d inputVerts = new HEData3d(m);
+		for (Vertex v: m.getVertices()){
+			inputVerts.put(v, v.getPos());
+		}
+		for (int i = iterations; i > 0; i--) {
+			HEData3d smoothedVerts = new HEData3d(m);
+			for(Vertex v: m.getVertices()) {
+				Vector3f smoothed = new Vector3f();
+				float count = 0;
+				for (Iterator<Vertex> iter = v.iteratorVV(); iter.hasNext();) {
+					smoothed.add(inputVerts.get(iter.next()));
+					count++;
+				}
+				smoothed.scale(1f/count);
+				smoothedVerts.put(v, smoothed);
+			}
+			inputVerts = smoothedVerts;
+		}
+		for (Vertex v: m.getVertices()) {
+			Point3f pos = v.getPos();
+			pos.set(inputVerts.get(v));
+		}
+		setPositionVertices(m.iteratorV());
+	}
 	
 	/**
 	 * Return the gl render flag to inform opengl that the indices/positions describe
