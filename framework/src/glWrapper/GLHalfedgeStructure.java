@@ -52,7 +52,6 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
 		this.addIndices(ind);
-		System.out.println(Arrays.toString(valence));
 	}
 
 	

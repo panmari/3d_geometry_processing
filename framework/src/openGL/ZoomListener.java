@@ -39,7 +39,7 @@ public class ZoomListener implements MouseWheelListener{
 		}
 		else{
 			Point3f pos = myManager.getCamera().getPosition();
-			pos.z-=delta;
+			pos.z+=delta;
 			myManager.getCamera().setPosition(pos);
 			myDisplay.updateDisplay();
 		}

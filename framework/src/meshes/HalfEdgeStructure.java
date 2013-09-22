@@ -204,7 +204,6 @@ public class HalfEdgeStructure {
 			throw new DanglingTriangleException();
 		}
 		
-		
 		this.enumerateVertices();
 		
 	}
