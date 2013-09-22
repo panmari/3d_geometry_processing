@@ -89,13 +89,13 @@ public class Vertex extends HEElement{
 		HalfEdge start, current;
 		
 		public IteratorVE(HalfEdge anEdge) {
-			start = anEdge;
+			start = anEdge.opposite;
 			current = null;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return start == null || anEdge.opposite.next != start;
+			return current == null || current.next.opposite != start;
 		}
 
 		@Override
@@ -107,7 +107,7 @@ public class Vertex extends HEElement{
 			//update what edge was returned last
 			current = (current == null?
 						start:
-						current.next);
+						current.next.opposite);
 			return current;
 		}
 
