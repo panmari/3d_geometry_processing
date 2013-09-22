@@ -16,8 +16,7 @@ import openGL.objects.Transformation;
 public class GLHalfedgeStructure extends GLDisplayable {
 
 	HalfEdgeStructure m;
-	float maxValence; //is actually int, but who cares
-	
+	float maxValence = Float.MIN_VALUE, minValence = Float.MAX_VALUE; //is actually int, but who cares
 	public GLHalfedgeStructure(HalfEdgeStructure m) {
 		super(m.getVertices().size());
 		this.m = m;
@@ -34,6 +33,8 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			valence[idx] = v.getValence();
 			if (valence[idx] > maxValence)
 				maxValence = valence[idx];
+			if (valence[idx] < minValence)
+				minValence = valence[idx];
 			verts[idx*3] = p.x;
 			verts[idx*3 + 1] = p.y;
 			verts[idx*3 + 2] = p.z;
@@ -74,7 +75,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		
 		//additional uniforms can be loaded using the function
 		glRenderContext.setUniform("max_valence", maxValence);
-		
+		glRenderContext.setUniform("min_valence", minValence);
 		//Such uniforms can be accessed in the shader by declaring them as
 		// uniform <type> name;
 		//where type is the appropriate type, e.g. float / vec3 / mat4 etc.
