@@ -29,7 +29,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		
 		int[] ind = new int[m.getFaces().size()*3];
 		
-		//Add fces
+		//Add faces
 		int idx = 0;
 		for (Face f: m.getFaces()) {
 			Iterator<Vertex> iter = f.iteratorFV();
@@ -101,7 +101,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 					smoothed.add(inputVerts.get(iter.next()));
 					count++;
 				}
-				smoothed.scale(1f/count);
+				smoothed.scale(1/count);
 				smoothedVerts.put(v, smoothed);
 			}
 			inputVerts = smoothedVerts;
