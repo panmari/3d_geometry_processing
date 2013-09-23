@@ -1,13 +1,10 @@
 package glWrapper;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 import meshes.Face;
 import meshes.HEData3d;
@@ -80,6 +77,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 				float angle = first.angle(second);
 				partialNormal.scale(angle);
 				normal.add(partialNormal);
+				first = second;
 			}
 			normal.normalize();
 			normals[idx++] = normal.x;
