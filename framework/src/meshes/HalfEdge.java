@@ -1,5 +1,7 @@
 package meshes;
 
+import javax.vecmath.Vector3f;
+
 /**
  * Implementation of a half-edge for the {@link HalfEdgeStructure}
  * @author Alf
@@ -119,6 +121,13 @@ public class HalfEdge extends HEElement{
 	
 	public String toString(){
 		return "(" + start().toString() + " --> " + end().toString() + ")";
+	}
+	
+	public Vector3f asVector() {
+		Vector3f v = new Vector3f(start().getPos());
+		v.negate();
+		v.add(end().getPos());
+		return v;
 	}
 
 }

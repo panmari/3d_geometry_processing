@@ -19,7 +19,7 @@ import meshes.reader.ObjReader;
  * @author smoser
  *
  */
-public class SmoothingDemo {
+public class NormalsDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
@@ -40,11 +40,11 @@ public class SmoothingDemo {
 		//... do something with it, display it ....
 		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
 		// you might want to change this constant:
-		teapot.smooth(100);
-		
+		GLHalfedgeStructure normals = new GLHalfedgeStructure(hs);
 		MyDisplay disp = new MyDisplay();
 		teapot.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
-		//teapot.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/visualize_normals.frag", null);
 		disp.addToDisplay(teapot);
+		disp.addToDisplay(normals);
 	}
 }

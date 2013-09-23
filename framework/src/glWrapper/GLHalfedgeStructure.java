@@ -11,6 +11,7 @@ import javax.vecmath.Vector4f;
 
 import meshes.Face;
 import meshes.HEData3d;
+import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import openGL.gl.GLDisplayable;
@@ -27,6 +28,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		
 		//Add Vertices
 		setPositionVertices(m.iteratorV());
+		computeNormals();
 		
 		int[] ind = new int[m.getFaces().size()*3];
 		
@@ -62,6 +64,29 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		this.addElement(verts, Semantic.POSITION , 3);
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
+	}
+	
+	public void computeNormals() {
+		float[] normals = new float[m.getVertices().size()*3];
+		int idx = 0;
+		for (Vertex v: m.getVertices()) {
+			Vector3f normal = new Vector3f();
+			Iterator<HalfEdge> iter = v.iteratorVE();
+			Vector3f first = iter.next().getOpposite().asVector();
+			while (iter.hasNext()) {
+				Vector3f second = iter.next().getOpposite().asVector();
+				Vector3f partialNormal = new Vector3f();
+				partialNormal.cross(first, second);
+				float angle = first.angle(second);
+				partialNormal.scale(angle);
+				normal.add(partialNormal);
+			}
+			normal.normalize();
+			normals[idx++] = normal.x;
+			normals[idx++] = normal.y;
+			normals[idx++] = normal.z;
+		}
+		this.addElement(normals, Semantic.USERSPECIFIED , 3, "normal");
 	}
 
 	public void smooth(int iterations) {
