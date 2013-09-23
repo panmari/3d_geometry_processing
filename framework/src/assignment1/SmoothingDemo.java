@@ -23,7 +23,7 @@ public class SmoothingDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/bunny5k.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/dragon.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
 		//create a half-edge structure out of the wireframe description.
@@ -48,8 +48,9 @@ public class SmoothingDemo {
 		smoothedMore.smooth(40);
 		
 		MyDisplay disp = new MyDisplay();
-		smoothed.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
-		unsmoothed.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
+		smoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		unsmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		smoothedMore.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		teapot2.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		disp.addToDisplay(unsmoothed);
 		disp.addToDisplay(smoothed);
