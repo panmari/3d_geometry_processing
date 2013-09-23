@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
 
 /**
  * Implementation of a vertex for the {@link HalfEdgeStructure}
@@ -76,6 +77,27 @@ public class Vertex extends HEElement{
 		return valence;
 	}
 	
+	public float getCurvature() {
+		float aMixed = 0;
+		Iterator<HalfEdge> iter = iteratorVE();
+		Vector3f first = iter.next().asVector();
+		while(iter.hasNext()) {
+			Vector3f second = iter.next().asVector();
+			float angle = first.angle(second);
+			Vector3f cross = new Vector3f();
+			cross.cross(first, second);
+			float area = cross.length()/2;
+			if (angle < Math.PI/4) { // non-obtuse
+				aMixed += 1; //TODO
+			} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
+				aMixed += area/2;
+			} else { // obtuse
+				aMixed += area/4;
+			}
+			
+		}
+		return 1/(aMixed*2); //TODO
+	}
 
 	public boolean isAdjascent(Vertex w) {
 		Iterator<Vertex> it = iteratorVV();
