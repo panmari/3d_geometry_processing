@@ -38,13 +38,22 @@ public class SmoothingDemo {
 		
 		
 		//... do something with it, display it ....
-		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
+		GLHalfedgeStructure smoothed = new GLHalfedgeStructure(hs);
+		GLHalfedgeStructure smoothedMore = new GLHalfedgeStructure(hs);
+		GLHalfedgeStructure unsmoothed = new GLHalfedgeStructure(hs);
+
+		GLHalfedgeStructure teapot2 = new GLHalfedgeStructure(hs);
 		// you might want to change this constant:
-		teapot.smooth(100);
+		smoothed.smooth(1);
+		smoothedMore.smooth(40);
 		
 		MyDisplay disp = new MyDisplay();
-		teapot.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
-		//teapot.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
-		disp.addToDisplay(teapot);
+		smoothed.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
+		unsmoothed.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
+		teapot2.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		disp.addToDisplay(unsmoothed);
+		disp.addToDisplay(smoothed);
+		disp.addToDisplay(smoothedMore);
+		disp.addToDisplay(teapot2);
 	}
 }
