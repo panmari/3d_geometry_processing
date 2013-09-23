@@ -12,5 +12,6 @@ uniform float min_valence;
 out vec4 out_color;
 void main()
 {		
-	out_color = vec4((normal_g + 1)/2, 1);
+	//out_color = vec4((normal_g + 1)/2, 1);
+	out_color = vec4(abs(normal_g), 1);
 }
