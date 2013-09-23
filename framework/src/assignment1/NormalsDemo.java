@@ -23,7 +23,7 @@ public class NormalsDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/bunny5k.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/cat.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
 		//create a half-edge structure out of the wireframe description.
@@ -39,12 +39,23 @@ public class NormalsDemo {
 		
 		//... do something with it, display it ....
 		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
-		// you might want to change this constant:
-		GLHalfedgeStructure normals = new GLHalfedgeStructure(hs);
-		MyDisplay disp = new MyDisplay();
 		teapot.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
-		normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/visualize_normals.frag", null);
+		// you might want to change this constant:
+		GLHalfedgeStructure visualized_normals = new GLHalfedgeStructure(hs);
+		visualized_normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/visualize_normals.frag", null);
+		
+		GLHalfedgeStructure diffuse_normals = new GLHalfedgeStructure(hs);
+		diffuse_normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/diffuse_normals.frag", null);
+
+		GLHalfedgeStructure geometry_shader_normals = new GLHalfedgeStructure(hs);
+		geometry_shader_normals.configurePreferredShader("shaders/trimesh_flat.vert", 
+				"shaders/trimesh_flat.frag", 
+				"shaders/trimesh_flat.geom");
+
+		MyDisplay disp = new MyDisplay();
 		disp.addToDisplay(teapot);
-		disp.addToDisplay(normals);
+		disp.addToDisplay(visualized_normals);
+		disp.addToDisplay(diffuse_normals);
+		disp.addToDisplay(geometry_shader_normals);
 	}
 }
