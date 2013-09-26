@@ -88,7 +88,7 @@ public class Vertex extends HEElement{
 			cross.cross(first, second);
 			float area = cross.length()/2;
 			if (angle < Math.PI/4) { // non-obtuse
-				aMixed += 1; //TODO
+				aMixed += 1/8*first.lengthSquared() + second.lengthSquared(); //TODO
 			} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
 				aMixed += area/2;
 			} else { // obtuse
@@ -96,7 +96,7 @@ public class Vertex extends HEElement{
 			}
 			
 		}
-		return 1/(aMixed*2); //TODO
+		return 1/(aMixed*4); //TODO
 	}
 
 	public boolean isAdjascent(Vertex w) {
