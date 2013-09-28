@@ -46,17 +46,17 @@ public class Face extends HEElement {
 		while(pointingToP.incident_v != p){
 			pointingToP = iter.next();
 		}
-		float angle = pointingToP.getIncidentAngle();
+		float angleAtP = pointingToP.getIncidentAngle();
 		float voronoiCellArea;
-		if (angle < Math.PI/4) { // non-obtuse
+		if (!isObtuse()) { // non-obtuse
 			HalfEdge PR = pointingToP.getOpposite();
 			HalfEdge PQ = pointingToP.getNext();
 			voronoiCellArea = 1/8* (
 					PR.lengthSquared()*cot(PQ.getIncidentAngle())
-					+ PQ.lengthSquared() * cot(PR.getIncidentAngle())); //TODO cot stuff
-		} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
+					+ PQ.lengthSquared() * cot(PR.getIncidentAngle())); 
+		} else if (angleAtP > Math.PI/2) { // obtuse at P
 			voronoiCellArea = getArea()/2;
-		} else { // obtuse
+		} else { // else
 			voronoiCellArea = getArea()/4;
 		}
 		return voronoiCellArea;
@@ -66,6 +66,10 @@ public class Face extends HEElement {
 		return 1/(float)Math.tan(z);
 	}
 	
+	/**
+	 * An obtuse angle is between 90 and 180 degree (aka pi/2 an pi radian).
+	 * @return true, if there is at least one obtuse (stumpf) angle in this face
+	 */
 	public boolean isObtuse() {
 		for(Iterator<HalfEdge> iter = new IteratorFE(anEdge); iter.hasNext();) {
 			float angle = iter.next().getIncidentAngle();
