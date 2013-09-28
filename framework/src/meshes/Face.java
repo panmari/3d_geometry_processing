@@ -106,7 +106,6 @@ public class Face extends HEElement {
 	}
 
 	public final class IteratorFE extends IteratorF implements Iterator<HalfEdge> {
-		HalfEdge start, current;
 		
 		public IteratorFE(HalfEdge anEdge) {
 			start = anEdge;
