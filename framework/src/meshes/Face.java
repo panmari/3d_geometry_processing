@@ -51,9 +51,9 @@ public class Face extends HEElement {
 		if (!isObtuse()) { // non-obtuse
 			HalfEdge PR = pointingToP.getOpposite();
 			HalfEdge PQ = pointingToP.getNext();
-			voronoiCellArea = 1/8* (
-					PR.lengthSquared()*cot(PQ.getIncidentAngle())
-					+ PQ.lengthSquared() * cot(PR.getIncidentAngle())); 
+			float areaPR = PR.lengthSquared()*cot(PQ.getIncidentAngle());
+			float areaPQ = PQ.lengthSquared() * cot(PQ.getNext().getIncidentAngle());
+			voronoiCellArea = 1/8f * ( areaPR + areaPQ ); 
 		} else if (angleAtP > Math.PI/2) { // obtuse at P
 			voronoiCellArea = getArea()/2;
 		} else { // else
