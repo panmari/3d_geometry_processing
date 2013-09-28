@@ -141,4 +141,12 @@ public class HalfEdge extends HEElement{
 		return v;
 	}
 
+	public float length() {
+		return asVector().length();
+	}
+	
+	public float lengthSquared() {
+		return asVector().lengthSquared();
+	}
+	
 }

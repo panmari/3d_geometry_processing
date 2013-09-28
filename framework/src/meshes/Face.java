@@ -3,6 +3,8 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.vecmath.Vector3f;
+
 /**
  * Implementation of a face for the {@link HalfEdgeStructure}
  *
@@ -24,7 +26,55 @@ public class Face extends HEElement {
 		return anEdge;
 	}
 	
+	/**
+	 * Only works for triangles as faces
+	 */
+	public float getArea() {
+		Vector3f cross = new Vector3f();
+		cross.cross(anEdge.asVector(), anEdge.next.asVector());
+		return cross.length()/2;
+	}
 	
+	/**
+	 * @throws NoSuchElementException if v is not a vertex of this face.
+	 * @param v, a Vertex, as in sketch
+	 * @return
+	 */
+	public float getMixedVoronoiCellArea(Vertex p) {
+		Iterator<HalfEdge> iter = new IteratorFE(anEdge);
+		HalfEdge pointingToP = iter.next();
+		while(pointingToP.incident_v != p){
+			pointingToP = iter.next();
+		}
+		float angle = pointingToP.getIncidentAngle();
+		float voronoiCellArea;
+		if (angle < Math.PI/4) { // non-obtuse
+			HalfEdge PR = pointingToP.getOpposite();
+			HalfEdge PQ = pointingToP.getNext();
+			voronoiCellArea = 1/8* (
+					PR.lengthSquared()*cot(PQ.getIncidentAngle())
+					+ PQ.lengthSquared() * cot(PR.getIncidentAngle())); //TODO cot stuff
+		} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
+			voronoiCellArea = getArea()/2;
+		} else { // obtuse
+			voronoiCellArea = getArea()/4;
+		}
+		return voronoiCellArea;
+	}
+	
+	private float cot(float z) {
+		return 1/(float)Math.tan(z);
+	}
+	
+	public boolean isObtuse() {
+		for(Iterator<HalfEdge> iter = new IteratorFE(anEdge); iter.hasNext();) {
+			float angle = iter.next().getIncidentAngle();
+			if (angle > Math.PI/2 && angle < Math.PI)
+				return true;
+		}
+		return false;
+		
+	}
 	/**
 	 * Iterate over the vertices of the face.
 	 * @return
