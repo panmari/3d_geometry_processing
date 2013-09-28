@@ -107,6 +107,13 @@ public class HalfEdge extends HEElement{
 		return incident_v;
 	}
 	
+	/**
+	 * Returns angle at incident vertex (the end, the thingy it points to),
+	 * between this HalfEdge and next()
+	 */
+	public float getIncidentAngle() {
+		return opposite.asVector().angle(next.asVector());
+	}
 	
 	public boolean hasFace(){
 		return this.incident_f != null;
@@ -123,6 +130,10 @@ public class HalfEdge extends HEElement{
 		return "(" + start().toString() + " --> " + end().toString() + ")";
 	}
 	
+	/**
+	 * Computes end - start, gives it back as vector
+	 * @return
+	 */
 	public Vector3f asVector() {
 		Vector3f v = new Vector3f(start().getPos());
 		v.negate();

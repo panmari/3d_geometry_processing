@@ -33,7 +33,9 @@ public class Vertex extends HEElement{
 	public void setHalfEdge(HalfEdge he) {
 		anEdge = he;
 	}
-	
+	/**
+	 * @return an adjacend HalfEdge, that uses this vertex as starting point
+	 */
 	public HalfEdge getHalfEdge() {
 		return anEdge;
 	}
@@ -88,14 +90,14 @@ public class Vertex extends HEElement{
 			cross.cross(first, second);
 			float area = cross.length()/2;
 			if (angle < Math.PI/4) { // non-obtuse
-				aMixed += 1/8*first.lengthSquared() + second.lengthSquared(); //TODO
+				aMixed += 1/8*first.lengthSquared() + second.lengthSquared(); //TODO cot stuff
 			} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
 				aMixed += area/2;
 			} else { // obtuse
 				aMixed += area/4;
 			}
-			
 		}
+		
 		return 1/(aMixed*4); //TODO
 	}
 
@@ -193,6 +195,5 @@ public class Vertex extends HEElement{
 			next = null;
 			return returnFace;
 		}	
-		
 	}
 }
