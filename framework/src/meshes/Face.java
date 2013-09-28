@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.vecmath.Vector3f;
-
+import myutils.MyMath;
 /**
  * Implementation of a face for the {@link HalfEdgeStructure}
  *
@@ -51,8 +51,8 @@ public class Face extends HEElement {
 		if (!isObtuse()) { // non-obtuse
 			HalfEdge PR = pointingToP.getOpposite();
 			HalfEdge PQ = pointingToP.getNext();
-			float areaPR = PR.lengthSquared()*cot(PQ.getIncidentAngle());
-			float areaPQ = PQ.lengthSquared() * cot(PQ.getNext().getIncidentAngle());
+			float areaPR = PR.lengthSquared()*MyMath.cot(PQ.getIncidentAngle());
+			float areaPQ = PQ.lengthSquared() * MyMath.cot(PQ.getNext().getIncidentAngle());
 			voronoiCellArea = 1/8f * ( areaPR + areaPQ ); 
 		} else if (angleAtP > Math.PI/2) { // obtuse at P
 			voronoiCellArea = getArea()/2;
@@ -62,16 +62,12 @@ public class Face extends HEElement {
 		return voronoiCellArea;
 	}
 	
-	private float cot(float z) {
-		return 1/(float)Math.tan(z);
-	}
-	
 	/**
 	 * An obtuse angle is between 90 and 180 degree (aka pi/2 an pi radian).
 	 * @return true, if there is at least one obtuse (stumpf) angle in this face
 	 */
 	public boolean isObtuse() {
-		for(Iterator<HalfEdge> iter = new IteratorFE(anEdge); iter.hasNext();) {
+		for(Iterator<HalfEdge> iter = iteratorFE(); iter.hasNext();) {
 			float angle = iter.next().getIncidentAngle();
 			if (angle > Math.PI/2 && angle < Math.PI)
 				return true;

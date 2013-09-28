@@ -7,6 +7,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
+import myutils.MyMath;
+
 /**
  * Implementation of a vertex for the {@link HalfEdgeStructure}
  */
@@ -80,25 +82,24 @@ public class Vertex extends HEElement{
 	}
 	
 	public float getCurvature() {
-		float aMixed = 0;
 		Iterator<HalfEdge> iter = iteratorVE();
-		Vector3f first = iter.next().asVector();
+		float sum = 0;
 		while(iter.hasNext()) {
-			Vector3f second = iter.next().asVector();
-			float angle = first.angle(second);
-			Vector3f cross = new Vector3f();
-			cross.cross(first, second);
-			float area = cross.length()/2;
-			if (angle < Math.PI/4) { // non-obtuse
-				aMixed += 1/8*first.lengthSquared() + second.lengthSquared(); //TODO cot stuff
-			} else if (angle > Math.PI/2) { // not non-obtuse nor obtuse
-				aMixed += area/2;
-			} else { // obtuse
-				aMixed += area/4;
-			}
+			HalfEdge current = iter.next();
+			// demeter is crying qq
+			float alpha = current.getNext().getIncidentAngle();
+			float beta = current.getOpposite().getNext().getIncidentAngle();
+			sum += current.length()*(MyMath.cot(alpha) + MyMath.cot(beta));
+		}		
+		return 1/(getAMixed()*4)*sum;
+	}
+	
+	public float getAMixed() {
+		float aMixed = 0;
+		for(Iterator<Face> iter = iteratorVF(); iter.hasNext();) {
+			aMixed += iter.next().getMixedVoronoiCellArea(this);
 		}
-		
-		return 1/(aMixed*4); //TODO
+		return aMixed;
 	}
 
 	public boolean isAdjascent(Vertex w) {

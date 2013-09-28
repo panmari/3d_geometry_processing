@@ -10,6 +10,7 @@ uniform mat4 modelview;
 // glDisplayable.addElement(float[], Semantic.POSITION, 3);
 in vec4 position;
 in float valence;
+in float curvature;
 
 //The following would declare and additional variable that could be passed to the shader.
 //It would correspond to the data passed via
@@ -19,6 +20,8 @@ in float valence;
 // Output variables are passed to the fragment shader, or, if existent to the geometry shader.
 // They have to be declared as in variables in the next shader.
 out float valence_f;
+out float curvature_f;
+
 void main()
 {
 	// Note: gl_Position is a default output variable containing
@@ -27,4 +30,5 @@ void main()
 	gl_Position = projection * modelview * position;
 	
 	valence_f = valence;
+	curvature_f = curvature;
 }

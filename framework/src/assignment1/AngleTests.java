@@ -59,15 +59,23 @@ public class AngleTests {
 		assertFalse(faces.get(2).isObtuse());
 		assertFalse(faces.get(3).isObtuse());
 		assertTrue(faces.get(4).isObtuse()); //the one at the bottom
-
 	}
 	
 	@Test
 	public void testVoronoiCellArea() {
 		Iterator<Face> iter = center.iteratorVF();
+		float sum = 0;
 		while(iter.hasNext()) {
-			System.out.println(iter.next().getMixedVoronoiCellArea(center));
+			float a = iter.next().getMixedVoronoiCellArea(center);
+			sum += a;
+			System.out.println(a);
 		}
+		assertEquals(sum, center.getAMixed(), epsilon);
+	}
+	
+	@Test
+	public void testCurvature() {
+		System.out.println("Curvature? " + center.getCurvature());
 	}
 
 }

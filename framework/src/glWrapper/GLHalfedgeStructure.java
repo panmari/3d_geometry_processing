@@ -1,5 +1,6 @@
 package glWrapper;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.media.opengl.GL;
@@ -19,6 +20,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 	HalfEdgeStructure m;
 	float maxValence = Float.MIN_VALUE, minValence = Float.MAX_VALUE; //is actually int, but who cares
+	
 	public GLHalfedgeStructure(HalfEdgeStructure m) {
 		super(m.getVertices().size());
 		this.m = m;
@@ -44,11 +46,13 @@ public class GLHalfedgeStructure extends GLDisplayable {
 	private void setPositionVertices(Iterator<Vertex> vertices) {
 		float[] verts = new float[m.getVertices().size()*3];
 		float[] valence = new float[m.getVertices().size()];
-
+		float[] curvature = new float[m.getVertices().size()];
+		
 		int idx = 0;
 		for (Vertex v: m.getVertices()) {
 			Point3f p = v.getPos();
 			valence[idx] = v.getValence();
+			curvature[idx] = v.getCurvature();
 			if (valence[idx] > maxValence)
 				maxValence = valence[idx];
 			if (valence[idx] < minValence)
@@ -58,9 +62,12 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			verts[idx*3 + 2] = p.z;
 			idx++;
 		}
+		System.out.println(Arrays.toString(curvature));
 		this.addElement(verts, Semantic.POSITION , 3);
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
+		this.addElement(curvature, Semantic.USERSPECIFIED, 1, "curvature");
+
 	}
 	
 	public void computeNormals() {
