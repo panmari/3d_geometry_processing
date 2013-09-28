@@ -89,7 +89,7 @@ public class Vertex extends HEElement{
 			// demeter is crying qq
 			float alpha = current.getNext().getIncidentAngle();
 			float beta = current.getOpposite().getNext().getIncidentAngle();
-			sum += current.length()*(MyMath.cot(alpha) + MyMath.cot(beta));
+			sum += (MyMath.cot(alpha) + MyMath.cot(beta)) * current.length();
 		}		
 		return 1/(getAMixed()*4)*sum;
 	}

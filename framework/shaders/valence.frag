@@ -12,5 +12,6 @@ uniform float min_valence;
 out vec4 out_color;
 void main()
 {		
-	out_color = vec4(1,1,1,0)*(valence_f - min_valence)/(max_valence - min_valence);
+	//out_color = vec4(1,1,1,0)*(valence_f - min_valence)/(max_valence - min_valence);
+	out_color = color_g;
 }

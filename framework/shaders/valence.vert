@@ -21,6 +21,7 @@ in float curvature;
 // They have to be declared as in variables in the next shader.
 out float valence_f;
 out float curvature_f;
+out vec4 color_g;
 
 void main()
 {
@@ -31,4 +32,19 @@ void main()
 	
 	valence_f = valence;
 	curvature_f = curvature;
+		float valence = valence_f;
+	vec4 frag_color;
+	if (valence > 6){
+		frag_color = vec4(1,0,0,.5);
+	}
+	else {
+		if (valence < 6){
+			frag_color = vec4(0,0,1,.5);
+		}
+		else {
+			frag_color = vec4(0,1,0,.5);
+		}
+
+	}
+	color_g = frag_color;
 }

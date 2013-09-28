@@ -62,7 +62,6 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			verts[idx*3 + 2] = p.z;
 			idx++;
 		}
-		System.out.println(Arrays.toString(curvature));
 		this.addElement(verts, Semantic.POSITION , 3);
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
