@@ -20,7 +20,7 @@ public class CurvatureShaderDemo {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/dragon.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/dragon.obj", false);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
 		//create a half-edge structure out of the wireframe description.

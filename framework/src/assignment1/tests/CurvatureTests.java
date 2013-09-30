@@ -1,4 +1,4 @@
-package assignment1;
+package assignment1.tests;
 
 import static org.junit.Assert.*;
 import meshes.HalfEdgeStructure;

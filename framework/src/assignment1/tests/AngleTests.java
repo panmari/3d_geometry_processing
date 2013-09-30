@@ -1,9 +1,11 @@
-package assignment1;
+package assignment1.tests;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.vecmath.Vector3f;
 
 import meshes.Face;
 import meshes.HalfEdge;
@@ -44,6 +46,24 @@ public class AngleTests {
 		angleSum += towardsCenter.getNext().getIncidentAngle();
 		angleSum += towardsCenter.getNext().getNext().getIncidentAngle();
 		assertEquals(Math.PI, angleSum, epsilon);
+	}
+	
+	@Test
+	public void testNormals() {
+		//TODO: explain why normals dont point in same direction everywhere
+		Vector3f n = new Vector3f(0,0,-1);
+		assertEquals(n.z, hs.getVertices().get(1).getNormal().z, epsilon);
+		for (Vertex v: hs.getVertices()) {
+			System.out.println(v.getNormal());
+		}
+		/*
+		assertEquals(n.z, hs.getVertices().get(1).getNormal().z, epsilon);
+		assertEquals(n.z, hs.getVertices().get(2).getNormal().z, epsilon);
+		assertEquals(n.z, hs.getVertices().get(3).getNormal().z, epsilon);
+		assertEquals(n.z, hs.getVertices().get(4).getNormal().z, epsilon);
+		assertEquals(n.z, hs.getVertices().get(5).getNormal().z, epsilon);
+		*/
+
 	}
 	
 	@Test
