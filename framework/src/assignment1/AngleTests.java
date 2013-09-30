@@ -26,7 +26,7 @@ public class AngleTests {
 		WireframeMesh m;
 		hs = new HalfEdgeStructure();
 		try {
-			m = ObjReader.read("./objs/oneNeighborhood.obj", true);	
+			m = ObjReader.read("./objs/oneNeighborhood.obj", false);	
 			hs.init(m);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,20 +62,19 @@ public class AngleTests {
 	}
 	
 	@Test
-	public void testVoronoiCellArea() {
+	public void testVoronoiCellAreaOneNeighborhood() {
 		Iterator<Face> iter = center.iteratorVF();
 		float sum = 0;
 		while(iter.hasNext()) {
 			float a = iter.next().getMixedVoronoiCellArea(center);
 			sum += a;
-			System.out.println(a);
 		}
 		assertEquals(sum, center.getAMixed(), epsilon);
 	}
 	
 	@Test
-	public void testCurvature() {
-		System.out.println("Curvature? " + center.getCurvature());
+	public void testCurvatureOneNeighborhoodCenter() {
+		assertEquals(0f, center.getCurvature(), epsilon);
 	}
 
 }
