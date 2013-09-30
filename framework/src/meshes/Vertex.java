@@ -45,7 +45,7 @@ public class Vertex extends HEElement{
 			if (first.incident_f != null)
 			{	
 				Vector3f partialNormal = new Vector3f();
-				partialNormal.cross(first.asVector(), secondVec);
+				partialNormal.cross(secondVec, first.asVector());
 				partialNormal.normalize();
 				float angle = second.opposite.getIncidentAngle();
 				partialNormal.scale(angle);
