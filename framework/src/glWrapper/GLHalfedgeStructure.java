@@ -27,7 +27,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		
 		//Add Vertices
 		setPositionVertices(m.iteratorV());
-		computeNormals();
+		setNormals();
 		
 		int[] ind = new int[m.getFaces().size()*3];
 		
@@ -69,23 +69,11 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 	}
 	
-	public void computeNormals() {
+	public void setNormals() {
 		float[] normals = new float[m.getVertices().size()*3];
 		int idx = 0;
 		for (Vertex v: m.getVertices()) {
-			Vector3f normal = new Vector3f();
-			Iterator<HalfEdge> iter = v.iteratorVE();
-			Vector3f first = iter.next().getOpposite().asVector();
-			while (iter.hasNext()) {
-				Vector3f second = iter.next().getOpposite().asVector();
-				Vector3f partialNormal = new Vector3f();
-				partialNormal.cross(first, second);
-				float angle = first.angle(second);
-				partialNormal.scale(angle);
-				normal.add(partialNormal);
-				first = second;
-			}
-			normal.normalize();
+			Vector3f normal = v.getNormal();
 			normals[idx++] = normal.x;
 			normals[idx++] = normal.y;
 			normals[idx++] = normal.z;

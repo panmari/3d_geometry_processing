@@ -32,6 +32,31 @@ public class Vertex extends HEElement{
 		return pos;
 	}
 
+	/**
+	 * @return normal interpolated by weighting by angle
+	 */
+	public Vector3f getNormal() {
+		Vector3f normal = new Vector3f();
+		Iterator<HalfEdge> iter = this.iteratorVE();
+		HalfEdge first = iter.next();
+		while (iter.hasNext()) {
+			HalfEdge second = iter.next();
+			Vector3f secondVec = second.asVector();
+			if (first.incident_f != null)
+			{	
+				Vector3f partialNormal = new Vector3f();
+				partialNormal.cross(first.asVector(), secondVec);
+				partialNormal.normalize();
+				float angle = second.opposite.getIncidentAngle();
+				partialNormal.scale(angle);
+				normal.add(partialNormal);
+			}
+			first = second;
+		}
+		normal.normalize();
+		return normal;
+	}
+	
 	public void setHalfEdge(HalfEdge he) {
 		anEdge = he;
 	}
