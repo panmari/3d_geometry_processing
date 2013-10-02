@@ -30,13 +30,22 @@ public class CurvatureTests {
 		
 		
 	}
+	
 	@Test
-	public void testMixedVoroiAreaOfCircle() {
+	public void testMixedVoronoiAreaOfCircle() {
 		float summedCellArea = 0;
 		for(Vertex v: hs.getVertices()){
 			summedCellArea += v.getAMixed();
 		}
 		assertEquals(4*Math.PI*sphereRadius*sphereRadius, summedCellArea, 0.3f);
 	}
+	
+	@Test
+	public void testCurvatureOfCircle() {
+		for(Vertex v: hs.getVertices()){
+			assertEquals(1/2f, v.getCurvature(), 0.0001);
+		}
+	}
+
 
 }
