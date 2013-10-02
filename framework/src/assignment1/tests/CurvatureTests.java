@@ -1,6 +1,11 @@
 package assignment1.tests;
 
 import static org.junit.Assert.*;
+
+import java.util.Iterator;
+
+import meshes.Face;
+import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import meshes.WireframeMesh;
@@ -21,7 +26,7 @@ public class CurvatureTests {
 		//As not every mesh can be represented as a half-edge structure
 		//exceptions could occur.
 		try {
-			WireframeMesh m = ObjReader.read("./objs/sphere.obj", false);
+			WireframeMesh m = ObjReader.read("./objs/ultra_dragon.obj", false);
 			hs.init(m);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,6 +51,46 @@ public class CurvatureTests {
 			assertEquals(1/2f, v.getCurvature(), 0.0001);
 		}
 	}
+	
+	@Test
+	public void testBenchmark() {
+		long start = System.currentTimeMillis();
+		for(Face f: hs.getFaces()){
+			f.isObtuse();
+		}
+		long end = System.currentTimeMillis();
+		long timeStupid = end - start;
+		System.out.println("" + timeStupid);
+		for(Face f: hs.getFaces()){
+			f.isObtuse();
+		}
+		
+		start = System.currentTimeMillis();
+		for(Face f: hs.getFaces()) {
+			isObtuseUnrolled(f);
+		}
+		end = System.currentTimeMillis();
+		long timeUnrolled = end - start;
+		System.out.println("" + timeUnrolled);
+		System.out.println("ratio: " + timeStupid / (float) timeUnrolled);
+
+	}
+	
+	private boolean isObtuseUnrolled(Face f){
+
+		HalfEdge he = f.getHalfEdge();
+		float angle = he.getIncidentAngle();
+		if (angle > Math.PI/2)
+			return true;
+		else {
+			float angle2 = he.getNext().getIncidentAngle();
+			if (angle > Math.PI/2 || angle + angle2 < Math.PI/2)
+				return true;
+			else
+				return false;
+		}
+	}
+	
 
 
 }
