@@ -19,10 +19,7 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static long parentCode(long code){
-		
-		
-		//implement this.
-		return -1L;
+		return code >> 3;
 	}
 	
 	/**
