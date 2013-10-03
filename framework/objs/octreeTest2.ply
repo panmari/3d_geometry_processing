@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+element vertex 9
+property float x
+property float y
+property float z
+property float nx
+property float ny
+property float nz
+end_header
+-1 -1 -1 1 0 0
+-0.4 -0.4 -0.4 1 0 0
+1 1 -1 1 0 0
+0.4 0.4 -0.4 1 0 0
+1 1 1 1 0 0
+0.73 -0.1 0.4 1 0 0
+0.72 -0.1 0.4 1 0 0
+-0.85 0.4 -0.8 1 0 0
+-0.87 0.4 -0.8 1 0 0
