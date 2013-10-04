@@ -31,7 +31,6 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static long nbrCode(long code, int level, int Obxyz){
-		
 		//implement this
 		return -1L;
 	}
@@ -75,9 +74,13 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static boolean isCellOnLevelXGrid(long cell_code, int level){
-
-		//implement this..
-		return false;
+		long shift = cell_code;
+		int l = level;
+		while (l-- > 0) {
+			shift = parentCode(shift);
+		}
+		
+		return shift == 1;
 	}
 	
 	

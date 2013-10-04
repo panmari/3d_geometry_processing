@@ -32,8 +32,19 @@ public class MortonCodesTests {
 		assertEquals(parent, MortonCodes.parentCode((parent << 3) + 6));
 		assertEquals(parent, MortonCodes.parentCode((parent << 3) + 7));
 		assertFalse(parent == MortonCodes.parentCode((parent << 3) + 8)); 
-
-
+	}
+	
+	@Test
+	public void testCellonLevelXgrid() {
+		assertTrue(MortonCodes.isCellOnLevelXGrid(0b1000, 1));
+		assertTrue(MortonCodes.isCellOnLevelXGrid(0b1000000, 2));
+		assertTrue(MortonCodes.isCellOnLevelXGrid(0b1010, 1));
+		assertTrue(MortonCodes.isCellOnLevelXGrid(0b1100, 1));
+		
+		assertFalse(MortonCodes.isCellOnLevelXGrid(0b1000, 2));
+		assertFalse(MortonCodes.isCellOnLevelXGrid(0b1000000, 1));
+		assertFalse(MortonCodes.isCellOnLevelXGrid(0b1000000001, 1));
+		assertFalse(MortonCodes.isCellOnLevelXGrid(0b1000111, 1));
 	}
 	
 	private void assertEquals(long exp, long got) {
