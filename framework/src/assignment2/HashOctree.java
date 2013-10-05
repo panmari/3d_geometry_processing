@@ -372,7 +372,6 @@ public class HashOctree {
 		}
 		
 		return getCell(code);
-		
 	}
 	
 	
@@ -382,9 +381,8 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeCell getParent(HashOctreeCell cell){
-		
-		//TODO implement this...
-		return null;
+		long parentCode = MortonCodes.parentCode(cell.code);
+		return getCell(parentCode);
 	}
 	
 	/**
@@ -396,10 +394,13 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeCell getNbr_c2c(HashOctreeCell cell, int Obxyz){
-		
-		//TODO implement this...
-		
-		return null;
+		long nbrCode = MortonCodes.nbrCode(cell.code, cell.lvl, Obxyz);
+		HashOctreeCell nbrCell = null;
+		while (nbrCell == null && nbrCode != 1) { //if nbrCode is 0, we shifted as far as we could
+			nbrCell = getCell(nbrCode);
+			nbrCode = MortonCodes.parentCode(nbrCode);
+		}	
+		return nbrCell;
 	}
 	
 	/**

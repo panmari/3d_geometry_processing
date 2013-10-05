@@ -3,11 +3,11 @@ package glWrapper;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
+import javax.vecmath.Point3f;
 
 import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
 import openGL.objects.Transformation;
-
 import assignment2.HashOctree;
 import assignment2.HashOctreeCell;
 
@@ -27,15 +27,21 @@ public class GLHashtree extends GLDisplayable {
 		this.myTree = tree;
 		//Add Vertices
 		float[] verts = new float[myTree.numberOfLeafs()*3];
+		float[] parents = new float[myTree.numberOfLeafs()*3];
 		float[] sides = new float[myTree.numberOfLeafs()];
 		
 		
-		int idx = 0, idx2 = 0;
+		int idx = 0;
 		for(HashOctreeCell n : tree.getLeafs()){
-			verts[idx++] = n.center.x;
-			verts[idx++] = n.center.y;
-			verts[idx++] = n.center.z;
-			sides[idx2++] = n.side;
+			verts[idx*3 + 0] = n.center.x;
+			verts[idx*3 + 1] = n.center.y;
+			verts[idx*3 + 2] = n.center.z;
+			Point3f parentCenter = tree.getParent(n).center;
+			parents[idx*3 + 0] = parentCenter.x;
+			parents[idx*3 + 1] = parentCenter.y;
+			parents[idx*3 + 2] = parentCenter.z;
+			sides[idx] = n.side;
+			idx++;
 		}
 		
 		int[] ind = new int[myTree.numberOfLeafs()];
@@ -44,6 +50,7 @@ public class GLHashtree extends GLDisplayable {
 		}
 		this.addElement(verts, Semantic.POSITION , 3);
 		this.addElement(sides, Semantic.USERSPECIFIED , 1, "side");
+		this.addElement(parents, Semantic.USERSPECIFIED , 3, "parent");
 		
 		this.addIndices(ind);
 		
