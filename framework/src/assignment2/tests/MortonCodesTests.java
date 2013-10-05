@@ -64,8 +64,6 @@ public class MortonCodesTests {
 		assertEquals(nbr_plus_x, MortonCodes.nbrCode(hash, 4, 0b100));
 		assertEquals(nbr_plus_y, MortonCodes.nbrCode(hash, 4, 0b010));
 		assertEquals(nbr_plus_z, MortonCodes.nbrCode(hash, 4, 0b001));
-		
-		assertEquals(-1L, MortonCodes.nbrCode(0b1100, 1, 0b100));
 	}
 	
 	@Test
@@ -73,6 +71,20 @@ public class MortonCodesTests {
 		assertEquals(-1L, MortonCodes.nbrCode(0b1100, 1, 0b100));
 		assertEquals(-1L, MortonCodes.nbrCode(0b1111, 1, 0b100));
 		assertEquals(-1L, MortonCodes.nbrCode(0b1001, 1, 0b001));
+	}
+	
+	@Test
+	public void testNeighborSubtraction() {
+		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_x, 4, 0b100));
+		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_y, 4, 0b010));
+		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_z, 4, 0b001));
+	}
+	
+	@Test
+	public void testNeighborSubtractionOverflow() {
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b100));
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b010));
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b001));
 	}
 	
 	private void assertEquals(long exp, long got) {

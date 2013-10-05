@@ -49,9 +49,15 @@ public class MortonCodes {
 	 * @param Obxyz
 	 * @return
 	 */	
-	public static long nbrCodeMinus(long code, int level, int Obxyz){
-		//implement this
-		return -1L;
+	public static long nbrCodeMinus(long code, int level, int minusxyz){
+		long xresult = ((code & xmask) - (minusxyz & xmask)) & xmask;
+		long yresult = ((code & ymask) - (minusxyz & ymask)) & ymask;
+		long zresult = ((code & zmask) - (minusxyz & zmask)) & zmask;
+		long result = xresult | yresult | zresult;
+		if (overflowTest(result, level))
+			return -1L;
+		else
+			return result;
 	}
 	
 	
