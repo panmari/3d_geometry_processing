@@ -16,10 +16,7 @@ out vec4 color_g;
 void main()
 {		
 	vec3 d = vec3(side_g[0],0, side_g[0]/2);
-	
-	vec4 pos_lbot = position_g[0];
-	pos_lbot = pos_lbot - d.zzzy;
-	
+		
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	color_g = vec4(0,0,0,1);	
 	

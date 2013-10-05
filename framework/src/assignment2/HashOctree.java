@@ -395,12 +395,16 @@ public class HashOctree {
 	 */
 	public HashOctreeCell getNbr_c2c(HashOctreeCell cell, int Obxyz){
 		long nbrCode = MortonCodes.nbrCode(cell.code, cell.lvl, Obxyz);
-		HashOctreeCell nbrCell = null;
-		while (nbrCell == null && nbrCode != 1) { //if nbrCode is 0, we shifted as far as we could
-			nbrCell = getCell(nbrCode);
-			nbrCode = MortonCodes.parentCode(nbrCode);
+		return iterateParentsUntilExists(nbrCode);
+	}
+	
+	private HashOctreeCell iterateParentsUntilExists(long code) {
+		HashOctreeCell cell = null;
+		while (cell == null && code != 1) { //if nbrCode is 0, we shifted as far as we could
+			cell = getCell(code);
+			code = MortonCodes.parentCode(code);
 		}	
-		return nbrCell;
+		return cell;
 	}
 	
 	/**
@@ -411,9 +415,8 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeCell getNbr_c2cMinus(HashOctreeCell cell, int Obxyz){
-
-		//TODO implement this
-		return null;
+		long nbrCode = MortonCodes.nbrCodeMinus(cell.code, cell.lvl, Obxyz);
+		return iterateParentsUntilExists(nbrCode);
 	}
 	
 	
