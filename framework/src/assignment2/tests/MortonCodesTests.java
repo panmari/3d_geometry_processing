@@ -17,6 +17,11 @@ public class MortonCodesTests {
 	long nbr_plus_y =   0b1000101000110;
 	long nbr_plus_z =   0b1000101000101;
 	
+	long nbr_minus_x = 	0b1000101000000;
+	long nbr_minus_y =  -1; //invalid: the vertex lies on the boundary and an underflow should occur
+	long nbr_minus_z =  0b1000100001101;
+	
+	long vertexHash = 0b1000110100000;
 	@Test
 	public void testParent() {
 		assertEquals(parent, MortonCodes.parentCode(hash));
@@ -75,6 +80,10 @@ public class MortonCodesTests {
 	
 	@Test
 	public void testNeighborSubtraction() {
+		assertEquals(nbr_minus_x, MortonCodes.nbrCodeMinus(hash, 4, 0b100));
+		assertEquals(nbr_minus_y, MortonCodes.nbrCodeMinus(hash, 4, 0b010));
+		assertEquals(nbr_minus_z, MortonCodes.nbrCodeMinus(hash, 4, 0b001));
+		
 		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_x, 4, 0b100));
 		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_y, 4, 0b010));
 		assertEquals(hash, MortonCodes.nbrCodeMinus(nbr_plus_z, 4, 0b001));
@@ -85,6 +94,14 @@ public class MortonCodesTests {
 		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b100));
 		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b010));
 		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b001));
+	}
+	
+	@Test
+	public void testVertex() {
+		//assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 4, 4));
+		//assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 3, 4));
+		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 2, 4));
+		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 1, 4));
 	}
 	
 	private void assertEquals(long exp, long got) {

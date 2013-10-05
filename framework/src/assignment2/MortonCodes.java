@@ -83,13 +83,7 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static boolean isCellOnLevelXGrid(long cell_code, int level){
-		long shift = cell_code;
-		int l = level;
-		while (l-- > 0) {
-			shift = parentCode(shift);
-		}
-		
-		return shift == 1;
+		return 1L == cell_code >> (3*level);
 	}
 	
 	
@@ -100,9 +94,12 @@ public class MortonCodes {
 	 * This is determined by the number of trailing zeros, and if a vertex lies on some level k
 	 * it will lie on the levels k+1,k+2... tree_depth too.
 	 */
-	public static boolean isVertexOnLevelXGrid(long vertex_code, int level, int tree_depth){
-		//implement this..
-		return false;
+	public static boolean isVertexOnLevelXGrid(long vertex_code, int level, int tree_depth) {
+		//tests, how many times zeros were padded
+		// 1 time padded => on level tree_depth - 1 etc...
+		long mask = ~(-1L << ((tree_depth - level)*3));
+		long masked = vertex_code & mask;
+		return masked == mask;
 	}
 	
 	/**
