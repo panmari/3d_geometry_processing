@@ -8,9 +8,9 @@ package assignment2;
 public class MortonCodes {
 	
 	/** the three masks for dilated integer operations */
-	public static final long d100100 = 0b100100100100100100100100100100100100100100100100100100100100100L, 
-			d010010 = 0b010010010010010010010010010010010010010010010010010010010010010L, 
-			d001001 = 0b001001001001001001001001001001001001001001001001001001001001001L;
+	public static final long xmask = 0b100100100100100100100100100100100100100100100100100100100100100L, 
+			ymask = 0b010010010010010010010010010010010010010010010010010010010010010L, 
+			zmask = 0b001001001001001001001001001001001001001001001001001001001001001L;
 	
 	
 	/**
@@ -30,9 +30,15 @@ public class MortonCodes {
 	 * @param Obxyz
 	 * @return
 	 */
-	public static long nbrCode(long code, int level, int Obxyz){
-		//implement this
-		return -1L;
+	public static long nbrCode(long code, int level, int plusxyz){
+		long xresult = ((code | ~xmask) + (plusxyz & xmask)) & xmask;
+		long yresult = ((code | ~ymask) + (plusxyz & ymask)) & ymask;
+		long zresult = ((code | ~zmask) + (plusxyz & zmask)) & zmask;
+		long result = xresult | yresult | zresult;
+		if (overflowTest(result, level))
+			return -1L;
+		else
+			return result;
 	}
 
 	/**
@@ -55,13 +61,10 @@ public class MortonCodes {
 	 * if the delimiter bit is untouched and is the highest bit set.
 	 * @param code
 	 * @param level
-	 * @return
+	 * @return true, if overflow occured
 	 */
-	public static boolean overflowTest(long code, int level){
-
-		//implement this
-		
-		return true;
+	public static boolean overflowTest(long code, int level){	
+		return (code >> (3*level)) != 0b1;
 		
 	}
 	
@@ -101,9 +104,9 @@ public class MortonCodes {
 	 */
 	public static boolean isVertexOnBoundary(long vertex_code, int tree_depth){
 		boolean is = (vertex_code & (0b111 << 3*(tree_depth-1)))!= 0 || //x==1, y==1 or z==1 in a unit cube
-				(vertex_code & d100100) == 0 || //x==0
-				(vertex_code & d010010) == 0 || //y==0
-				(vertex_code & d001001) == (0b1 << 3*tree_depth) ; //z==0 (only the delimiter bit is set)
+				(vertex_code & xmask) == 0 || //x==0
+				(vertex_code & ymask) == 0 || //y==0
+				(vertex_code & zmask) == (0b1 << 3*tree_depth) ; //z==0 (only the delimiter bit is set)
 		
 		return is;
 	}

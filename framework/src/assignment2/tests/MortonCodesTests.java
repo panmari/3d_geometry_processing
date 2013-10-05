@@ -47,6 +47,34 @@ public class MortonCodesTests {
 		assertFalse(MortonCodes.isCellOnLevelXGrid(0b1000111, 1));
 	}
 	
+	@Test
+	public void testOverflow() {
+		assertTrue(MortonCodes.overflowTest(hash, 5));
+		assertFalse(MortonCodes.overflowTest(hash, 4));
+		assertTrue(MortonCodes.overflowTest(hash, 3));
+	
+		assertTrue(MortonCodes.overflowTest(parent, 4));
+		assertFalse(MortonCodes.overflowTest(parent, 3));
+		assertTrue(MortonCodes.overflowTest(parent, 2));
+
+	}
+	
+	@Test
+	public void testNeighborAddition() {
+		assertEquals(nbr_plus_x, MortonCodes.nbrCode(hash, 4, 0b100));
+		assertEquals(nbr_plus_y, MortonCodes.nbrCode(hash, 4, 0b010));
+		assertEquals(nbr_plus_z, MortonCodes.nbrCode(hash, 4, 0b001));
+		
+		assertEquals(-1L, MortonCodes.nbrCode(0b1100, 1, 0b100));
+	}
+	
+	@Test
+	public void testNeighborAdditionOverflow() {
+		assertEquals(-1L, MortonCodes.nbrCode(0b1100, 1, 0b100));
+		assertEquals(-1L, MortonCodes.nbrCode(0b1111, 1, 0b100));
+		assertEquals(-1L, MortonCodes.nbrCode(0b1001, 1, 0b001));
+	}
+	
 	private void assertEquals(long exp, long got) {
 		if (exp != got)
 			fail("expected: " + Long.toBinaryString(exp) + " but got: " + Long.toBinaryString(got));
