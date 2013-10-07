@@ -437,9 +437,12 @@ public class HashOctree {
 		HashOctreeVertex nbr = null;
 		long nbrCode = 0;
 		int lvl = v.maxLvl;
-		while (nbr == null && nbrCode != -1L && v.minLvl < lvl) {
-			nbrCode = MortonCodes.nbrCode(v.code, lvl, nbr_0bxyz);
-			nbr = this.getVertex(nbrCode);
+		while (nbr == null && nbrCode != -1L && v.minLvl <= lvl) {
+			int shift = 3*(this.depth - lvl);
+			long c = v.code >> shift;
+			nbrCode = MortonCodes.nbrCode(c, lvl, nbr_0bxyz);
+			nbr = this.getVertex(nbrCode << shift);
+			lvl--;
 		}
 		return nbr;
 	}

@@ -20,12 +20,10 @@ public class HashOctreeDemo {
 		GLDisplayable pcGL = new GLHashtree(ho);
 		GLDisplayable pcGL2 = new GLHashtree(ho);
 		//... do something with it, display it ....
-		HashOctreeVertex c = ho.getVertex(0b1000010);
-		/*
-		Iterator<HashOctreeCell> iter = ho.getAdjacencyIterator(c);
-		while (iter.hasNext())
-			System.out.println(iter.next());
-		*/
+		HashOctreeVertex v = ho.getVertex(0b1000010000000);
+		
+		System.out.println(ho.getNbr_v2v(v, 0b001));
+/*
 		MyDisplay disp = new MyDisplay();
 		pcGL.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree.geom");
 		disp.addToDisplay(pcGL);
@@ -34,6 +32,6 @@ public class HashOctreeDemo {
 		GLHashtreeAdjacencies pcGL3 = new GLHashtreeAdjacencies(ho); 
 		pcGL3.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree_parents.geom");
 		disp.addToDisplay(pcGL3);
-		System.out.println(ho.root);
+		*/
 	}
 }
