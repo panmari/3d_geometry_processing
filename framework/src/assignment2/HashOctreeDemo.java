@@ -1,7 +1,8 @@
 package assignment2;
 
 import glWrapper.GLHashtree;
-import glWrapper.GLHashtreeAdjacencies;
+import glWrapper.GLHashtreeCellAdjacencies;
+import glWrapper.GLHashtreeVertexAdjacencies;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -23,15 +24,18 @@ public class HashOctreeDemo {
 		HashOctreeVertex v = ho.getVertex(0b1000010000000);
 		
 		System.out.println(ho.getNbr_v2v(v, 0b001));
-/*
+
 		MyDisplay disp = new MyDisplay();
 		pcGL.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree.geom");
 		disp.addToDisplay(pcGL);
 		pcGL2.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree_parents.geom");
 		disp.addToDisplay(pcGL2);
-		GLHashtreeAdjacencies pcGL3 = new GLHashtreeAdjacencies(ho); 
+		GLDisplayable pcGL3 = new GLHashtreeCellAdjacencies(ho); 
 		pcGL3.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree_parents.geom");
 		disp.addToDisplay(pcGL3);
-		*/
+		GLDisplayable pcGL4 = new GLHashtreeVertexAdjacencies(ho); 
+		pcGL4.configurePreferredShader("shaders/octree.vert", "shaders/octree.frag", "shaders/octree_adj.geom");
+		disp.addToDisplay(pcGL4);
+
 	}
 }

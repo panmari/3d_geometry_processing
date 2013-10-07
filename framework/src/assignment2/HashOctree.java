@@ -455,10 +455,17 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeVertex getNbr_v2vMinus(HashOctreeVertex v, int nbr_0bxyz){
-		
-		//TODO implement this
-		
-		return null;
+		HashOctreeVertex nbr = null;
+		long nbrCode = 0;
+		int lvl = v.maxLvl;
+		while (nbr == null && nbrCode != -1L && v.minLvl <= lvl) {
+			int shift = 3*(this.depth - lvl);
+			long c = v.code >> shift;
+			nbrCode = MortonCodes.nbrCodeMinus(c, lvl, nbr_0bxyz);
+			nbr = this.getVertex(nbrCode << shift);
+			lvl--;
+		}
+		return nbr;
 	}
 	
 	

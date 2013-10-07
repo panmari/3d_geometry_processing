@@ -19,10 +19,10 @@ import assignment2.HashOctreeCell;
  * @author Alf
  *
  */
-public class GLHashtreeAdjacencies extends GLDisplayable {
+public class GLHashtreeCellAdjacencies extends GLDisplayable {
 
 	private HashOctree myTree;
-	public GLHashtreeAdjacencies(HashOctree tree) {
+	public GLHashtreeCellAdjacencies(HashOctree tree) {
 		
 		super(6*tree.numberOfLeafs());
 		this.myTree = tree;

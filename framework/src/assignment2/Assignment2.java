@@ -1,7 +1,7 @@
 package assignment2;
 
 import glWrapper.GLHashtree;
-import glWrapper.GLHashtree_Vertices;
+import glWrapper.GLHashtreeVertices;
 import glWrapper.GLPointCloud;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class Assignment2 {
 		"shaders/octree.frag", 
 		"shaders/octree.geom");
 
-		GLHashtree_Vertices glOTv = new GLHashtree_Vertices(tree);
+		GLHashtreeVertices glOTv = new GLHashtreeVertices(tree);
 
 		display.addToDisplay(glOT);
 		display.addToDisplay(glOTv);
