@@ -54,13 +54,13 @@ public class MortonCodesTests {
 	
 	@Test
 	public void testOverflow() {
-		assertTrue(MortonCodes.overflowTest(hash, 5));
-		assertFalse(MortonCodes.overflowTest(hash, 4));
-		assertTrue(MortonCodes.overflowTest(hash, 3));
+		assertTrue(MortonCodes.isOverflown(hash, 5));
+		assertFalse(MortonCodes.isOverflown(hash, 4));
+		assertTrue(MortonCodes.isOverflown(hash, 3));
 	
-		assertTrue(MortonCodes.overflowTest(parent, 4));
-		assertFalse(MortonCodes.overflowTest(parent, 3));
-		assertTrue(MortonCodes.overflowTest(parent, 2));
+		assertTrue(MortonCodes.isOverflown(parent, 4));
+		assertFalse(MortonCodes.isOverflown(parent, 3));
+		assertTrue(MortonCodes.isOverflown(parent, 2));
 
 	}
 	

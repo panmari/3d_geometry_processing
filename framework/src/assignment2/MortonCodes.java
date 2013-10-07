@@ -35,7 +35,7 @@ public class MortonCodes {
 		long yresult = ((code | ~ymask) + (plusxyz & ymask)) & ymask;
 		long zresult = ((code | ~zmask) + (plusxyz & zmask)) & zmask;
 		long result = xresult | yresult | zresult;
-		if (overflowTest(result, level))
+		if (isOverflown(result, level))
 			return -1L;
 		else
 			return result;
@@ -54,7 +54,7 @@ public class MortonCodes {
 		long yresult = ((code & ymask) - (minusxyz & ymask)) & ymask;
 		long zresult = ((code & zmask) - (minusxyz & zmask)) & zmask;
 		long result = xresult | yresult | zresult;
-		if (overflowTest(result, level))
+		if (isOverflown(result, level))
 			return -1L;
 		else
 			return result;
@@ -69,7 +69,7 @@ public class MortonCodes {
 	 * @param level
 	 * @return true, if overflow occured
 	 */
-	public static boolean overflowTest(long code, int level){	
+	public static boolean isOverflown(long code, int level){	
 		return (code >> (3*level)) != 0b1;
 		
 	}

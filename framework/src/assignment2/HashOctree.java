@@ -3,7 +3,9 @@ package assignment2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import javax.vecmath.Point3f;
@@ -374,6 +376,9 @@ public class HashOctree {
 		return getCell(code);
 	}
 	
+	public Iterator<HashOctreeCell> getAdjacencyIterator(HashOctreeCell cell) {
+		return new AdjacentCellIterator(cell);
+	}
 	
 	/**
 	 * Return the parent cell.
@@ -400,7 +405,7 @@ public class HashOctree {
 	
 	private HashOctreeCell iterateParentsUntilExists(long code) {
 		HashOctreeCell cell = null;
-		while (cell == null && code != 1) { //if nbrCode is 0, we shifted as far as we could
+		while (cell == null && code > 0b1000 && code != -1L) { // 1000 is root, -1 is overflow
 			cell = getCell(code);
 			code = MortonCodes.parentCode(code);
 		}	
@@ -506,6 +511,44 @@ public class HashOctree {
 		
 		return cell;
 		
+	}
+	
+	public class AdjacentCellIterator implements Iterator<HashOctreeCell> {
+		private HashOctreeCell cell, next;
+		private boolean doPlus = true;
+		private int mask = 0b100;
+		
+		public AdjacentCellIterator(HashOctreeCell cell) {
+			this.cell = cell;
+		}
+
+		@Override
+		public boolean hasNext() {
+			while (next == null && mask > 0) {
+				if (doPlus)
+					next = getNbr_c2c(cell, mask);
+				else {
+					next = getNbr_c2cMinus(cell, mask);
+					mask = mask >> 1;
+				}
+				doPlus = !doPlus;
+			}
+			return next != null;
+		}
+
+		@Override
+		public HashOctreeCell next() {
+			if (!hasNext())
+				throw new NoSuchElementException("zomfg, why u do that?");
+			HashOctreeCell toReturn = next;
+			next = null;	
+			return toReturn;
+		}
+
+		@Override
+		public void remove() {
+			// Not supported
+		}
 	}
 
 

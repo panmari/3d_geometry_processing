@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 
+import jogamp.graph.font.typecast.ot.table.CffTable.Index;
+
 /**
  * Implementation of a hashoctree cell. A cell stores its Morton code
  * and if it is a leaf cell it has a payload of Point3f's.
@@ -143,7 +145,9 @@ public class HashOctreeCell {
 		return points != null;
 	}
 
-
+	public String toString() {
+		return Long.toBinaryString(code) + " lvl: " + lvl + " index: " + leafIndex;
+	}
 	
 	
 }
