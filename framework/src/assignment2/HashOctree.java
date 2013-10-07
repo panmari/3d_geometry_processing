@@ -434,10 +434,14 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeVertex getNbr_v2v(HashOctreeVertex v, int nbr_0bxyz){
-
-		//TODO implement this
-		
-		return null;
+		HashOctreeVertex nbr = null;
+		long nbrCode = 0;
+		int lvl = v.maxLvl;
+		while (nbr == null && nbrCode != -1L && v.minLvl < lvl) {
+			nbrCode = MortonCodes.nbrCode(v.code, lvl, nbr_0bxyz);
+			nbr = this.getVertex(nbrCode);
+		}
+		return nbr;
 	}
 	
 	/** find and return maximal depth vertex, that shares an edge of some octreecell
