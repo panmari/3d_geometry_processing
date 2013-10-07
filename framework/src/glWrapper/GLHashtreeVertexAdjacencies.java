@@ -23,26 +23,49 @@ public class GLHashtreeVertexAdjacencies extends GLDisplayable {
 	private HashOctree myTree;
 	public GLHashtreeVertexAdjacencies(HashOctree tree) {
 		
-		super(tree.numberofVertices());
+		super(6*tree.numberofVertices());
 		this.myTree = tree;
 		//Add Vertices
 		//float[] verts = new float[myTree.getNumberOfPoints()*3];
-		float[] verts = new float[myTree.numberofVertices()*3];
+		float[] verts = new float[6*myTree.numberofVertices()*3];
+		float[] adjVerts = new float[6*myTree.numberofVertices()*3];
 		
 		
 		int idx = 0;
 		Collection<HashOctreeVertex> temp = tree.getVertices();
-		for(HashOctreeVertex v : temp){
-			verts[idx++] = v.position.x;
-			verts[idx++] = v.position.y;
-			verts[idx++] = v.position.z;
+		for(HashOctreeVertex v : temp) {
+			for (int mask = 0b100; mask > 0; mask >>= 1) {
+				HashOctreeVertex adjv = myTree.getNbr_v2v(v, mask);
+				if (adjv != null) {
+					verts[3*idx] = v.position.x;
+					verts[3*idx + 1] = v.position.y;
+					verts[3*idx + 2] = v.position.z;
+					adjVerts[3*idx] = adjv.position.x;
+					adjVerts[3*idx + 1] = adjv.position.y;
+					adjVerts[3*idx + 2] = adjv.position.z;
+					idx++;
+				}
+				adjv = myTree.getNbr_v2vMinus(v, mask);
+				if (adjv != null) {
+					verts[3*idx] = v.position.x;
+					verts[3*idx + 1] = v.position.y;
+					verts[3*idx + 2] = v.position.z;
+					adjVerts[3*idx] = adjv.position.x;
+					adjVerts[3*idx + 1] = adjv.position.y;
+					adjVerts[3*idx + 2] = adjv.position.z;
+					idx++;
+				}
+			}
+			
 		}
 		
-		int[] ind = new int[myTree.numberofVertices()];
+		int[] ind = new int[6*myTree.numberofVertices()];
 		for(int i = 0; i < ind.length; i++)	{
 			ind[i]=i;
 		}
 		this.addElement(verts, Semantic.POSITION , 3);
+		this.addElement(adjVerts, Semantic.USERSPECIFIED , 3, "parent");
+
 		this.addIndices(ind);
 		
 	}

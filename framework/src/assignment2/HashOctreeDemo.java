@@ -3,6 +3,7 @@ package assignment2;
 import glWrapper.GLHashtree;
 import glWrapper.GLHashtreeCellAdjacencies;
 import glWrapper.GLHashtreeVertexAdjacencies;
+import glWrapper.GLHashtreeVertices;
 
 import java.io.IOException;
 import java.util.Iterator;

@@ -22,7 +22,7 @@ void main()
 	
 	gl_Position = projection*modelview*position_g[0];
 	EmitVertex();
-	vec4 dir = position_g[0] - parent_g[0];
-	gl_Position = projection*modelview*(position_g[0] + dir);
+	vec4 dir = parent_g[0] - position_g[0];
+	gl_Position = projection*modelview*(position_g[0] + dir/3);
 	EmitVertex();	
 }

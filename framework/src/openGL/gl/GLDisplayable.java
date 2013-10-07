@@ -1,5 +1,6 @@
 package openGL.gl;
 
+import java.io.File;
 import java.util.LinkedList;
 
 import openGL.objects.Transformation;
@@ -270,8 +271,9 @@ public abstract class GLDisplayable {
 	}
 	
 	public String toString() {
-		//TODO: add useful tostring
-		return super.toString();
+		return new File(vert_shader_file).getName() + " " +
+				new File(geom_shader_file).getName() + " " +
+				new File(frag_shader_file).getName();
 	}
 	
 
