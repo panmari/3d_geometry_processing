@@ -271,9 +271,11 @@ public abstract class GLDisplayable {
 	}
 	
 	public String toString() {
-		return new File(vert_shader_file).getName() + " " +
-				new File(geom_shader_file).getName() + " " +
+		String name = new File(vert_shader_file).getName() + " " +
 				new File(frag_shader_file).getName();
+		if (geom_shader_file != null)
+			name += " " + new File(geom_shader_file).getName();
+		return name;
 	}
 	
 
