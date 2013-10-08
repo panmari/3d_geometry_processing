@@ -97,11 +97,15 @@ public class MortonCodesTests {
 	}
 	
 	@Test
-	public void testVertex() {
-		//assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 4, 4));
-		//assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 3, 4));
+	public void testVertexOnLevelXGrid() {
+		assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 4, 4));
+		assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 3, 4));
 		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 2, 4));
 		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 1, 4));
+		
+		//invalid input, but important according ms
+		assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 5, 4));
+
 	}
 	
 	private void assertEquals(long exp, long got) {
