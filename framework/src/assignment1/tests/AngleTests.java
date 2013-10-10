@@ -53,10 +53,6 @@ public class AngleTests {
 		//TODO: explain why normals dont point in same direction everywhere
 		Vector3f n = new Vector3f(0,0,1);
 		assertEquals(n.z, hs.getVertices().get(1).getNormal().z, epsilon);
-		for (Vertex v: hs.getVertices()) {
-			System.out.println(v.getNormal());
-		}
-		
 		assertEquals(n.z, hs.getVertices().get(1).getNormal().z, epsilon);
 		assertEquals(n.z, hs.getVertices().get(2).getNormal().z, epsilon);
 		assertEquals(n.z, hs.getVertices().get(3).getNormal().z, epsilon);

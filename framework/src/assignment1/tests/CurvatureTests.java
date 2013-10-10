@@ -26,7 +26,7 @@ public class CurvatureTests {
 		//As not every mesh can be represented as a half-edge structure
 		//exceptions could occur.
 		try {
-			WireframeMesh m = ObjReader.read("./objs/ultra_dragon.obj", false);
+			WireframeMesh m = ObjReader.read("./objs/sphere.obj", false);
 			hs.init(m);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +60,6 @@ public class CurvatureTests {
 		}
 		long end = System.currentTimeMillis();
 		long timeStupid = end - start;
-		System.out.println("" + timeStupid);
 		for(Face f: hs.getFaces()){
 			f.isObtuse();
 		}
@@ -71,8 +70,8 @@ public class CurvatureTests {
 		}
 		end = System.currentTimeMillis();
 		long timeUnrolled = end - start;
-		System.out.println("" + timeUnrolled);
-		System.out.println("ratio: " + timeStupid / (float) timeUnrolled);
+		//System.out.println("" + timeUnrolled + " vs. " + timeStupid);
+		//System.out.println("ratio: " + timeStupid / (float) timeUnrolled);
 
 	}
 	
