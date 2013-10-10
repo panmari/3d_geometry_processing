@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 
+import assignment3.MarchableCube;
 import jogamp.graph.font.typecast.ot.table.CffTable.Index;
 
 /**
@@ -18,7 +19,7 @@ import jogamp.graph.font.typecast.ot.table.CffTable.Index;
  * @author bertholet
  *
  */
-public class HashOctreeCell {
+public class HashOctreeCell implements MarchableCube {
 	
 	/** the center of this cell*/
 	public Point3f center;
@@ -147,6 +148,24 @@ public class HashOctreeCell {
 
 	public String toString() {
 		return Long.toBinaryString(code) + " lvl: " + lvl + " index: " + leafIndex;
+	}
+
+
+	@Override
+	public Point3f getPosition() {
+		return center;
+	}
+
+
+	@Override
+	public MarchableCube getCornerElement(int Obxyz, HashOctree tree) {
+		return tree.getNbr_c2v(this, Obxyz);
+	}
+
+
+	@Override
+	public int getIndex() {
+		return leafIndex;
 	}
 	
 	
