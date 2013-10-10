@@ -1,7 +1,7 @@
 package meshes;
 
 public class Point2i {
-	int x,y;
+	public int x,y;
 
 	public Point2i(int i, int j) {
 		x = i;
