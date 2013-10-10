@@ -18,8 +18,8 @@ import openGL.gl.GLDisplayable;
 public class HashOctreeDemo {
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		PointCloud pc = ObjReader.readAsPointCloud("./objs/sphere.obj", true);
-		//PointCloud pc = PlyReader.readPointCloud("./objs/octreeTest2.ply", true);
+		//PointCloud pc = ObjReader.readAsPointCloud("./objs/sphere.obj", true);
+		PointCloud pc = PlyReader.readPointCloud("./objs/octreeTest.ply", true);
 		HashOctree ho = new HashOctree(pc, 4, 1, 1);
 		GLDisplayable pcGL = new GLHashtree(ho);
 		GLDisplayable pcGL2 = new GLHashtree(ho);

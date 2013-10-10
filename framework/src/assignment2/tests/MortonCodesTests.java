@@ -91,9 +91,9 @@ public class MortonCodesTests {
 	
 	@Test
 	public void testNeighborSubtractionOverflow() {
-		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b100));
-		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b010));
-		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b000000, 2, 0b001));
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b1000000, 2, 0b100));
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b1000000, 2, 0b010));
+		assertEquals(-1L, MortonCodes.nbrCodeMinus(0b1000000, 2, 0b001));
 	}
 	
 	@Test
