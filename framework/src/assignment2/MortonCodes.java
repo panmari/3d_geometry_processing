@@ -19,6 +19,8 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static long parentCode(long code){
+		if (code == 0b1000) //root
+			throw new IllegalArgumentException("Root does not have a parent");
 		return code >> 3;
 	}
 	

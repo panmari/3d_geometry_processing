@@ -102,10 +102,18 @@ public class MortonCodesTests {
 		assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 3, 4));
 		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 2, 4));
 		assertFalse(MortonCodes.isVertexOnLevelXGrid(vertexHash, 1, 4));
-		
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testInvalidParentRequest() {
 		//invalid input, but important according ms
-		assertTrue(MortonCodes.isVertexOnLevelXGrid(vertexHash, 5, 4));
-
+		MortonCodes.parentCode(0b1000);
+	}
+		
+	@Test(expected=IllegalArgumentException.class)
+	public void testInvalidLevel() {
+		//invalid input, but important according ms
+		MortonCodes.isVertexOnLevelXGrid(vertexHash, 5, 4);
 	}
 	
 	private void assertEquals(long exp, long got) {
