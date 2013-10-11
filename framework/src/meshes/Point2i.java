@@ -3,6 +3,13 @@ package meshes;
 public class Point2i {
 	public int x,y;
 
+	/**
+	 * Dummy constructor
+	 */
+	public Point2i() {
+		x = Integer.MIN_VALUE;
+		y = Integer.MIN_VALUE;
+	}
 	public Point2i(int i, int j) {
 		x = i;
 		y = j;
