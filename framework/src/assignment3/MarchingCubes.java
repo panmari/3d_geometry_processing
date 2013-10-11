@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.vecmath.Point3f;
@@ -31,7 +32,7 @@ public class MarchingCubes {
 	private HashOctree tree;
 	//per marchable cube values
 	private ArrayList<Float> valByVertex;
-	
+	private HashMap<Point2i, Integer> createdVertices;
 	
 	
 	
@@ -44,18 +45,19 @@ public class MarchingCubes {
 	 */
 	public MarchingCubes(HashOctree tree){
 		this.tree = tree;
-		
-		
 	}
 
+	private void reset() {
+		this.createdVertices = new HashMap<Point2i, Integer>();
+		this.result = new WireframeMesh();
+	}
 	/**
 	 * Perform primary Marching cubes on the tree.
 	 * Assumption: byVertex at position i holds the function value of vertex with index i
 	 */
 	public void primaryMC(ArrayList<Float> byVertex) {
 		this.valByVertex = byVertex;
-		this.result = new WireframeMesh();
-		
+		reset();
 		for (HashOctreeCell c: tree.getLeafs()) {
 			pushCube(c, valByVertex);
 		}
@@ -65,7 +67,7 @@ public class MarchingCubes {
 	 * Perform dual marchingCubes on the tree
 	 */
 	public void dualMC(ArrayList<Float> byVertex) {
-		this.result = new WireframeMesh();
+		reset();
 		ArrayList<Float> byCell = new ArrayList<Float>(Collections.nCopies(tree.getCells().size(), -1.f));
 		
 		for (HashOctreeCell c: tree.getLeafs()) {
@@ -97,9 +99,15 @@ public class MarchingCubes {
 			values[i] = val.get(corner.getIndex());
 			MCTable.resolve(values, points);
 		}
+		
 		for (Point2i p: points) {
 			if (p.x == -1) //no more triangles to generate
 				break;
+			if (createdVertices.containsKey(key(n,p))) {
+				result.addIndex(createdVertices.get(key(n,p)));
+				continue;
+			}
+				
 			MarchableCube marchable_a = n.getCornerElement(p.x, tree);
 			MarchableCube marchable_b = n.getCornerElement(p.y, tree);
 			float a = val.get(marchable_a.getIndex());
@@ -111,10 +119,9 @@ public class MarchingCubes {
 			pos_b.scale(a/(a-b));
 			pos.add(pos_b);
 			result.vertices.add(pos);
-		}
-		for (int i = 0; i < result.vertices.size(); i+=3) {
-			int[] idxs = {i, i + 1, i+2};
-			result.faces.add(idxs);
+			int idx = result.vertices.size()-1;
+			createdVertices.put(key(n, p), idx);
+			result.addIndex(idx);
 		}
 	}
 

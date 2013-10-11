@@ -20,4 +20,19 @@ public class WireframeMesh {
 		faces = new ArrayList<>();
 	}
 
+	private int[] currentFace = new int[3];
+	private int currentFaceIdx = 0;
+	
+	/**
+	 * Zomfg this is way to complicated for what I'm trying to do... I could just go on gl-level...
+	 * @param idx
+	 */
+	public void addIndex(Integer idx) {
+		currentFace[currentFaceIdx++] = idx;
+		if (currentFaceIdx == 3) {
+			faces.add(currentFace);
+			currentFace = new int[3];
+			currentFaceIdx = 0;
+		}
+	}
 }

@@ -42,9 +42,8 @@ public class Assignment3 {
 		mc.primaryMC(x);
 		GLDisplayable primaryMarch = new GLWireframeMesh(mc.result);
 		
-		MarchingCubes mc2 = new MarchingCubes(tree);
-		mc2.dualMC(x);
-		GLDisplayable dualMarch = new GLWireframeMesh(mc2.result);
+		mc.dualMC(x);
+		GLDisplayable dualMarch = new GLWireframeMesh(mc.result);
 
 		//And show off...
 		
