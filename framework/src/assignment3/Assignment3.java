@@ -1,5 +1,6 @@
 package assignment3;
 
+import glWrapper.GLHalfedgeStructure;
 import glWrapper.GLHashtree;
 import glWrapper.GLHashtreeVertices;
 import glWrapper.GLWireframeMesh;
@@ -10,7 +11,11 @@ import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import meshes.HalfEdgeStructure;
 import meshes.PointCloud;
+import meshes.WireframeMesh;
+import meshes.exception.DanglingTriangleException;
+import meshes.exception.MeshNotOrientedException;
 import openGL.MyDisplay;
 import openGL.gl.GLDisplayable;
 import assignment2.HashOctree;
@@ -18,7 +23,7 @@ import assignment2.HashOctreeVertex;
 
 public class Assignment3 {
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException{
 		
 		
 		marchingCubesDemo();
@@ -28,7 +33,7 @@ public class Assignment3 {
 	}
 	
 	
-	public static void marchingCubesDemo(){
+	public static void marchingCubesDemo() throws MeshNotOrientedException, DanglingTriangleException{
 		
 		//Test Data: create an octree
 		HashOctree tree = new HashOctree( 
@@ -43,7 +48,13 @@ public class Assignment3 {
 		GLDisplayable primaryMarch = new GLWireframeMesh(mc.result);
 		
 		mc.dualMC(x);
-		GLDisplayable dualMarch = new GLWireframeMesh(mc.result);
+		WireframeMesh dualMarch = mc.result;
+		GLDisplayable glDualMarch = new GLWireframeMesh(dualMarch);
+		
+		HalfEdgeStructure dualMarchSmooth = new HalfEdgeStructure();
+		dualMarchSmooth.init(dualMarch);
+		GLHalfedgeStructure glDualMarchSmooth = new GLHalfedgeStructure(dualMarchSmooth);
+		glDualMarchSmooth.smooth(1);
 
 		//And show off...
 		
@@ -54,9 +65,11 @@ public class Assignment3 {
 		primaryMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		d.addToDisplay(primaryMarch);
 		
-		dualMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
-		d.addToDisplay(dualMarch);
-
+		glDualMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		d.addToDisplay(glDualMarch);
+		
+		glDualMarchSmooth.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		d.addToDisplay(glDualMarchSmooth);
 		
 		GLHashtreeVertices gl_v = new GLHashtreeVertices(tree);
 		gl_v.addFunctionValues(x);
