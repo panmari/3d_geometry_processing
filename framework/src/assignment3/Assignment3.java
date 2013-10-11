@@ -42,6 +42,10 @@ public class Assignment3 {
 		mc.primaryMC(x);
 		GLDisplayable primaryMarch = new GLWireframeMesh(mc.result);
 		
+		MarchingCubes mc2 = new MarchingCubes(tree);
+		mc2.dualMC(x);
+		GLDisplayable dualMarch = new GLWireframeMesh(mc2.result);
+
 		//And show off...
 		
 		//visualization of the per vertex values (blue = negative, 
@@ -50,6 +54,11 @@ public class Assignment3 {
 		
 		primaryMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		d.addToDisplay(primaryMarch);
+		
+		dualMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		d.addToDisplay(dualMarch);
+
+		
 		GLHashtreeVertices gl_v = new GLHashtreeVertices(tree);
 		gl_v.addFunctionValues(x);
 		gl_v.configurePreferredShader("shaders/func.vert", 

@@ -1,6 +1,11 @@
 package assignment3;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import javax.vecmath.Point3f;
 
@@ -8,6 +13,7 @@ import meshes.Point2i;
 import meshes.WireframeMesh;
 import assignment2.HashOctree;
 import assignment2.HashOctreeCell;
+import assignment2.HashOctreeVertex;
 
 
 /**
@@ -24,7 +30,7 @@ public class MarchingCubes {
 	//the tree to march
 	private HashOctree tree;
 	//per marchable cube values
-	private ArrayList<Float> val;
+	private ArrayList<Float> valByVertex;
 	
 	
 	
@@ -47,11 +53,11 @@ public class MarchingCubes {
 	 * Assumption: byVertex at position i holds the function value of vertex with index i
 	 */
 	public void primaryMC(ArrayList<Float> byVertex) {
-		this.val = byVertex;
+		this.valByVertex = byVertex;
 		this.result = new WireframeMesh();
 		
 		for (HashOctreeCell c: tree.getLeafs()) {
-			pushCube(c);
+			pushCube(c, valByVertex);
 		}
 	}
 	
@@ -59,15 +65,29 @@ public class MarchingCubes {
 	 * Perform dual marchingCubes on the tree
 	 */
 	public void dualMC(ArrayList<Float> byVertex) {
+		this.result = new WireframeMesh();
+		ArrayList<Float> byCell = new ArrayList<Float>(Collections.nCopies(tree.getCells().size(), -1.f));
 		
-		// TODO: do your stuff
+		for (HashOctreeCell c: tree.getLeafs()) {
+			float value = 0;
+			for(int i = 0; i < 8; i++) {
+				MarchableCube corner = c.getCornerElement(i, tree);
+				value += byVertex.get(corner.getIndex());
+			}
+			byCell.set(c.getIndex(), value/8);
+		}
+		for (HashOctreeVertex v: tree.getVertices()) {
+			if (tree.isOnBoundary(v))
+				continue;
+			pushCube(v, byCell);
+		}
 	}
 	
 	/**
 	 * March a single cube: compute the triangles and add them to the wireframe model
 	 * @param n
 	 */
-	private void pushCube(MarchableCube n){
+	private void pushCube(MarchableCube n, List<Float> val){
 		float[] values = new float[8];
 		Point2i[] points = new Point2i[15];
 		for (int i = 0; i < points.length; i++)
