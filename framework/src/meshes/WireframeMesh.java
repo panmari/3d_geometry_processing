@@ -1,6 +1,7 @@
 package meshes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.vecmath.Point3f;
 
@@ -30,9 +31,14 @@ public class WireframeMesh {
 	public void addIndex(Integer idx) {
 		currentFace[currentFaceIdx++] = idx;
 		if (currentFaceIdx == 3) {
-			faces.add(currentFace);
+			if (!isDegenerated(currentFace))
+				faces.add(currentFace);
+			//else System.out.println("prevented degenerated Face: " + Arrays.toString(currentFace)); //verbosity for checking implementation
 			currentFace = new int[3];
 			currentFaceIdx = 0;
 		}
+	}
+	private boolean isDegenerated(int[] face) {
+		return face[0] == face[2] || face[0] == face[1] || face[1] == face[2];
 	}
 }
