@@ -75,14 +75,14 @@ public class SSDMatrices {
 			MarchableCube v_000 = c.getCornerElement(0b000, tree);
 			Vector3f v_d = new Vector3f(p);
 			v_d.sub(v_000.getPosition());
-			v_d.scale(c.side); //scale between 0 and 1.
+			v_d.scale(1/c.side); //scale to unit size.
 			
 			d_0.addRow();
 			ArrayList<col_val> currentRow = d_0.lastRow();
 			for(int i = 0; i < 8; i++) {
-				float weight = (i>>2)%2 == 0 ? 1 - v_d.x : v_d.x;  
-				weight *= (i>>1)%2 == 0 ? 1 - v_d.y : v_d.y; 
-				weight *= i%2 == 0 ? 1 - v_d.z : v_d.z; 
+				float weight = (0b100 & i) != 0b100 ? 1 - v_d.x : v_d.x;  
+				weight *= (0b010 & i) != 0b010 ? 1 - v_d.y : v_d.y; 
+				weight *= (0b001 & i) != 0b001 ? 1 - v_d.z : v_d.z; 
 				
 				currentRow.add(new col_val(c.getCornerElement(i, tree).getIndex(), weight));
 			}
