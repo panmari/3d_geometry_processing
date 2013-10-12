@@ -52,9 +52,13 @@ public class SSDMatrixTest {
 		assertEquals(tree.getVertices().size(), mat.nCols);
 		mat.multPoints(vertexPos, result);
 		
-		System.out.println(result);
-		System.out.println("vs");
-		System.out.println(pc.points);
+		System.out.println("above original vs computed below");
+
+		for (int i = 0; i < result.size(); i++) {
+			System.out.println(result.get(i));
+			System.out.println(pc.points.get(i));
+			System.out.println("--------------");
+		}
 	}
 	
 	@Test

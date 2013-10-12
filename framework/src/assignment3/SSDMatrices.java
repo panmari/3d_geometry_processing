@@ -69,14 +69,13 @@ public class SSDMatrices {
 	public static CSRMatrix D0Term(HashOctree tree, PointCloud cloud){
 		CSRMatrix d_0 = new CSRMatrix(0, tree.numberofVertices());
 		
-		for (int pointIdx = 0; pointIdx < cloud.points.size(); pointIdx++) {
-			Point3f p = cloud.points.get(pointIdx);
+		for (Point3f p: cloud.points) {
 			
 			HashOctreeCell c = tree.getCell(p);
-			MarchableCube v = c.getCornerElement(0, tree);
+			MarchableCube v_000 = c.getCornerElement(0b000, tree);
 			Vector3f v_d = new Vector3f(p);
-			v_d.sub(v.getPosition());
-			v_d.scale(c.side);
+			v_d.sub(v_000.getPosition());
+			v_d.scale(c.side); //scale between 0 and 1.
 			
 			d_0.addRow();
 			ArrayList<col_val> currentRow = d_0.lastRow();
@@ -87,9 +86,6 @@ public class SSDMatrices {
 				
 				currentRow.add(new col_val(c.getCornerElement(i, tree).getIndex(), weight));
 			}
-			//get cell for every point
-			//compute trilinear interpolation weights
-			//put them into correct row/column
 		}		
 		return d_0;
 	}

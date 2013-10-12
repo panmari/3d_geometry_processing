@@ -197,6 +197,8 @@ public class CSRMatrix {
 	}
 	
 	public void multPoints(ArrayList<Point3f> other, ArrayList<Point3f> result) {
+		if (other.size() != nCols)
+			throw new IllegalArgumentException("Matrix size does not match to size of vector!");
 		result.clear();
 		result.ensureCapacity(nRows);
 		for(ArrayList<col_val> row : rows){
