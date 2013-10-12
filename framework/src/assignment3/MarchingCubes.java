@@ -103,8 +103,8 @@ public class MarchingCubes {
 		for (Point2i p: points) {
 			if (p.x == -1) //no more triangles to generate
 				break;
-			if (createdVertices.containsKey(key(n,p))) {
-				result.addIndex(createdVertices.get(key(n,p)));
+			if (createdVertices.containsKey(getUniqueEdgeId(n,p))) {
+				result.addIndex(createdVertices.get(getUniqueEdgeId(n,p)));
 				continue;
 			}
 				
@@ -120,7 +120,7 @@ public class MarchingCubes {
 			pos.add(pos_b);
 			result.vertices.add(pos);
 			int idx = result.vertices.size()-1;
-			createdVertices.put(key(n, p), idx);
+			createdVertices.put(getUniqueEdgeId(n, p), idx);
 			result.addIndex(idx);
 		}
 	}
@@ -142,7 +142,7 @@ public class MarchingCubes {
 	 * @param e
 	 * @return
 	 */
-	private Point2i key(MarchableCube n, Point2i e) {
+	private Point2i getUniqueEdgeId(MarchableCube n, Point2i e) {
 		Point2i p = new Point2i(n.getCornerElement(e.x, tree).getIndex(),
 				n.getCornerElement(e.y, tree).getIndex());
 		if(p.x > p.y) {

@@ -112,7 +112,7 @@ public class Assignment3 {
 	}
 	
 	/**
-	 * generating a poitcloud
+	 * generating a pointcloud
 	 * @param max
 	 * @return
 	 */
