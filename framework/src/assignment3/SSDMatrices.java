@@ -1,10 +1,17 @@
 package assignment3;
 
+import java.util.ArrayList;
+
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
+
 import meshes.PointCloud;
+import meshes.Vertex;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
 import sparse.LinearSystem;
 import assignment2.HashOctree;
+import assignment2.HashOctreeCell;
 import assignment2.HashOctreeVertex;
 import assignment2.MortonCodes;
 
@@ -19,11 +26,11 @@ public class SSDMatrices {
 	public static CSRMatrix eye(int nRows, int nCols){
 		CSRMatrix eye = new CSRMatrix(0, nCols);
 		
-		//initialize the identiti matrix part
+		//initialize the identity matrix part
 		for(int i = 0; i< Math.min(nRows, nCols); i++){
 			eye.addRow();
 			eye.lastRow().add(
-						//column i, vlue 1
+						//column i, value 1
 					new col_val(i,1));
 		}
 		//fill up the matrix with empt rows.
@@ -60,10 +67,31 @@ public class SSDMatrices {
 	 *
 	 */
 	public static CSRMatrix D0Term(HashOctree tree, PointCloud cloud){
+		CSRMatrix d_0 = new CSRMatrix(0, tree.numberofVertices());
 		
-		// Do your stuff
-		
-		return null;
+		for (int pointIdx = 0; pointIdx < cloud.points.size(); pointIdx++) {
+			Point3f p = cloud.points.get(pointIdx);
+			
+			HashOctreeCell c = tree.getCell(p);
+			MarchableCube v = c.getCornerElement(0, tree);
+			Vector3f v_d = new Vector3f(p);
+			v_d.sub(v.getPosition());
+			v_d.scale(c.side);
+			
+			d_0.addRow();
+			ArrayList<col_val> currentRow = d_0.lastRow();
+			for(int i = 0; i < 8; i++) {
+				float weight = (i>>2)%2 == 0 ? 1 - v_d.x : v_d.x;  
+				weight *= (i>>1)%2 == 0 ? 1 - v_d.y : v_d.y; 
+				weight *= i%2 == 0 ? 1 - v_d.z : v_d.z; 
+				
+				currentRow.add(new col_val(c.getCornerElement(i, tree).getIndex(), weight));
+			}
+			//get cell for every point
+			//compute trilinear interpolation weights
+			//put them into correct row/column
+		}		
+		return d_0;
 	}
 
 	/**
@@ -74,8 +102,6 @@ public class SSDMatrices {
 	 * of pointcloud.point[row/3]; 
 	 */
 	public static CSRMatrix D1Term(HashOctree tree, PointCloud cloud) {
-		
-		//Do your stuff
 		
 		return null;
 	}
@@ -88,10 +114,6 @@ public class SSDMatrices {
 		
 		return null;
 	}
-
-	
-	
-
 
 	/**
 	 * Set up the linear system for ssd: append the three matrices, 
