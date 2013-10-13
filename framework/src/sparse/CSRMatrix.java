@@ -183,7 +183,9 @@ public class CSRMatrix {
 	 * @param result
 	 */
 	public void mult(ArrayList<Float> other, ArrayList<Float> result){
-		assert(other.size() == nCols);
+		if(other.size() != nCols)
+			throw new IllegalArgumentException("Dimensions don't match: " +
+											other.size() + " vs " + nCols);
 		result.clear();
 		result.ensureCapacity(nRows);
 		

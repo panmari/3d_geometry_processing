@@ -110,7 +110,7 @@ public class SSDMatrices {
 			for (int i = 0; i < 8; i++) {
 				float xGrad = (i & 0b100) == 0b100 ? gradientNormalizationTerm : -gradientNormalizationTerm;
 				float yGrad = (i & 0b010) == 0b010 ? gradientNormalizationTerm : -gradientNormalizationTerm;
-				float zGrad = (i & 0b100) == 0b001 ? gradientNormalizationTerm : -gradientNormalizationTerm;
+				float zGrad = (i & 0b001) == 0b001 ? gradientNormalizationTerm : -gradientNormalizationTerm;
 				int idx = c.getCornerElement(i, tree).getIndex();
 				xRow.add(new col_val(idx, xGrad));
 				yRow.add(new col_val(idx, yGrad));

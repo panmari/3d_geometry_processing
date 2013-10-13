@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.vecmath.Point3f;
 
@@ -73,16 +74,22 @@ public class SSDMatrixTest {
 	 */
 	@Test
 	public void petersD1Test() {
-		ArrayList<Point3f> f = new ArrayList<Point3f>();
-		ArrayList<Point3f> result = new ArrayList<Point3f>();
+		ArrayList<Float> f = new ArrayList<Float>();
+		ArrayList<Float> result = new ArrayList<Float>();
+		//my awesome linear function
 		float a = 1, b = 2, c = 3;
 		for (MarchableCube v: tree.getVertices()) {
 			Point3f p = v.getPosition();
-			f.add(new Point3f(a*p.x, b*p.y, c*p.z));
+			f.add(a*p.x + b*p.y + c*p.z);
 		}
-		D_1.multPoints(f, result);
-		//TODO: fix this test
-		System.out.println(result);
+		D_1.mult(f, result);
+		Iterator<Float> iter = result.iterator();
+		//check if linear function is reproduced
+		while(iter.hasNext()) {
+			assertEquals(a, iter.next(), 0.00001f);
+			assertEquals(b, iter.next(), 0.00001f);
+			assertEquals(c, iter.next(), 0.00001f);
+		}
 	}
 	
 	@Test
