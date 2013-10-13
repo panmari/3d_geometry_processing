@@ -17,6 +17,7 @@ import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
 import assignment2.HashOctree;
 import assignment2.HashOctreeVertex;
+import assignment3.MarchableCube;
 import assignment3.SSDMatrices;
 
 public class SSDMatrixTest {
@@ -67,11 +68,21 @@ public class SSDMatrixTest {
 	}
 	
 	/**
-	 * Simple test: If f is a samlpled linear function a*x + b*y + c*z,
+	 * Simple test: If f is a sampled linear function a*x + b*y + c*z,
 	 *	D1*f = (a,b,c) on each cell.  
 	 */
+	@Test
 	public void petersD1Test() {
-		
+		ArrayList<Point3f> f = new ArrayList<Point3f>();
+		ArrayList<Point3f> result = new ArrayList<Point3f>();
+		float a = 1, b = 2, c = 3;
+		for (MarchableCube v: tree.getVertices()) {
+			Point3f p = v.getPosition();
+			f.add(new Point3f(a*p.x, b*p.y, c*p.z));
+		}
+		D_1.multPoints(f, result);
+		//TODO: fix this test
+		System.out.println(result);
 	}
 	
 	@Test
