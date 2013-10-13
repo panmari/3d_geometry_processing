@@ -69,10 +69,13 @@ public class CSRMatrix {
 	
 	/**
 	 * Append an empty row to this matrix.
+	 * @return the newly created row
 	 */
-	public void addRow() {
-		this.rows.add(new ArrayList<col_val>());
+	public ArrayList<col_val> addRow() {
+		ArrayList<col_val> newRow = new ArrayList<col_val>();
+		this.rows.add(newRow);
 		this.nRows++;
+		return newRow;
 	}
 	
 	

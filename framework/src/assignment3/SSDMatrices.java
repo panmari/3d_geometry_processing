@@ -102,16 +102,22 @@ public class SSDMatrices {
 		
 		for (Point3f p: cloud.points) {
 			HashOctreeCell c = tree.getCell(p);
-			
+			float gradientNormalizationTerm = 1/(4*c.side);
 			//add 3 rows, for x, y and z derivative
-			for (int shift = 0b100; shift > 0; shift >>= 1) {
-				for (int i = 0; i < 8; i++)
-					//TODO: work out this mess
-					nbrDirection = shift | i;
-					c.getCornerElement(shift, tree);
+			ArrayList<col_val> xRow = mat.addRow();
+			ArrayList<col_val> yRow = mat.addRow();
+			ArrayList<col_val> zRow = mat.addRow();
+			for (int i = 0; i < 8; i++) {
+				float xGrad = (i & 0b100) == 0b100 ? gradientNormalizationTerm : -gradientNormalizationTerm;
+				float yGrad = (i & 0b010) == 0b010 ? gradientNormalizationTerm : -gradientNormalizationTerm;
+				float zGrad = (i & 0b100) == 0b001 ? gradientNormalizationTerm : -gradientNormalizationTerm;
+				int idx = c.getCornerElement(i, tree).getIndex();
+				xRow.add(new col_val(idx, xGrad));
+				yRow.add(new col_val(idx, yGrad));
+				zRow.add(new col_val(idx, zGrad));
 			}
 		}		
-		return null;
+		return mat;
 	}
 	
 	

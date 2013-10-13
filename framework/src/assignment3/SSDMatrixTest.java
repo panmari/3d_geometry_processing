@@ -42,7 +42,7 @@ public class SSDMatrixTest {
 		}
 	}
 	@Test
-	public void test()  {	
+	public void D0multipliedByPoints()  {	
 		System.out.println(mat);
 		ArrayList<Point3f> vertexPos = new ArrayList<Point3f>();
 		for (HashOctreeVertex v: tree.getVertices()){
@@ -53,8 +53,10 @@ public class SSDMatrixTest {
 		mat.multPoints(vertexPos, result);
 		
 		System.out.println("above original vs computed below");
+		
 
 		for (int i = 0; i < result.size(); i++) {
+			//assertEquals(pc.points.get(i), result.get(i));
 			System.out.println(result.get(i));
 			System.out.println(pc.points.get(i));
 			System.out.println("--------------");
