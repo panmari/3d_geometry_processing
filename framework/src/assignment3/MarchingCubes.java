@@ -97,9 +97,8 @@ public class MarchingCubes {
 		for (int i = 0; i < 8; i++) {
 			MarchableCube corner = n.getCornerElement(i, tree);
 			values[i] = val.get(corner.getIndex());
-			MCTable.resolve(values, points);
 		}
-		
+		MCTable.resolve(values, points);
 		for (Point2i p: points) {
 			if (p.x == -1) //no more triangles to generate
 				break;
