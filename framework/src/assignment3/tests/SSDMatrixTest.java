@@ -102,8 +102,9 @@ public class SSDMatrixTest {
 	public void petersRTest() {
 		ArrayList<Float> f = getLinearFunctionOfVertices();
 		ArrayList<Float> result = new ArrayList<Float>();
+		System.out.println(R);
 		R.mult(f, result);
-		System.out.println(f);
+		System.out.println(result);
 	}
 	
 	@Test
