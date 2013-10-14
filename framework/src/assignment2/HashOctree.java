@@ -280,7 +280,7 @@ public class HashOctree {
 	}
 	
 
-	public int numberofVertices() {
+	public int numberOfVertices() {
 		return vertexMap.size();
 	}
 

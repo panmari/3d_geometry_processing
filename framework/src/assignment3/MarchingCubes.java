@@ -67,7 +67,7 @@ public class MarchingCubes {
 	 * Perform dual marchingCubes on the tree
 	 */
 	public void dualMC(ArrayList<Float> byVertex) {
-		if (byVertex.size() != tree.numberofVertices())
+		if (byVertex.size() != tree.numberOfVertices())
 			throw new IllegalArgumentException("Size doesn't match");
 		reset();
 		ArrayList<Float> byCell = new ArrayList<Float>(Collections.nCopies(tree.getCells().size(), -1.f));

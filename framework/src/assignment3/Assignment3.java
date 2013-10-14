@@ -97,8 +97,8 @@ public class Assignment3 {
 	private static ArrayList<Float> sphericalFunction(HashOctree tree){
 		
 		//initialize the array
-		ArrayList<Float> primaryValues = new ArrayList<>(tree.numberofVertices());
-		for(int i = 0; i <tree.numberofVertices(); i++){
+		ArrayList<Float> primaryValues = new ArrayList<>(tree.numberOfVertices());
+		for(int i = 0; i <tree.numberOfVertices(); i++){
 			primaryValues.add(new Float(0));
 		}
 		

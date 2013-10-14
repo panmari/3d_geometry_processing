@@ -4,22 +4,31 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.vecmath.Point3f;
 
 import meshes.PointCloud;
+import meshes.reader.ObjReader;
 import meshes.reader.PlyReader;
+import no.uib.cipr.matrix.Vector;
+import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import sparse.CSRMatrix;
+import sparse.SCIPY;
 import sparse.CSRMatrix.col_val;
+import sparse.LinearSystem;
 import assignment2.HashOctree;
 import assignment2.HashOctreeVertex;
 import assignment3.MarchableCube;
+import assignment3.PythonSetupTest;
 import assignment3.SSDMatrices;
+import assignment3.SSDMatricesJBlaze;
+import assignment3.SSDMatricesMTJ;
 
 public class SSDMatrixTest {
 
@@ -31,11 +40,22 @@ public class SSDMatrixTest {
 
 	@Before
 	public void setUp() throws IOException{
-		pc = PlyReader.readPointCloud("./objs/octreeTest2.ply", true);
-		tree = new HashOctree(pc,4,1,1f);
+		pc = ObjReader.readAsPointCloud("objs/teapot.obj", true);
+		tree = new HashOctree(pc,8,1,1f);
 		D_0 = SSDMatrices.D0Term(tree, pc);
 		D_1 = SSDMatrices.D1Term(tree, pc);
 		R = SSDMatrices.RTerm(tree);
+	}
+	
+	@Test
+	public void testMTJ() throws IOException {
+		Vector x = SSDMatricesMTJ.ssdSystem(tree, pc, 1, 1, 1);
+		LinearSystem system = SSDMatrices.ssdSystem(tree, pc, 1, 1, 1);
+		ArrayList<Float> functionByVertex = new ArrayList<Float>();
+		SCIPY.solve(system, "whatev", functionByVertex);
+		System.out.println("java vs scipy");
+		for (int i = 0; i < x.size(); i++)
+			System.out.println(String.format("%f \t %f", x.get(i), functionByVertex.get(i)));
 	}
 	
 	@Test
@@ -84,9 +104,9 @@ public class SSDMatrixTest {
 		Iterator<Float> iter = result.iterator();
 		//check if linear function is reproduced
 		while(iter.hasNext()) {
-			assertEquals(a, iter.next(), 0.00001f);
-			assertEquals(b, iter.next(), 0.00001f);
-			assertEquals(c, iter.next(), 0.00001f);
+			assertEquals(a, iter.next(), 0.001f);
+			assertEquals(b, iter.next(), 0.001f);
+			assertEquals(c, iter.next(), 0.001f);
 		}
 	}
 	
@@ -102,7 +122,6 @@ public class SSDMatrixTest {
 	public void petersRTest() {
 		ArrayList<Float> f = getLinearFunctionOfVertices();
 		ArrayList<Float> result = new ArrayList<Float>();
-		System.out.println(R);
 		R.mult(f, result);
 		System.out.println(result);
 	}

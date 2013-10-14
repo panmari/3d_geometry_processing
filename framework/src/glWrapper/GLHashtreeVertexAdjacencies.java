@@ -23,12 +23,12 @@ public class GLHashtreeVertexAdjacencies extends GLDisplayable {
 	private HashOctree myTree;
 	public GLHashtreeVertexAdjacencies(HashOctree tree) {
 		
-		super(6*tree.numberofVertices());
+		super(6*tree.numberOfVertices());
 		this.myTree = tree;
 		//Add Vertices
 		//float[] verts = new float[myTree.getNumberOfPoints()*3];
-		float[] verts = new float[6*myTree.numberofVertices()*3];
-		float[] adjVerts = new float[6*myTree.numberofVertices()*3];
+		float[] verts = new float[6*myTree.numberOfVertices()*3];
+		float[] adjVerts = new float[6*myTree.numberOfVertices()*3];
 		
 		
 		int idx = 0;
@@ -59,7 +59,7 @@ public class GLHashtreeVertexAdjacencies extends GLDisplayable {
 			
 		}
 		
-		int[] ind = new int[6*myTree.numberofVertices()];
+		int[] ind = new int[6*myTree.numberOfVertices()];
 		for(int i = 0; i < ind.length; i++)	{
 			ind[i]=i;
 		}
@@ -75,7 +75,7 @@ public class GLHashtreeVertexAdjacencies extends GLDisplayable {
 	 * @param values
 	 */
 	public void addFunctionValues(ArrayList<Float> values){
-		float[] vals = new float[myTree.numberofVertices()];
+		float[] vals = new float[myTree.numberOfVertices()];
 		
 		for(HashOctreeVertex v: myTree.getVertices()){
 			vals[v.index] = values.get(v.index);//*/Math.signum(values.get(myTree.getVertex(n, i).index));

@@ -49,7 +49,7 @@ public class SSDMatrices {
 	 */
 	public static CSRMatrix Eye_octree_boundary(HashOctree tree){
 		
-		CSRMatrix result = new CSRMatrix(0, tree.numberofVertices());
+		CSRMatrix result = new CSRMatrix(0, tree.numberOfVertices());
 				
 		for(HashOctreeVertex v : tree.getVertices()){
 			if(MortonCodes.isVertexOnBoundary(v.code, tree.getDepth())){
@@ -68,7 +68,7 @@ public class SSDMatrices {
 	 *
 	 */
 	public static CSRMatrix D0Term(HashOctree tree, PointCloud cloud){
-		CSRMatrix mat = new CSRMatrix(0, tree.numberofVertices());
+		CSRMatrix mat = new CSRMatrix(0, tree.numberOfVertices());
 		
 		for (Point3f p: cloud.points) {
 			
@@ -99,7 +99,7 @@ public class SSDMatrices {
 	 * of pointcloud.point[row/3]; 
 	 */
 	public static CSRMatrix D1Term(HashOctree tree, PointCloud cloud) {
-		CSRMatrix mat = new CSRMatrix(0, tree.numberofVertices());
+		CSRMatrix mat = new CSRMatrix(0, tree.numberOfVertices());
 		
 		for (Point3f p: cloud.points) {
 			HashOctreeCell c = tree.getCell(p);
@@ -124,7 +124,7 @@ public class SSDMatrices {
 	
 	
 	public static CSRMatrix RTerm(HashOctree tree){
-		CSRMatrix mat = new CSRMatrix(0, tree.numberofVertices());
+		CSRMatrix mat = new CSRMatrix(0, tree.numberOfVertices());
 		float scaleFactor = 0;
 		for (HashOctreeVertex j: tree.getVertices()) {
 			for (int shift = 0b100; shift > 0b000; shift >>= 1) {
@@ -166,10 +166,10 @@ public class SSDMatrices {
 		
 				
 		LinearSystem system = new LinearSystem();
-		system.mat = new CSRMatrix(0, tree.numberofVertices());
+		system.mat = new CSRMatrix(0, tree.numberOfVertices());
 		system.b = new ArrayList<Float>();
 
-		int N = tree.numberofVertices();
+		int N = tree.numberOfVertices();
 		CSRMatrix D0 = D0Term(tree, pc);
 		system.mat.append(D0, (float)Math.sqrt(lambda0/N));
 		system.b.addAll(new ArrayList<Float>(Collections.nCopies(D0.nRows, 0f)));

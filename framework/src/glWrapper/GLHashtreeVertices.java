@@ -23,11 +23,11 @@ public class GLHashtreeVertices extends GLDisplayable {
 	private HashOctree myTree;
 	public GLHashtreeVertices(HashOctree tree) {
 		
-		super(tree.numberofVertices());
+		super(tree.numberOfVertices());
 		this.myTree = tree;
 		//Add Vertices
 		//float[] verts = new float[myTree.getNumberOfPoints()*3];
-		float[] verts = new float[myTree.numberofVertices()*3];
+		float[] verts = new float[myTree.numberOfVertices()*3];
 		
 		
 		int idx = 0;
@@ -38,7 +38,7 @@ public class GLHashtreeVertices extends GLDisplayable {
 			verts[idx++] = v.position.z;
 		}
 		
-		int[] ind = new int[myTree.numberofVertices()];
+		int[] ind = new int[myTree.numberOfVertices()];
 		for(int i = 0; i < ind.length; i++)	{
 			ind[i]=i;
 		}
@@ -52,7 +52,7 @@ public class GLHashtreeVertices extends GLDisplayable {
 	 * @param values
 	 */
 	public void addFunctionValues(ArrayList<Float> values){
-		float[] vals = new float[myTree.numberofVertices()];
+		float[] vals = new float[myTree.numberOfVertices()];
 		
 		for(HashOctreeVertex v: myTree.getVertices()){
 			vals[v.index] = values.get(v.index);//*/Math.signum(values.get(myTree.getVertex(n, i).index));
