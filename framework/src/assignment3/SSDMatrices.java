@@ -1,6 +1,7 @@
 package assignment3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -123,10 +124,28 @@ public class SSDMatrices {
 	
 	
 	public static CSRMatrix RTerm(HashOctree tree){
-		
-		//Do your stuff
-		
-		return null;
+		CSRMatrix mat = new CSRMatrix(0, tree.numberofVertices());
+		float scaleFactor = 0;
+		for (HashOctreeVertex j: tree.getVertices()) {
+			for (int shift = 0b100; shift > 0b000; shift >>= 1) {
+				HashOctreeVertex i = tree.getNbr_v2vMinus(j, shift); //nbr in minus direction
+				if (i == null)
+					continue;
+				HashOctreeVertex k = tree.getNbr_v2v(j, shift); //nbr in plus direction
+				if (k == null)
+					continue;
+				ArrayList<col_val> currentRow = mat.addRow();
+				float dist_ij = i.getPosition().distance(j.getPosition());
+				float dist_kj = k.getPosition().distance(j.getPosition());
+				float dist_ik = dist_ij + dist_kj;
+				currentRow.add(new col_val(j.getIndex(), 1));
+				currentRow.add(new col_val(k.getIndex(), -dist_ij/(dist_ik)));
+				currentRow.add(new col_val(i.getIndex(), -dist_kj/(dist_ik)));
+				scaleFactor += dist_ij*dist_kj;
+			}
+		}
+		//mat.scale(1/scaleFactor);
+		return mat;
 	}
 
 	/**
@@ -147,8 +166,24 @@ public class SSDMatrices {
 		
 				
 		LinearSystem system = new LinearSystem();
-		system.mat = null;
-		system.b = null;
+		system.mat = new CSRMatrix(0, tree.numberofVertices());
+		system.b = new ArrayList<Float>();
+
+		int N = tree.numberofVertices();
+		CSRMatrix D0 = D0Term(tree, pc);
+		system.mat.append(D0, (float)Math.sqrt(lambda0/N));
+		system.b.addAll(new ArrayList<Float>(Collections.nCopies(D0.nRows, 0f)));
+		
+		CSRMatrix D1 = D1Term(tree, pc);
+		float scaleD1 =  (float) Math.sqrt(lambda1/N);
+		system.mat.append(D1, scaleD1);
+		
+		for (Vector3f n: pc.normals) {
+			system.b.add(n.x*scaleD1);
+			system.b.add(n.y*scaleD1);
+			system.b.add(n.z*scaleD1);
+		}
+		//TODO: use also regularization term
 		return system;
 	}
 

@@ -25,7 +25,9 @@ public class SSDMatrixTest {
 
 	private PointCloud pc;
 	private HashOctree tree;
-	private CSRMatrix D_0, D_1;
+	private CSRMatrix D_0, D_1, R;
+	//for linear functions
+	float a = 1, b = 2, c = 3;
 
 	@Before
 	public void setUp() throws IOException{
@@ -33,6 +35,7 @@ public class SSDMatrixTest {
 		tree = new HashOctree(pc,4,1,1f);
 		D_0 = SSDMatrices.D0Term(tree, pc);
 		D_1 = SSDMatrices.D1Term(tree, pc);
+		R = SSDMatrices.RTerm(tree);
 	}
 	
 	@Test
@@ -45,6 +48,7 @@ public class SSDMatrixTest {
 			assertEquals(1, sum, 0.0001);
 		}
 	}
+	
 	@Test
 	public void D0multipliedByPoints()  {	
 		ArrayList<Point3f> vertexPos = new ArrayList<Point3f>();
@@ -74,14 +78,8 @@ public class SSDMatrixTest {
 	 */
 	@Test
 	public void petersD1Test() {
-		ArrayList<Float> f = new ArrayList<Float>();
+		ArrayList<Float> f = getLinearFunctionOfVertices();
 		ArrayList<Float> result = new ArrayList<Float>();
-		//my awesome linear function
-		float a = 1, b = 2, c = 3;
-		for (MarchableCube v: tree.getVertices()) {
-			Point3f p = v.getPosition();
-			f.add(a*p.x + b*p.y + c*p.z);
-		}
 		D_1.mult(f, result);
 		Iterator<Float> iter = result.iterator();
 		//check if linear function is reproduced
@@ -93,9 +91,34 @@ public class SSDMatrixTest {
 	}
 	
 	@Test
+	public void basicRTest() {
+		assertEquals(R.nCols, tree.getVertices().size());
+	}
+	
+	/**
+	 * Simple test: R * f should be 0 for any linear function f
+	 */
+	@Test
+	public void petersRTest() {
+		ArrayList<Float> f = getLinearFunctionOfVertices();
+		ArrayList<Float> result = new ArrayList<Float>();
+		R.mult(f, result);
+		System.out.println(f);
+	}
+	
+	@Test
 	public void marchableStuffTest() {
 		//TODO: is 
 		//actuall, just look at the output...
 	}
 
+	private ArrayList<Float> getLinearFunctionOfVertices() {
+		ArrayList<Float> f = new ArrayList<Float>();
+		//my awesome linear function
+		for (MarchableCube v: tree.getVertices()) {
+			Point3f p = v.getPosition();
+			f.add(a*p.x + b*p.y + c*p.z);
+		}
+		return f;
+	}
 }
