@@ -144,7 +144,7 @@ public class SSDMatrices {
 				scaleFactor += dist_ij*dist_kj;
 			}
 		}
-		//mat.scale(1/scaleFactor);
+		mat.scale(1/scaleFactor);
 		return mat;
 	}
 
@@ -183,7 +183,13 @@ public class SSDMatrices {
 			system.b.add(n.y*scaleD1);
 			system.b.add(n.z*scaleD1);
 		}
-		//TODO: use also regularization term
+		
+		CSRMatrix R = RTerm(tree);
+		//careful, the 1/sum(..) was already scaled in method
+		float scaleR = (float) Math.sqrt(lambda2);
+		system.mat.append(R, scaleR);
+		system.b.addAll(new ArrayList<Float>(Collections.nCopies(R.nRows, 0f)));
+		
 		return system;
 	}
 
