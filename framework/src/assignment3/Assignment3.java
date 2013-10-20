@@ -45,7 +45,8 @@ public class Assignment3 {
 		//Do your magic here...
 		MarchingCubes mc = new MarchingCubes(tree);
 		mc.primaryMC(x);
-		GLDisplayable primaryMarch = new GLWireframeMesh(mc.result);
+		WireframeMesh primaryMarch = mc.result;
+		GLDisplayable glPrimaryMarch = new GLWireframeMesh(primaryMarch);
 		
 		mc.dualMC(x);
 		WireframeMesh dualMarch = mc.result;
@@ -62,8 +63,8 @@ public class Assignment3 {
 		//red = positive, green = 0);
 		MyDisplay d = new MyDisplay();
 		
-		primaryMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
-		d.addToDisplay(primaryMarch);
+		glPrimaryMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		d.addToDisplay(glPrimaryMarch);
 		
 		glDualMarch.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		d.addToDisplay(glDualMarch);

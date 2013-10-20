@@ -1,9 +1,6 @@
 package assignment3;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +101,7 @@ public class MarchingCubes {
 		for (Point2i p: points) {
 			if (p.x == -1) //no more triangles to generate
 				break;
-			if (createdVertices.containsKey(getUniqueEdgeId(n,p))) {
+			if (createdVertices.containsKey(getUniqueEdgeId(n,p))) { //only create every vertex once
 				result.addIndex(createdVertices.get(getUniqueEdgeId(n,p)));
 				continue;
 			}
@@ -113,7 +110,7 @@ public class MarchingCubes {
 			MarchableCube marchable_b = n.getCornerElement(p.y, tree);
 			float a = val.get(marchable_a.getIndex());
 			float b = val.get(marchable_b.getIndex());
-			//formula as on assignement sheet:
+			//formula as on assignment sheet:
 			Point3f pos = new Point3f(marchable_a.getPosition()); //pos_a 
 			pos.scale(1 - a/(a-b));
 			Point3f pos_b = new Point3f(marchable_b.getPosition());
