@@ -1,136 +1,153 @@
 package glWrapper;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.media.opengl.GL;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
+import javax.vecmath.Tuple3f;
 
-import meshes.Face;
-import meshes.HEData3d;
-import meshes.HalfEdge;
-import meshes.HalfEdgeStructure;
-import meshes.Vertex;
 import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
 import openGL.objects.Transformation;
 
+import meshes.Face;
+import meshes.HEData;
+import meshes.HEData1d;
+import meshes.HEData3d;
+import meshes.HalfEdgeStructure;
+import meshes.Vertex;
+
+
 public class GLHalfedgeStructure extends GLDisplayable {
 
-	HalfEdgeStructure m;
-	float maxValence = Float.MIN_VALUE, minValence = Float.MAX_VALUE; //is actually int, but who cares
+	private HalfEdgeStructure myHE;
+	HashMap<Object,RenderConfig> glNames;
 	
-	public GLHalfedgeStructure(HalfEdgeStructure m) {
-		super(m.getVertices().size());
-		this.m = m;
+	public GLHalfedgeStructure(HalfEdgeStructure e) {
+		super(e.getVertices().size());
+		myHE = e;
 		
-		//Add Vertices
-		setPositionVertices(m.iteratorV());
-		setNormals();
+		glNames = new HashMap<Object,RenderConfig>();
 		
-		int[] ind = new int[m.getFaces().size()*3];
+		//add vertices
+		float[] verts = new float[myHE.getVertices().size() *3];
+		int[] ind = new int[myHE.getFaces().size()*3];
 		
-		//Add faces
-		int idx = 0;
-		for (Face f: m.getFaces()) {
-			Iterator<Vertex> iter = f.iteratorFV();
-			while (iter.hasNext())
-				ind[idx++] = iter.next().index;
-		}
-		
-		//Here the position coordinates are passed a second time to the shader as color
+		copyToArray(myHE.getVertices(), verts);
+		copyToArray(myHE.getFaces(), ind);
+		this.addElement(verts, Semantic.POSITION , 3);
 		this.addIndices(ind);
 	}
-	
-	private void setPositionVertices(Iterator<Vertex> vertices) {
-		float[] verts = new float[m.getVertices().size()*3];
-		float[] valence = new float[m.getVertices().size()];
-		float[] curvature = new float[m.getVertices().size()];
-		
-		int idx = 0;
-		for (Vertex v: m.getVertices()) {
-			Point3f p = v.getPos();
-			valence[idx] = v.getValence();
-			curvature[idx] = v.getCurvature();
-			if (valence[idx] > maxValence)
-				maxValence = valence[idx];
-			if (valence[idx] < minValence)
-				minValence = valence[idx];
-			verts[idx*3] = p.x;
-			verts[idx*3 + 1] = p.y;
-			verts[idx*3 + 2] = p.z;
-			idx++;
-		}
-		this.addElement(verts, Semantic.POSITION , 3);
-		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
-		this.addElement(valence, Semantic.USERSPECIFIED, 1, "valence");
-		this.addElement(curvature, Semantic.USERSPECIFIED, 1, "curvature");
 
-	}
-	
-	public void setNormals() {
-		float[] normals = new float[m.getVertices().size()*3];
-		int idx = 0;
-		for (Vertex v: m.getVertices()) {
-			Vector3f normal = v.getNormal();
-			normals[idx++] = normal.x;
-			normals[idx++] = normal.y;
-			normals[idx++] = normal.z;
-		}
-		this.addElement(normals, Semantic.USERSPECIFIED , 3, "normal");
-	}
 
-	public void smooth(int iterations) {
-		HEData3d inputVerts = new HEData3d(m);
-		for (Vertex v: m.getVertices()){
-			inputVerts.put(v, v.getPos());
-		}
-		for (int i = iterations; i > 0; i--) {
-			HEData3d smoothedVerts = new HEData3d(m);
-			for(Vertex v: m.getVertices()) {
-				Vector3f smoothed = new Vector3f();
-				float count = 0;
-				for (Iterator<Vertex> iter = v.iteratorVV(); iter.hasNext();) {
-					smoothed.add(inputVerts.get(iter.next()));
-					count++;
-				}
-				smoothed.scale(1/count); //could use valence instead of counting, but t3h runtime optimization!
-				smoothedVerts.put(v, smoothed);
-			}
-			inputVerts = smoothedVerts;
-		}
-		for (Vertex v: m.getVertices()) {
-			Point3f pos = v.getPos();
-			pos.set(inputVerts.get(v));
-		}
-		setPositionVertices(m.iteratorV());
+	
+	/**
+	 * For user specified objects, the specified object will tied to the shader attribute name.
+	 * @param objectToRender
+	 * @param s
+	 * @param name
+	 */
+	public void add(HEData1d oneDData, String name) {
+		RenderConfig c = new RenderConfig();
+		c.s = Semantic.USERSPECIFIED;
+		c.name = name;
+		glNames.put(oneDData, c);
+		this.sendElement(oneDData);
 	}
 	
 	/**
-	 * Return the gl render flag to inform opengl that the indices/positions describe
-	 * triangles
+	 * For user specified objects, the specified object will tied to the shader attribute name.
+	 * @param objectToRender
+	 * @param s
+	 * @param name
 	 */
+	public void add(HEData3d threeDData, String name) {
+		RenderConfig c = new RenderConfig();
+		c.s = Semantic.USERSPECIFIED;
+		c.name = name;
+		glNames.put(threeDData, c);
+		this.sendElement(threeDData);
+	}
+	
+	
+
+	private void sendElement(HEData1d d) {
+		float[] vals = new float[d.size()];
+		int i=0;
+		for(Number n: d){
+			vals[i++] = n.floatValue();
+		}
+		
+		RenderConfig c = glNames.get(d);
+		if( c!= null)
+				this.addElement(vals, Semantic.USERSPECIFIED, 1, c.name);
+		else{
+			System.out.println("not configured what to map : " + d 
+					+ " to, use configureGLSL and createAllConfiguredBuffers");
+		}
+	}
+	
+	private void sendElement(HEData3d d) {
+		float[] vals = new float[d.size()*3];
+		int i=0;
+		for(Tuple3f v : d){
+			vals[i++] = v.x;
+			vals[i++] = v.y;
+			vals[i++] = v.z;
+		}
+		
+		RenderConfig c = glNames.get(d);
+		if( c!= null)
+				this.addElement(vals, Semantic.USERSPECIFIED, 3, c.name);
+		else{
+			System.out.println("not configured what to map : " + d 
+					+ " to, use configureGLSL and createAllConfiguredBuffers");
+		}
+	}
+
+	private void copyToArray(ArrayList<Face> faces, int[] ind) {
+		Iterator<Vertex> it;
+		int i=0;
+		for(Face f: faces){
+			it = f.iteratorFV();
+			while(it.hasNext()){
+				ind[i++] = it.next().index;
+			}
+		}
+	}
+
+	private void copyToArray(ArrayList<Vertex> vertices, float[] verts) {
+		int i = 0;
+		for(Vertex v: vertices){
+			v.index = i/3;
+			verts[i++]= v.getPos().x;
+			verts[i++]= v.getPos().y;
+			verts[i++]= v.getPos().z;
+			
+		}
+	}
+
+
+	
+
+	private class RenderConfig{
+		Semantic s;
+		String name;
+	}
+
+
+
 	@Override
 	public int glRenderFlag() {
 		return GL.GL_TRIANGLES;
 	}
 
 
-	/**
-	 * No additional uniform variabes are passed to the shader.
-	 */
 	@Override
 	public void loadAdditionalUniforms(GLRenderer glRenderContext,
 			Transformation mvMat) {
-		
-		//additional uniforms can be loaded using the function
-		glRenderContext.setUniform("max_valence", maxValence);
-		glRenderContext.setUniform("min_valence", minValence);
-		//Such uniforms can be accessed in the shader by declaring them as
-		// uniform <type> name;
-		//where type is the appropriate type, e.g. float / vec3 / mat4 etc.
-		//this method is called at every rendering pass.
+		// no additional uniforms		
 	}
 
 

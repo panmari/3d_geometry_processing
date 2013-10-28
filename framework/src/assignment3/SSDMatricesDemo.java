@@ -39,12 +39,12 @@ public class SSDMatricesDemo {
 	
 	public static void marchingCubesDemo() throws MeshNotOrientedException, DanglingTriangleException, IOException{
 		
-		//PointCloud pc = ObjReader.readAsPointCloud("objs/teapot.obj", true);
-		PointCloud pc = PlyReader.readPointCloud("objs/angel_points.ply", true);
+		PointCloud pc = ObjReader.readAsPointCloud("objs/dragon_withNormals.obj", true);
+		//PointCloud pc = PlyReader.readPointCloud("objs/angel_points.ply", true);
 		pc.normalizeNormals();
-		HashOctree tree = new HashOctree(pc, 7, 1, 1.3f);
+		HashOctree tree = new HashOctree(pc, 9, 1, 1.3f);
 		tree.refineTree(2);
-		LinearSystem system = SSDMatrices.ssdSystem(tree, pc, 1, 0.0001f, 10);
+		LinearSystem system = SSDMatrices.ssdSystem(tree, pc, 1, 0.001f, 10);
 		//Test Data: create an octree
 		ArrayList<Float> functionByVertex = new ArrayList<Float>();
 		SCIPY.solve(system, "whatev", functionByVertex);
