@@ -34,7 +34,7 @@ public class SSDMatrices {
 						//column i, value 1
 					new col_val(i,1));
 		}
-		//fill up the matrix with empt rows.
+		//fill up the matrix with empty rows.
 		for(int i = Math.min(nRows, nCols); i < nRows; i++){
 			eye.addRow();
 		}

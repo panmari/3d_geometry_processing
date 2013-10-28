@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
+import myutils.MyMath;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
 
@@ -25,7 +26,17 @@ public class LMatrices {
 	 * @return
 	 */
 	public static CSRMatrix uniformLaplacian(HalfEdgeStructure hs){
-		return null;
+		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
+		for(Vertex v: hs.getVertices()) {
+			ArrayList<col_val> row = m.addRow();
+			int valence = v.getValence();
+			Iterator<Vertex> iter = v.iteratorVV();
+			while(iter.hasNext()) 
+				row.add(new col_val(iter.next().index, -1f/valence));
+			
+			row.add(new col_val(v.index, 1));
+		}
+		return m;
 	}
 	
 	/**
@@ -34,7 +45,27 @@ public class LMatrices {
 	 * @return
 	 */
 	public static CSRMatrix mixedCotanLaplacian(HalfEdgeStructure hs){
-		return null;
+		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
+		for(Vertex v: hs.getVertices()) {
+			ArrayList<col_val> row = m.addRow();
+			float aMixed = v.getAMixed();
+			//copy paste from vertex.getCurvature() (I'm so sorry)
+			Iterator<HalfEdge> iter = v.iteratorVE();
+			float sum = 0;
+			while(iter.hasNext()) {
+				HalfEdge current = iter.next();
+				// demeter is crying qq
+				float alpha = current.getNext().getIncidentAngle();
+				float beta = current.getOpposite().getNext().getIncidentAngle();
+				float cot_alpha = MyMath.cot(alpha, true);
+				float cot_beta = MyMath.cot(beta, true);
+				float entry = (cot_alpha + cot_beta)/(2*aMixed);
+				sum += entry;
+				row.add(new col_val(current.start().index, entry));
+			}		
+			row.add(new col_val(v.index, -sum));
+		}
+		return m;
 	}
 	
 	/**

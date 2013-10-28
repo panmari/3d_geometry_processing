@@ -1,4 +1,4 @@
-package assignment3;
+package assignment3.tests;
 
 import java.io.IOException;
 import java.util.ArrayList;

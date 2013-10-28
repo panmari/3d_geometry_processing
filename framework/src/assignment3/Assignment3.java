@@ -55,7 +55,7 @@ public class Assignment3 {
 		HalfEdgeStructure dualMarchSmooth = new HalfEdgeStructure();
 		dualMarchSmooth.init(dualMarch);
 		GLHalfedgeStructure glDualMarchSmooth = new GLHalfedgeStructure(dualMarchSmooth);
-		glDualMarchSmooth.smooth(1);
+		//glDualMarchSmooth.smooth(1);
 
 		//And show off...
 		

@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 
 import meshes.HEData1d;
 import meshes.HEData3d;
+import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import meshes.WireframeMesh;

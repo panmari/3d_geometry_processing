@@ -1,33 +1,29 @@
 package assignment3.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.vecmath.Point3f;
 
 import meshes.PointCloud;
 import meshes.reader.ObjReader;
-import meshes.reader.PlyReader;
 import no.uib.cipr.matrix.Vector;
-import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import sparse.CSRMatrix;
-import sparse.SCIPY;
 import sparse.CSRMatrix.col_val;
 import sparse.LinearSystem;
+import sparse.SCIPY;
 import assignment2.HashOctree;
 import assignment2.HashOctreeVertex;
 import assignment3.MarchableCube;
-import assignment3.PythonSetupTest;
 import assignment3.SSDMatrices;
-import assignment3.SSDMatricesJBlaze;
 import assignment3.SSDMatricesMTJ;
 
 public class SSDMatrixTest {
