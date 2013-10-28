@@ -32,9 +32,9 @@ public class LMatrices {
 			int valence = v.getValence();
 			Iterator<Vertex> iter = v.iteratorVV();
 			while(iter.hasNext()) 
-				row.add(new col_val(iter.next().index, -1f/valence));
+				row.add(new col_val(iter.next().index, 1f/valence));
 			
-			row.add(new col_val(v.index, 1));
+			row.add(new col_val(v.index, -1));
 		}
 		return m;
 	}

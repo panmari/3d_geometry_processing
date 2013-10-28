@@ -42,19 +42,17 @@ public class LaplacianDemo {
 				LMatrices.mult(laplacian, hs, curvatures);
 				for (Vector3f t: curvatures) {
 					meanCurvatures.add(t.length()/2f);
-					t.normalize();
-					t.absolute();
 					curvaturesTuple.add(t);
 				}
 				GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
 				HEData3d curvaturesHED = new HEData3d(hs);
 				curvaturesHED.putAll(curvaturesTuple);
-				glHs.add(curvaturesHED, "color");
+				glHs.add(curvaturesHED, "curvature");
 				//And show off...
 				
-				glHs.configurePreferredShader("shaders/trimesh_flatColor3f.vert",
-						"shaders/trimesh_flatColor3f.frag", 
-						"shaders/trimesh_flatColor3f.geom");
+				glHs.configurePreferredShader("shaders/curvature_arrows.vert",
+						"shaders/curvature_arrows.frag", 
+						"shaders/curvature_arrows.geom");
 				d.addToDisplay(glHs);
 				
 				GLHalfedgeStructure glHsMean = new GLHalfedgeStructure(hs);
