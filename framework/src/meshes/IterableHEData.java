@@ -17,6 +17,14 @@ implements Iterable<Payload>{
 	public int size(){
 		return relatedElements.size();
 	}
+	
+	public void putAll(Collection<Payload> a) {
+		Iterator<He_element> relIter = relatedElements.iterator();
+		Iterator<Payload> payloadIter = a.iterator();
+		while (relIter.hasNext() && payloadIter.hasNext()) {
+			this.put(relIter.next(), payloadIter.next());
+		}
+	}
 
 	
 	@Override

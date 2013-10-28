@@ -53,7 +53,7 @@ public class Assignment4_1_Tests {
 	}
 	
 	@Test
-	public void testSphereCurvatureDirection() {
+	public void testSphereCurvatureDirectionCotan() {
 		CSRMatrix m = LMatrices.mixedCotanLaplacian(hs);
 		ArrayList<Vector3f> res = new ArrayList<Vector3f>();
 		LMatrices.mult(m, hs, res);
@@ -66,6 +66,29 @@ public class Assignment4_1_Tests {
 			normal.normalize();
 			assertTrue("expected " + normal + ", but was" + curv, curv.epsilonEquals(normal, 0.01f));
 		}
+	}
+	
+	/**
+	 * This does not work very well, but I guess it should not
+	 */
+	@Test
+	public void testSphereCurvatureDirectionUniform() {
+		CSRMatrix m = LMatrices.uniformLaplacian(hs);
+		ArrayList<Vector3f> res = new ArrayList<Vector3f>();
+		LMatrices.mult(m, hs, res);
+		int failures = 0;
+		for (int i = 0; i < res.size(); i++) {
+			Vector3f curv = new Vector3f(res.get(i));
+			curv.normalize();
+			//curv.scale(-1f);
+			//asserts, that origin is the center of sphere
+			Vector3f normal = new Vector3f(hs.getVertices().get(i).getPos());
+			normal.normalize();
+			if (!curv.epsilonEquals(normal, 0.01f))
+				failures++;
+			//assertTrue("expected " + normal + ", but was" + curv, curv.epsilonEquals(normal, 0.01f));
+		}
+		assertEquals("Failed " + failures + " out of " + res.size(), 0, failures);
 	}
 	
 	@Test

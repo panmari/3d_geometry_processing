@@ -32,7 +32,7 @@ void main()
 	
 	valence_f = valence;
 	curvature_f = curvature;
-		float valence = valence_f;
+	float valence = valence_f;
 	vec4 frag_color;
 	if (valence > 6){
 		frag_color = vec4(1,0,0,.5);
