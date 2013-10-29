@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.media.opengl.GL;
+import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;
 
 import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
 import openGL.objects.Transformation;
-
 import meshes.Face;
 import meshes.HEData;
 import meshes.HEData1d;
@@ -68,6 +68,17 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		c.name = name;
 		glNames.put(threeDData, c);
 		this.sendElement(threeDData);
+	}
+	
+	public void add(ArrayList<Tuple3f> data, String name) {
+		float[] dataArray = new float[data.size()*3];
+		for (int idx = 0; idx < data.size(); idx++) {
+			Tuple3f t = data.get(idx);
+			dataArray[idx*3] = t.x;
+			dataArray[idx*3 + 1] = t.y;
+			dataArray[idx*3 + 2] = t.z;
+		}
+		this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
 	}
 	
 	
