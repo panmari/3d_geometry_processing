@@ -8,10 +8,10 @@ uniform mat4 modelview;
 // Input vertex attributes; passed from main program to shader 
 // via vertex buffer objects
 in vec4 position;
-in vec4 curvature;
+in vec3 curvature;
 
 out vec4 position_g;
-out vec4 curvature_g;
+out vec3 curvature_g;
 
 //pass stuff through
 void main()
