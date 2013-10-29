@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 import meshes.HalfEdge;
@@ -84,7 +85,7 @@ public class LMatrices {
 	 * @param s
 	 * @param res
 	 */
-	public static void mult(CSRMatrix m, HalfEdgeStructure s, ArrayList<Vector3f> res){
+	public static void mult(CSRMatrix m, HalfEdgeStructure s, ArrayList<Tuple3f> res){
 		ArrayList<Float> x = new ArrayList<>(), b = new ArrayList<>(s.getVertices().size());
 		x.ensureCapacity(s.getVertices().size());
 		

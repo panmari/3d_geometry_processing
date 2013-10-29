@@ -36,14 +36,11 @@ public class LaplacianDemo {
 			CSRMatrix mUniform = LMatrices.uniformLaplacian(hs);
 			CSRMatrix[] laplacians = new CSRMatrix[]{ mUniform, mMixed };
 			for (CSRMatrix laplacian: laplacians) {
-				ArrayList<Vector3f> curvatures = new ArrayList<Vector3f>();
-				ArrayList<Tuple3f> curvaturesTuple = new ArrayList<Tuple3f>();
+				ArrayList<Tuple3f> curvatures = new ArrayList<Tuple3f>();
 				LMatrices.mult(laplacian, hs, curvatures);
-				for (Vector3f t: curvatures) {
-					curvaturesTuple.add(t);
-				}
+				
 				GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
-				glHs.add(curvaturesTuple, "curvature");
+				glHs.add(curvatures, "curvature");
 				//And show off...
 				
 				glHs.configurePreferredShader("shaders/curvature_arrows.vert",

@@ -1,7 +1,10 @@
 package openGL.gl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
+
+import javax.vecmath.Tuple3f;
 
 import openGL.objects.Transformation;
 
@@ -75,6 +78,20 @@ public abstract class GLDisplayable {
 	private String vert_shader_file;
 	private String frag_shader_file;
 	private String geom_shader_file;
+	
+	public void add(ArrayList<Tuple3f> data, String name) {
+		float[] dataArray = new float[data.size()*3];
+		for (int idx = 0; idx < data.size(); idx++) {
+			Tuple3f t = data.get(idx);
+			dataArray[idx*3] = t.x;
+			dataArray[idx*3 + 1] = t.y;
+			dataArray[idx*3 + 2] = t.z;
+		}
+		if (name.equals("position"))
+			this.addElement(dataArray, Semantic.POSITION, 3);
+		else
+			this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
+	}
 	
 
 	/**
