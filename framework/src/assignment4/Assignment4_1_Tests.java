@@ -69,7 +69,8 @@ public class Assignment4_1_Tests {
 	}
 	
 	/**
-	 * This does not work very well, but I guess it should not
+	 * This does not work very well, but according to @alf,
+	 * the uniform curvature can not be used to approximate mean curvature anyway.
 	 */
 	@Test
 	public void testSphereCurvatureDirectionUniform() {

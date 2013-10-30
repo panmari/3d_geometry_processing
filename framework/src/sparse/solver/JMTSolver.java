@@ -3,10 +3,17 @@ package sparse.solver;
 import java.util.ArrayList;
 
 
+
+import java.util.Iterator;
+
 import sparse.CSRMatrix;
 import sparse.SparseTools;
 
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
+
 import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.VectorEntry;
 import no.uib.cipr.matrix.sparse.BiCGstab;
 import no.uib.cipr.matrix.sparse.CG;
 import no.uib.cipr.matrix.sparse.CompRowMatrix;
@@ -38,15 +45,36 @@ public class JMTSolver extends Solver{
 		this.type = type;
 	}
 	
+	public <T extends Tuple3f> void solveTuple(CSRMatrix m, ArrayList<T> b, ArrayList<T> x) {
+		ArrayList<Float> bX = new ArrayList<Float>(b.size());
+		ArrayList<Float> xX = new ArrayList<Float>(x.size());
+		ArrayList<Float> bY = new ArrayList<Float>(b.size());
+		ArrayList<Float> xY = new ArrayList<Float>(x.size());
+		ArrayList<Float> bZ = new ArrayList<Float>(b.size());
+		ArrayList<Float> xZ = new ArrayList<Float>(x.size());
+		for (Tuple3f t: b) {
+			bX.add(t.x);
+			bY.add(t.y);
+			bZ.add(t.z);
+		}
+		solve(m, bX, xX);
+		solve(m, bY, xY);
+		solve(m, bZ, xZ);
+		for (int i = 0; i < b.size(); i++){
+			x.add((T) new Vector3f(xX.get(i),xY.get(i),xZ.get(i)));
+		}
+	}
+	
 	/**
 	 * solves A x = b and takes b as an initial guess.
+	 * 
 	 * @param m
-	 * @param x
+	 * @param x, an empty arraylist in which the result will be saved in.
 	 */
 	public void solve(CSRMatrix m, ArrayList<Float> b, ArrayList<Float> x){
 		System.out.println("Starting the solver...");
 		DenseVector b_ = SparseTools.denseVector(b);
-		DenseVector x_ = b_.copy();
+		DenseVector x_ = SparseTools.denseVector(b); //initial guess is b
 		
 		CompRowMatrix mat = SparseTools.createCRMatrix(m);
 		
@@ -69,8 +97,9 @@ public class JMTSolver extends Solver{
 		}
 		
 		//copy the result back
-		for(int i = 0; i < x_.size(); i++){
-			x.set(i, (float) x_.get(i));
+		Iterator<VectorEntry> iter = x_.iterator();
+		while(iter.hasNext()) {
+			x.add((float) iter.next().get());
 		}
 	}
 

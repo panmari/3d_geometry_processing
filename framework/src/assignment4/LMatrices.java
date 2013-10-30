@@ -85,7 +85,7 @@ public class LMatrices {
 	 * @param s
 	 * @param res
 	 */
-	public static void mult(CSRMatrix m, HalfEdgeStructure s, ArrayList<Tuple3f> res){
+	public static <T extends Tuple3f> void mult(CSRMatrix m, HalfEdgeStructure s, ArrayList<T> res){
 		ArrayList<Float> x = new ArrayList<>(), b = new ArrayList<>(s.getVertices().size());
 		x.ensureCapacity(s.getVertices().size());
 		
@@ -93,7 +93,7 @@ public class LMatrices {
 		res.ensureCapacity(s.getVertices().size());
 		for(Vertex v : s.getVertices()){
 			x.add(0.f);
-			res.add(new Vector3f());
+			res.add((T) new Vector3f());
 		}
 		
 		for(int i = 0; i < 3; i++){
