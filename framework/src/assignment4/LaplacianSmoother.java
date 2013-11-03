@@ -15,41 +15,67 @@ import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import openGL.gl.GLDisplayable;
 import sparse.CSRMatrix;
+import sparse.solver.JMTSolver;
 import sparse.solver.SciPySolver;
 import sparse.solver.Solver;
 import assignment3.SSDMatrices;
 
 public class LaplacianSmoother {
 
-	public static GLDisplayable smoothMixedCotan(HalfEdgeStructure hs, float lambda) {
-		CSRMatrix mMixed = LMatrices.mixedCotanLaplacian(hs);
-		return smooth(hs, mMixed, lambda);
-	}
-	
-	public static GLDisplayable smoothUniform(HalfEdgeStructure hs, float lambda) {
-		CSRMatrix mUniform = LMatrices.uniformLaplacian(hs);
-		return smooth(hs, mUniform, lambda);
-	}
-	
-	private static GLDisplayable smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
+	public static GLDisplayable smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
 		int nrVertices = hs.getVertices().size();
-		CSRMatrix I = SSDMatrices.eye(nrVertices, nrVertices);
-		m.scale(-lambda);
-		CSRMatrix smoothM = new CSRMatrix(0,0);
-		smoothM.add(I, m);
+		
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
-		for (Vertex v: hs.getVertices()) {
-			vertices.add(v.getPos());
-		}
-		Solver solver = new SciPySolver("smooth_demo");
-		solver.solveTuple(smoothM, vertices, smoothedVertices);
+		getVertices(hs, m, lambda, vertices, smoothedVertices);
 		
 		GLHalfedgeStructure glHsSmooth = new GLHalfedgeStructure(hs);
 		glHsSmooth.add(smoothedVertices, "position");
 		return glHsSmooth;
 	}
 	
+	/**
+	 * Expects two empty lists vertices and smoothedVertices, which are then filled with stuff.
+	 * @param hs
+	 * @param m
+	 * @param lambda
+	 * @param vertices
+	 * @param smoothedVertices
+	 */
+	private static void getVertices(HalfEdgeStructure hs, CSRMatrix m, float lambda,
+			ArrayList<Tuple3f> vertices, ArrayList<Tuple3f> smoothedVertices) {
+		int nrVertices = hs.getVertices().size();
+		CSRMatrix I = SSDMatrices.eye(nrVertices, nrVertices);
+		m.scale(-lambda);
+		CSRMatrix smoothM = new CSRMatrix(0,0);
+		smoothM.add(I, m);
+		for (Vertex v: hs.getVertices()) {
+			vertices.add(v.getPos());
+		}
+		Solver solver = new JMTSolver();
+		solver.solveTuple(smoothM, vertices, smoothedVertices);
+	}
+		
+	public static GLDisplayable unsharpMasking(HalfEdgeStructure hs, CSRMatrix m, float lambda, float s) {
+		int nrVertices = hs.getVertices().size();
+		
+		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
+		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
+		getVertices(hs, m, lambda, vertices, smoothedVertices);
+		
+		ArrayList<Tuple3f> sharpenedVertices = new ArrayList<Tuple3f>(nrVertices);
+		for (int i = 0; i < nrVertices; i++) {
+			Vector3f v = new Vector3f(vertices.get(i));
+			v.sub(smoothedVertices.get(i));
+			v.scale(s);
+			v.add(smoothedVertices.get(i));
+			sharpenedVertices.add(v);
+		}
+		
+		GLHalfedgeStructure glHsSharp = new GLHalfedgeStructure(hs);
+		glHsSharp.add(sharpenedVertices, "position");
+		return glHsSharp;
+	}
 	/**
 	 * TODO: rescale smoothed stuff to original volume
 	 * @param hs
