@@ -25,7 +25,7 @@ public class Assignment4_2_smoothing {
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(mesh);
 		
-		GLDisplayable glHsSmooth = LaplacianSmoother.smoothMixedCotan(hs);
+		GLDisplayable glHsSmooth = LaplacianSmoother.smoothMixedCotan(hs, 0.001f);
 		glHsSmooth.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");
