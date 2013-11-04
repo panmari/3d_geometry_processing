@@ -36,6 +36,7 @@ public class LMatrices {
 				row.add(new col_val(iter.next().index, 1f/valence));
 			
 			row.add(new col_val(v.index, -1));
+			Collections.sort(row);
 		}
 		return m;
 	}
@@ -65,6 +66,7 @@ public class LMatrices {
 				row.add(new col_val(current.start().index, entry));
 			}		
 			row.add(new col_val(v.index, -sum));
+			Collections.sort(row);
 		}
 		return m;
 	}
