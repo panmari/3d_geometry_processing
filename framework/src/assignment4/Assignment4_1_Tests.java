@@ -115,5 +115,11 @@ public class Assignment4_1_Tests {
 			assertEquals(0f, sum, 0.0001);
 		}
 	}
+	
+	@Test
+	public void sphereVolumeShouldAddUp() {
+		float vol = LaplacianSmoother.getVolume(hs);
+		assertEquals(4/3f*Math.PI*2*2*2, vol, 0.3);
+	}
 
 }

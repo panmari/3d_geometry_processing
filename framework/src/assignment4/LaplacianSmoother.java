@@ -92,7 +92,7 @@ public class LaplacianSmoother {
 	 * @param hs
 	 * @return
 	 */
-	private static float getVolume(HalfEdgeStructure hs) {
+	static float getVolume(HalfEdgeStructure hs) {
 		float sum = 0;
 		for (Face f: hs.getFaces()) {
 			Iterator<Vertex> iter = f.iteratorFV();
