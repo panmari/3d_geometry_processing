@@ -23,23 +23,30 @@ public class Assignment4_2_smoothing {
 
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {
 		WireframeMesh mesh = ObjReader.read("objs/bunny5k.obj", false);
+		
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(mesh);
 		CSRMatrix m = LMatrices.mixedCotanLaplacian(hs);
-		GLDisplayable glHsSmooth = LaplacianSmoother.smooth(hs, m, 0.01f);
+		LaplacianSmoother.smooth(hs, m, 0.01f);
+		GLDisplayable glHsSmooth = new GLHalfedgeStructure(hs);
 		glHsSmooth.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");
 		
-		m = LMatrices.mixedCotanLaplacian(hs);
-		GLDisplayable glHsSharp = LaplacianSmoother.unsharpMasking(hs, m, 0.01f, 2.5f);
+		HalfEdgeStructure hs2 = new HalfEdgeStructure();
+		hs2.init(mesh);
+		m = LMatrices.mixedCotanLaplacian(hs2);
+		LaplacianSmoother.unsharpMasking(hs2, m, 0.01f, 2.5f);
+		GLDisplayable glHsSharp = new GLHalfedgeStructure(hs2);
 		glHsSharp.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");
 		
 		
 		//add initial mesh
-		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+		HalfEdgeStructure hs3 = new HalfEdgeStructure();
+		hs3.init(mesh);
+		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs3);
 		glHs.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");

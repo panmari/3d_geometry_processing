@@ -23,7 +23,7 @@ public class Vertex extends HEElement{
 	public int index;
 
 	public Vertex(Point3f v) {
-		pos = v;
+		pos = new Point3f(v);
 		anEdge = null;
 	}
 	

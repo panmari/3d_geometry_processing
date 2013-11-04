@@ -135,9 +135,8 @@ public class HalfEdge extends HEElement{
 	 * @return
 	 */
 	public Vector3f asVector() {
-		Vector3f v = new Vector3f(start().getPos());
-		v.negate();
-		v.add(end().getPos());
+		Vector3f v = new Vector3f(end().getPos());
+		v.sub(start().getPos());
 		return v;
 	}
 

@@ -9,6 +9,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
+import com.jogamp.opengl.math.FloatUtil;
+
 import meshes.Face;
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
@@ -22,16 +24,23 @@ import assignment3.SSDMatrices;
 
 public class LaplacianSmoother {
 
-	public static GLDisplayable smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
+	public static void smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
 		int nrVertices = hs.getVertices().size();
-		
+		float volumeBefore = getVolume(hs);
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
-		getVertices(hs, m, lambda, vertices, smoothedVertices);
-		
-		GLHalfedgeStructure glHsSmooth = new GLHalfedgeStructure(hs);
-		glHsSmooth.add(smoothedVertices, "position");
-		return glHsSmooth;
+		getVertices(hs, m, lambda, vertices, smoothedVertices);	
+		Iterator<Vertex> hsViter = hs.iteratorV();
+		Iterator<Tuple3f> smoothedViter = smoothedVertices.iterator();
+		while (hsViter.hasNext())
+			hsViter.next().getPos().set(smoothedViter.next());
+		float volumeAfter = getVolume(hs);
+		hsViter = hs.iteratorV();
+		// Something like this...? probably?
+		float volumeRatio = FloatUtil.pow(volumeBefore/volumeAfter, 1/2f);
+		System.out.println(volumeRatio);
+		while (hsViter.hasNext())
+			hsViter.next().getPos().scale(volumeRatio);;
 	}
 	
 	/**
@@ -50,34 +59,29 @@ public class LaplacianSmoother {
 		CSRMatrix smoothM = new CSRMatrix(0,0);
 		smoothM.add(I, m);
 		for (Vertex v: hs.getVertices()) {
-			vertices.add(v.getPos());
+			vertices.add(new Point3f(v.getPos()));
 		}
-		Solver solver = new JMTSolver();
+		Solver solver = new SciPySolver("laplacian_stuff");
 		solver.solveTuple(smoothM, vertices, smoothedVertices);
 	}
 		
-	public static GLDisplayable unsharpMasking(HalfEdgeStructure hs, CSRMatrix m, float lambda, float s) {
+	public static void unsharpMasking(HalfEdgeStructure hs, CSRMatrix m, float lambda, float s) {
 		int nrVertices = hs.getVertices().size();
 		
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
 		getVertices(hs, m, lambda, vertices, smoothedVertices);
 		
-		ArrayList<Tuple3f> sharpenedVertices = new ArrayList<Tuple3f>(nrVertices);
 		for (int i = 0; i < nrVertices; i++) {
 			Vector3f v = new Vector3f(vertices.get(i));
 			v.sub(smoothedVertices.get(i));
 			v.scale(s);
 			v.add(smoothedVertices.get(i));
-			sharpenedVertices.add(v);
+			hs.getVertices().get(i).getPos().set(v);
 		}
-		
-		GLHalfedgeStructure glHsSharp = new GLHalfedgeStructure(hs);
-		glHsSharp.add(sharpenedVertices, "position");
-		return glHsSharp;
 	}
+	
 	/**
-	 * TODO: rescale smoothed stuff to original volume
 	 * @param hs
 	 * @return
 	 */
