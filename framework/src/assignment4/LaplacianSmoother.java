@@ -36,14 +36,16 @@ public class LaplacianSmoother {
 		Iterator<Tuple3f> smoothedViter = smoothedVertices.iterator();
 		while (hsViter.hasNext())
 			hsViter.next().getPos().set(smoothedViter.next());
+		
+		rescale(hs, volumeBefore);
+	}
+	
+	private static void rescale(HalfEdgeStructure hs, float volumeBefore) {
 		float volumeAfter = getVolume(hs);
-		hsViter = hs.iteratorV();
-		// Something like this...? probably?
 		float volumeRatio = FloatUtil.pow(volumeBefore/volumeAfter, 1/3f);
-		System.out.println(volumeRatio);
+		Iterator<Vertex> hsViter = hs.iteratorV();
 		while (hsViter.hasNext())
 			hsViter.next().getPos().scale(volumeRatio);
-			
 	}
 	
 	/**
@@ -74,6 +76,7 @@ public class LaplacianSmoother {
 		
 	public static void unsharpMasking(HalfEdgeStructure hs, CSRMatrix m, float lambda, float s) {
 		int nrVertices = hs.getVertices().size();
+		float volumeBefore = getVolume(hs);
 		
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
@@ -86,6 +89,7 @@ public class LaplacianSmoother {
 			v.add(smoothedVertices.get(i));
 			hs.getVertices().get(i).getPos().set(v);
 		}
+		rescale(hs, volumeBefore);
 	}
 	
 	/**
