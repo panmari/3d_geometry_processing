@@ -22,12 +22,12 @@ import sparse.CSRMatrix;
 public class Assignment4_2_smoothing {
 
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {
-		WireframeMesh mesh = ObjReader.read("objs/bunny5k.obj", false);
+		WireframeMesh mesh = ObjReader.read("objs/bunny5k.obj", true);
 		
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(mesh);
 		CSRMatrix m = LMatrices.mixedCotanLaplacian(hs);
-		LaplacianSmoother.smooth(hs, m, 0.01f);
+		LaplacianSmoother.smooth(hs, m, 0.010f);
 		GLDisplayable glHsSmooth = new GLHalfedgeStructure(hs);
 		glHsSmooth.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
@@ -36,7 +36,7 @@ public class Assignment4_2_smoothing {
 		HalfEdgeStructure hs2 = new HalfEdgeStructure();
 		hs2.init(mesh);
 		m = LMatrices.mixedCotanLaplacian(hs2);
-		LaplacianSmoother.unsharpMasking(hs2, m, 0.01f, 2.5f);
+		LaplacianSmoother.unsharpMasking(hs2, m, 0.010f, 2.5f);
 		GLDisplayable glHsSharp = new GLHalfedgeStructure(hs2);
 		glHsSharp.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
@@ -50,8 +50,10 @@ public class Assignment4_2_smoothing {
 		glHs.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");
+				
 		MyDisplay d = new MyDisplay();		
 		d.addToDisplay(glHs);
+		
 		d.addToDisplay(glHsSmooth);
 		d.addToDisplay(glHsSharp);
 	}

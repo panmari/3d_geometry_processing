@@ -32,6 +32,16 @@ public class Vertex extends HEElement{
 		return pos;
 	}
 
+	public boolean isOnBoundary() {
+		Iterator<HalfEdge> it = iteratorVE();
+		while(it.hasNext()){
+			if(it.next().isOnBorder()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * @return normal interpolated by weighting by angle
 	 */

@@ -30,6 +30,8 @@ public class LMatrices {
 		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
 		for(Vertex v: hs.getVertices()) {
 			ArrayList<col_val> row = m.addRow();
+			if (v.isOnBoundary()) 
+				continue; //leave row empty
 			int valence = v.getValence();
 			Iterator<Vertex> iter = v.iteratorVV();
 			while(iter.hasNext()) 
@@ -50,6 +52,8 @@ public class LMatrices {
 		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
 		for(Vertex v: hs.getVertices()) {
 			ArrayList<col_val> row = m.addRow();
+			if (v.isOnBoundary()) 
+				continue; //leave row empty
 			float aMixed = v.getAMixed();
 			//copy paste from vertex.getCurvature() (I'm so sorry)
 			Iterator<HalfEdge> iter = v.iteratorVE();
@@ -66,6 +70,7 @@ public class LMatrices {
 				row.add(new col_val(current.start().index, entry));
 			}		
 			row.add(new col_val(v.index, -sum));
+			
 			Collections.sort(row);
 		}
 		return m;
