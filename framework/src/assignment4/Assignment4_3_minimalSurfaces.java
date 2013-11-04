@@ -2,6 +2,7 @@ package assignment4;
 
 import glWrapper.GLHalfedgeStructure;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -16,6 +17,10 @@ import meshes.WireframeMesh;
 import openGL.MyDisplay;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
+import sparse.solver.JMTSolver;
+import sparse.solver.SciPySolver;
+import sparse.solver.Solver;
+import assignment4.generatedMeshes.Bock;
 import assignment4.generatedMeshes.Cylinder;
 
 public class Assignment4_3_minimalSurfaces {
@@ -25,7 +30,7 @@ public class Assignment4_3_minimalSurfaces {
 		
 		//generate example meshes
 		//WireframeMesh m = new Bock(1.3f,1.f,1.f).result;
-		WireframeMesh m = new Cylinder(1.f,1.6f).result;
+		WireframeMesh m = new Cylinder(1.f, 1.5f).result;
 		
 		
 		//generate he struture
@@ -34,10 +39,12 @@ public class Assignment4_3_minimalSurfaces {
 	
 		//collect and display the boundary
 		HEData1d boundary = collectBoundary(hs, 1);
+		//display(hs, boundary);
+		
+		//implement the surface minimalization...	
+		MinimalSurface.solve(hs, 0.99f);
 		display(hs, boundary);
-		
-		//implement the surface minimalization...
-		
+
 	}
 	
 

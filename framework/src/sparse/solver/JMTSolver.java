@@ -66,7 +66,7 @@ public class JMTSolver extends Solver{
 		Preconditioner M = new DiagonalPreconditioner(mat.numRows());///*new ICC(mat.copy());	// new ILU(mat.copy());
 		M.setMatrix(mat);
 		solver.setPreconditioner(M);
-		solver.getIterationMonitor().setIterationReporter(new OutputIterationReporter());
+		//solver.getIterationMonitor().setIterationReporter(new OutputIterationReporter());
 		((DefaultIterationMonitor) solver.getIterationMonitor()).setRelativeTolerance(1e-3);
 		((DefaultIterationMonitor) solver.getIterationMonitor()).setMaxIterations(2000);
 		

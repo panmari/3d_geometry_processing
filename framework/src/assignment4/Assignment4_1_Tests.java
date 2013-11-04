@@ -118,8 +118,14 @@ public class Assignment4_1_Tests {
 	
 	@Test
 	public void sphereVolumeShouldAddUp() {
-		float vol = LaplacianSmoother.getVolume(hs);
+		float vol = hs.getVolume();
 		assertEquals(4/3f*Math.PI*2*2*2, vol, 0.3);
+	}
+	
+	@Test
+	public void sphereSurfaceAreaShouldAddUp() {
+		float vol = hs.getSurfaceArea();
+		assertEquals(4f*Math.PI*2*2, vol, 0.3);
 	}
 
 }

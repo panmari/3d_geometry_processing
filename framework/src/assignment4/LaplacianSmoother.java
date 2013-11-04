@@ -24,11 +24,11 @@ import assignment3.SSDMatrices;
 
 public class LaplacianSmoother {
 
-	public static final boolean JMT = true;
+	public static final boolean JMT = false;
 	
 	public static void smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
 		int nrVertices = hs.getVertices().size();
-		float volumeBefore = getVolume(hs);
+		float volumeBefore = hs.getVolume();
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
 		getVertices(hs, m, lambda, vertices, smoothedVertices);	
@@ -41,7 +41,7 @@ public class LaplacianSmoother {
 	}
 	
 	private static void rescale(HalfEdgeStructure hs, float volumeBefore) {
-		float volumeAfter = getVolume(hs);
+		float volumeAfter = hs.getVolume();
 		float volumeRatio = FloatUtil.pow(volumeBefore/volumeAfter, 1/3f);
 		Iterator<Vertex> hsViter = hs.iteratorV();
 		while (hsViter.hasNext())
@@ -76,7 +76,7 @@ public class LaplacianSmoother {
 		
 	public static void unsharpMasking(HalfEdgeStructure hs, CSRMatrix m, float lambda, float s) {
 		int nrVertices = hs.getVertices().size();
-		float volumeBefore = getVolume(hs);
+		float volumeBefore = hs.getVolume();
 		
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
@@ -92,21 +92,4 @@ public class LaplacianSmoother {
 		rescale(hs, volumeBefore);
 	}
 	
-	/**
-	 * @param hs
-	 * @return
-	 */
-	static float getVolume(HalfEdgeStructure hs) {
-		float sum = 0;
-		for (Face f: hs.getFaces()) {
-			Iterator<Vertex> iter = f.iteratorFV();
-			Vector3f p1 = new Vector3f(iter.next().getPos());
-			Vector3f p2 = new Vector3f(iter.next().getPos());
-			Vector3f p3 = new Vector3f(iter.next().getPos());
-			Vector3f cross = new Vector3f();
-			cross.cross(p2, p3);
-			sum += p1.dot(cross);
-		}
-		return sum/6;
-	}
 }
