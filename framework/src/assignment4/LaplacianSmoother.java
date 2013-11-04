@@ -24,6 +24,8 @@ import assignment3.SSDMatrices;
 
 public class LaplacianSmoother {
 
+	public static final boolean JMT = true;
+	
 	public static void smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
 		int nrVertices = hs.getVertices().size();
 		float volumeBefore = getVolume(hs);
@@ -37,10 +39,11 @@ public class LaplacianSmoother {
 		float volumeAfter = getVolume(hs);
 		hsViter = hs.iteratorV();
 		// Something like this...? probably?
-		float volumeRatio = FloatUtil.pow(volumeBefore/volumeAfter, 1/2f);
+		float volumeRatio = FloatUtil.pow(volumeBefore/volumeAfter, 1/3f);
 		System.out.println(volumeRatio);
 		while (hsViter.hasNext())
-			hsViter.next().getPos().scale(volumeRatio);;
+			hsViter.next().getPos().scale(volumeRatio);
+			
 	}
 	
 	/**
@@ -61,7 +64,11 @@ public class LaplacianSmoother {
 		for (Vertex v: hs.getVertices()) {
 			vertices.add(new Point3f(v.getPos()));
 		}
-		Solver solver = new SciPySolver("laplacian_stuff");
+		Solver solver;
+		if (JMT)
+			solver = new JMTSolver();
+		else 
+			solver = new SciPySolver("laplacian_stuff");
 		solver.solveTuple(smoothM, vertices, smoothedVertices);
 	}
 		
