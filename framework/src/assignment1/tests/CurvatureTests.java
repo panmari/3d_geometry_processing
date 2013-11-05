@@ -48,7 +48,7 @@ public class CurvatureTests {
 	@Test
 	public void testCurvatureOfCircle() {
 		for(Vertex v: hs.getVertices()){
-			assertEquals(1/2f, v.getCurvature(), 0.0001);
+			assertEquals(1/2f, v.getMeanCurvature(), 0.0001);
 		}
 	}
 	

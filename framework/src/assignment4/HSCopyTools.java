@@ -69,18 +69,6 @@ public class HSCopyTools {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Copy the positions to the target vertex positions
-	 * @param pos
-	 * @param target
-	 */
-	public static void copy(ArrayList<Point3f> pos, HalfEdgeStructure target) {
-		for(Vertex v : target.getVertices()){
-			v.getPos().set(pos.get(v.index));
-		}
-	}
 
 
 	/**

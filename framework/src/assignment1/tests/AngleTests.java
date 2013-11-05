@@ -88,7 +88,7 @@ public class AngleTests {
 	
 	@Test
 	public void testCurvatureOneNeighborhoodCenter() {
-		assertEquals(0f, center.getCurvature(), epsilon);
+		assertEquals(0f, center.getMeanCurvature(), epsilon);
 	}
 
 }

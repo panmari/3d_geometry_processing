@@ -116,7 +116,7 @@ public class Vertex extends HEElement{
 		return valence;
 	}
 	
-	public float getCurvature() {
+	public float getMeanCurvature() {
 		Iterator<HalfEdge> iter = iteratorVE();
 		Vector3f sum = new Vector3f();
 		while(iter.hasNext()) {

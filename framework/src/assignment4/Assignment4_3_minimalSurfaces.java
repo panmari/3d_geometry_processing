@@ -79,7 +79,7 @@ public class Assignment4_3_minimalSurfaces {
 		
 		HEData1d has_jm1_dist = new HEData1d(hs);
 		for(Vertex v : hs.getVertices()){
-			if(isOnBoundary(v)){
+			if(v.isOnBoundary()){
 				has_jm1_dist.put(v, new Integer(1));
 			}
 		}
@@ -104,16 +104,6 @@ public class Assignment4_3_minimalSurfaces {
 		}
 		
 		return has_jm1_dist;
-	}
-
-	private static boolean isOnBoundary(Vertex v) {
-		Iterator<HalfEdge> it = v.iteratorVE();
-		while(it.hasNext()){
-			if(it.next().isOnBorder()){
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public static HEData3d binaryColorMap(HEData1d boundary, HalfEdgeStructure hs) {

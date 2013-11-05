@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 import meshes.exception.DanglingTriangleException;
@@ -41,6 +42,12 @@ public class HalfEdgeStructure {
 		faces = new ArrayList<Face>();
 		edges = new ArrayList<HalfEdge>();
 		vertices = new ArrayList<Vertex>();
+	}
+	
+	public <T extends Tuple3f> void setVerticesTo(ArrayList<T> pos) {
+		for(Vertex v : getVertices()){
+			v.getPos().set(pos.get(v.index));
+		}
 	}
 	
 	

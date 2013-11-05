@@ -57,6 +57,18 @@ public class CSRMatrix {
 		return num;
 	}
 	
+	/**
+	 * Gets entry at the demanded row/col
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public float getValueAt(int row, int col) {
+		for(col_val e: rows.get(row))
+			if (e.col == col)
+				return e.val;
+		return 0;
+	}
 	
 	/**
 	 * Get the last row of this matrix

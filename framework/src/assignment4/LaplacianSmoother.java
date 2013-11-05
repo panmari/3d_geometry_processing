@@ -24,7 +24,7 @@ import assignment3.SSDMatrices;
 
 public class LaplacianSmoother {
 
-	public static final boolean JMT = false;
+	public static final boolean JMT = true;
 	
 	public static void smooth(HalfEdgeStructure hs, CSRMatrix m, float lambda) {
 		int nrVertices = hs.getVertices().size();
@@ -32,10 +32,7 @@ public class LaplacianSmoother {
 		ArrayList<Tuple3f> smoothedVertices = new ArrayList<Tuple3f>(nrVertices);
 		ArrayList<Tuple3f> vertices = new ArrayList<Tuple3f>(nrVertices);
 		getVertices(hs, m, lambda, vertices, smoothedVertices);	
-		Iterator<Vertex> hsViter = hs.iteratorV();
-		Iterator<Tuple3f> smoothedViter = smoothedVertices.iterator();
-		while (hsViter.hasNext())
-			hsViter.next().getPos().set(smoothedViter.next());
+		hs.setVerticesTo(smoothedVertices);
 		
 		rescale(hs, volumeBefore);
 	}
@@ -89,6 +86,7 @@ public class LaplacianSmoother {
 			v.add(smoothedVertices.get(i));
 			hs.getVertices().get(i).getPos().set(v);
 		}
+		
 		rescale(hs, volumeBefore);
 	}
 	

@@ -7,6 +7,8 @@ import java.util.Iterator;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
+import com.jogamp.opengl.math.FloatUtil;
+
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
@@ -78,14 +80,39 @@ public class LMatrices {
 	
 	/**
 	 * A symmetric cotangent Laplacian, cf Assignment 4, exercise 4.
+	 * TODO: combine this with other cotan
 	 * @param hs
 	 * @return
 	 */
 	public static CSRMatrix symmetricCotanLaplacian(HalfEdgeStructure hs){
-		return null;
+		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
+		for(Vertex v: hs.getVertices()) {
+			ArrayList<col_val> row = m.addRow();
+			if (v.isOnBoundary()) 
+				continue; //leave row empty
+			float aMixed = v.getAMixed();
+			//copy paste from vertex.getCurvature() (I'm so sorry)
+			Iterator<HalfEdge> iter = v.iteratorVE();
+			float sum = 0;
+			while(iter.hasNext()) {
+				HalfEdge current = iter.next();
+				// demeter is crying qq
+				float alpha = current.getNext().getIncidentAngle();
+				float beta = current.getOpposite().getNext().getIncidentAngle();
+				float cot_alpha = MyMath.cot(alpha, true);
+				float cot_beta = MyMath.cot(beta, true);
+				float scale = FloatUtil.sqrt(aMixed*current.start().getAMixed());
+				float entry = (cot_alpha + cot_beta)/(2*scale);
+				sum += entry;
+				row.add(new col_val(current.start().index, entry));
+			}		
+			row.add(new col_val(v.index, -sum));
+			
+			Collections.sort(row);
+		}
+		return m;
 	}
-	
-	
+
 	/**
 	 * helper method to multiply x,y and z coordinates of the halfedge structure at once
 	 * @param m

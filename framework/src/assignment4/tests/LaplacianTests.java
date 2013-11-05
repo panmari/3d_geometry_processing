@@ -1,4 +1,4 @@
-package assignment4;
+package assignment4.tests;
 
 
 import static org.junit.Assert.*;
@@ -15,10 +15,11 @@ import meshes.reader.ObjReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import assignment4.LMatrices;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
 
-public class Assignment4_1_Tests {
+public class LaplacianTests {
 	
 	// A sphere of radius 2.
 	private HalfEdgeStructure hs; 
@@ -115,6 +116,30 @@ public class Assignment4_1_Tests {
 			assertEquals(0f, sum, 0.0001);
 		}
 	}
+	
+	@Test
+	public void rowSumShouldBeZeroSymmetric() {
+		CSRMatrix m = LMatrices.symmetricCotanLaplacian(hs);
+		for (ArrayList<col_val> row: m.rows) {
+			float sum = 0;
+			for (col_val entry: row) {
+				sum += entry.val;
+			}
+			assertEquals(0f, sum, 0.0001);
+		}
+	}
+	
+	@Test
+	public void symmetricLaplacianShouldBeSymmetric() {
+		CSRMatrix m = LMatrices.symmetricCotanLaplacian(hs);
+		for (int rowIdx = 0; rowIdx < m.nRows; rowIdx++) {
+			for (col_val entry: m.rows.get(rowIdx)) {
+				float other = m.getValueAt(entry.col, rowIdx);
+				assertEquals("row " + rowIdx + ", " + entry + " compared to " + other, 
+						entry.val, other, 0.0001);
+			}
+		}
+	}	
 	
 	@Test
 	public void sphereVolumeShouldAddUp() {
