@@ -249,4 +249,12 @@ public class HalfEdgeStructure {
 		}
 		return sum;
 	}
+	
+	public ArrayList<Point3f> getVerticesAsPointArray() {
+		ArrayList<Point3f> t = new ArrayList<Point3f>();
+		for(Vertex v : getVertices()){
+			t.add(new Point3f(v.getPos()));
+		}
+		return t;
+	}
 }

@@ -29,7 +29,7 @@ import meshes.reader.ObjReader;
  * @author Alf
  *
  */
-public class Assignment4_4_spectralSmoothing {
+public class SphericalHarmonicsDemo {
 
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException{
 		HalfEdgeStructure hs = new HalfEdgeStructure();
@@ -40,6 +40,7 @@ public class Assignment4_4_spectralSmoothing {
 		ArrayList<Float> eigenValues = new ArrayList<Float>();
 		ArrayList<ArrayList<Float>> eigenVectors = new ArrayList<ArrayList<Float>>();
 		SCIPYEVD.doSVD(m, "eigenStuff", 20, eigenValues, eigenVectors);
+		
 		MyDisplay d = new MyDisplay();
 		int eigenVectorCount = 0;
 		for (ArrayList<Float> eigenVector: eigenVectors) {
@@ -63,6 +64,5 @@ public class Assignment4_4_spectralSmoothing {
 			glHs.setName("Eigenvector nr. " + ++eigenVectorCount);
 			d.addToDisplay(glHs);
 		}
-		//System.out.println(eigenVectors);
 	}
 }

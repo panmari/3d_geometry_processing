@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
 
 import sparse.CSRMatrix.col_val;
 
@@ -213,19 +214,19 @@ public class CSRMatrix {
 
 	}
 	
-	public void multPoints(ArrayList<Point3f> other, ArrayList<Point3f> result) {
+	public <T extends Tuple3f> void multTuple(ArrayList<T> other, ArrayList<T> result) {
 		if (other.size() != nCols)
 			throw new IllegalArgumentException("Matrix size does not match to size of vector!");
 		result.clear();
 		result.ensureCapacity(nRows);
 		for(ArrayList<col_val> row : rows){
-			Point3f res = new Point3f();
+			Tuple3f res = new Point3f();
 			for(col_val c : row){
 				Point3f o = new Point3f(other.get(c.col));
 				o.scale(c.val);
 				res.add(o);
 			}
-			result.add(res);
+			result.add((T)res);
 		}
 	}
 	
