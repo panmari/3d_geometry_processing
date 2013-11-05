@@ -78,8 +78,10 @@ public abstract class GLDisplayable {
 	private String vert_shader_file;
 	private String frag_shader_file;
 	private String geom_shader_file;
+
+	private String name;
 	
-	public void add(ArrayList<Tuple3f> data, String name) {
+	public <T extends Tuple3f> void add(ArrayList<T> data, String name) {
 		float[] dataArray = new float[data.size()*3];
 		for (int idx = 0; idx < data.size(); idx++) {
 			Tuple3f t = data.get(idx);
@@ -91,6 +93,15 @@ public abstract class GLDisplayable {
 			this.addElement(dataArray, Semantic.POSITION, 3);
 		else
 			this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
+	}
+	
+	public void addSingle(ArrayList<Float> data, String name) {
+		float[] dataArray = new float[data.size()];
+		for (int idx = 0; idx < data.size(); idx++) {
+			dataArray[idx] = data.get(idx);
+		}
+	
+		this.addElement(dataArray, Semantic.USERSPECIFIED, 1, name);
 	}
 	
 
@@ -287,7 +298,13 @@ public abstract class GLDisplayable {
 		POSITION, USERSPECIFIED
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public String toString() {
+		if (this.name != null)
+			return this.name;
 		String name = new File(vert_shader_file).getName() + " " +
 				new File(frag_shader_file).getName();
 		if (geom_shader_file != null)
