@@ -73,7 +73,7 @@ public class SSDMatrixTest {
 		}
 		ArrayList<Point3f> result = new ArrayList<Point3f>();
 		assertEquals(tree.getVertices().size(), D_0.nCols);
-		D_0.multPoints(vertexPos, result);		
+		D_0.multTuple(vertexPos, result);		
 
 		for (int i = 0; i < result.size(); i++) {
 			Point3f computed = result.get(i);

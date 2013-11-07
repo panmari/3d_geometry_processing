@@ -216,7 +216,8 @@ public class CSRMatrix {
 	
 	public <T extends Tuple3f> void multTuple(ArrayList<T> other, ArrayList<T> result) {
 		if (other.size() != nCols)
-			throw new IllegalArgumentException("Matrix size does not match to size of vector!");
+			throw new IllegalArgumentException("Matrix size does not match to size of vector: " + 
+												other.size() + " vs " +nCols);
 		result.clear();
 		result.ensureCapacity(nRows);
 		for(ArrayList<col_val> row : rows){
