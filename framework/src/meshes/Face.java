@@ -176,4 +176,12 @@ public class Face extends HEElement {
 			return current;
 		}
 	}
+
+	public Vector3f normal() {
+		Iterator<HalfEdge> iter = iteratorFE();
+		Vector3f n = new Vector3f();
+		n.cross(iter.next().asVector(), iter.next().asVector());
+		n.normalize();
+		return n;
+	}
 }
