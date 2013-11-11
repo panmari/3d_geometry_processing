@@ -17,11 +17,11 @@ public class SpectralSmoothingDemo {
 
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException{
 		HalfEdgeStructure hs = new HalfEdgeStructure();
-		WireframeMesh mesh = ObjReader.read("objs/dragon_5000.obj", false);
+		WireframeMesh mesh = ObjReader.read("objs/bunny.obj", false);
 		hs.init(mesh);	
 		
 		MyDisplay d = new MyDisplay();
-		SpectralSmoothing.boostMediumFrequencies(hs, 40);
+		SpectralSmoothing.boostHighFrequencies(hs, hs.getVertices().size() - 1);
 		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
 		glHs.configurePreferredShader("shaders/trimesh_flatColor3f.vert", 
 				"shaders/trimesh_flatColor3f.frag", 

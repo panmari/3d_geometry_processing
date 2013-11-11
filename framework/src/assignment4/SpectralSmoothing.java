@@ -70,7 +70,7 @@ public class SpectralSmoothing {
 		});
 	}
 	
-	public static void boostLargeFrequencies(HalfEdgeStructure hs, int nrEigenVectors) throws IOException {
+	public static void boostHighFrequencies(HalfEdgeStructure hs, int nrEigenVectors) throws IOException {
 		smooth(hs, nrEigenVectors, new FloatFunction() {
 			@Override
 			public float compute(float x) {
