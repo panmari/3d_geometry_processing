@@ -4,7 +4,6 @@ import glWrapper.GLHalfedgeStructure;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 import javax.vecmath.Color3f;
 
@@ -24,6 +23,7 @@ public class SmallEdgeCollapser {
 			for(HalfEdge h: hs.getHalfEdges()) {
 				if (h.asVector().length() > threshold ||
 						hec.isEdgeDead(h) ||
+						hec.isCollapseMeshInv(h, h.end().getPos()) ||
 						!HalfEdgeCollapse.isEdgeCollapsable(h))
 					continue;
 				// mark the halfedge on untouched object
