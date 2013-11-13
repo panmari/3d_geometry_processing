@@ -1,5 +1,6 @@
 package assignment5;
 
+import glWrapper.GLHalfedgeStructure;
 import glWrapper.GLWireframeMesh;
 
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+
+import com.jogamp.opengl.math.FloatUtil;
 
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
@@ -24,22 +27,32 @@ import openGL.objects.Transformation;
  */
 public class Assignment5_vis {
 
+	public static final float epsilon = 0.01f;
+	
 	public static void main(String[] args) throws Exception{
 		WireframeMesh wf = ObjReader.read("objs/bunny_ear.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
-		
-		
-		//visualize the isosurfaces of this bunny_ear	
-		//to compute the eigenvalues of some 3x3 matrix m:
-		//eigs = new float[3];
-		//eigenValues(m, eigs);
-		//
-		//to compute the eigenvector for an eigenvalue eigs[i] 
-			//(yes, THE eigenvector, the method will fail if an eigenspace
-			//has higher dimension than 1. This does not happen on the bunny ear.
-			//Feel free to improve/use a different method :- ) )
-		//eigenVector(m, eigs[i]);
+		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+		glHs.configurePreferredShader("shaders/trimesh_flat.vert",
+				"shaders/trimesh_flat.frag", 
+				"shaders/trimesh_flat.geom");
+		QSlim qs = new QSlim(hs);
+		MyDisplay d = new MyDisplay();
+		d.addToDisplay(glHs);
+		for (Vertex v: qs.hm.keySet()) {
+			Matrix3f m = new Matrix3f();
+			qs.hm.get(v).getRotationScale(m);
+			float[] eVals = eigenValues(m);
+			Vector3f[] eVecs = new Vector3f[3];
+			for (int i = 0; i <3; i++) {
+				float eig = eVals[i];
+				eVals[i] = epsilon/FloatUtil.sqrt(eig);
+				eVecs[i] = eigenVector(m, eig);
+				
+			}
+			d.addToDisplay(ellipsoid(v.getPos(), eVecs[0], eVals[0], eVecs[1], eVals[1], eVecs[2], eVals[2]));
+		}
 	}
 
 	
@@ -114,7 +127,7 @@ public class Assignment5_vis {
 	 * @param l2
 	 * @return
 	 */
-	private static WireframeMesh ellipsoid(Point3f center, 
+	private static GLWireframeMesh ellipsoid(Point3f center, 
 			Vector3f v0, float l0, 
 			Vector3f v1, float l1, 
 			Vector3f v2, float l2) {
@@ -151,7 +164,7 @@ public class Assignment5_vis {
 			}
 		}
 		
-		return wf;
+		return new GLWireframeMesh(wf);
 	}
 	
 	
@@ -161,8 +174,9 @@ public class Assignment5_vis {
 	 * @param m
 	 * @param evs
 	 */
-	public static void eigenValues(Matrix3f m, float[] evs){
+	public static float[] eigenValues(Matrix3f m){
 		float eig1, eig2, eig3;
+		float[] evs = new float[3];
 		float p1 = m.m01* m.m01 + m.m02*m.m02 + m.m12*m.m12;
 		if (p1 == 0) {
 		  // A is diagonal.
@@ -201,5 +215,6 @@ public class Assignment5_vis {
 		evs[0] = eig1;
 		evs[1] = eig2;
 		evs[2] = eig3;
+		return evs;
 	}
 }

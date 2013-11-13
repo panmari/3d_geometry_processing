@@ -1,9 +1,11 @@
 package assignment5;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point4f;
 import javax.vecmath.Vector3f;
@@ -26,6 +28,7 @@ import openGL.objects.Transformation;
 public class QSlim {
 	
 	HalfEdgeStructure hs;
+	HashMap<Vertex, Matrix4f> hm = new HashMap<Vertex, Matrix4f>();
 	
 	/********************************************
 	 * Use or discard the skeletton, as you like.
@@ -37,8 +40,14 @@ public class QSlim {
 	 * Compute edge collapse costs,
 	 * Fill up the Priority queue/heap or similar
 	 */
-	private void init(){
-		
+	public QSlim(HalfEdgeStructure hs){
+		for(Vertex v: hs.getVertices()) {
+			Matrix4f qem = new Matrix4f();
+			Iterator<Face> iter = v.iteratorVF();
+			while (iter.hasNext())
+				qem.add(iter.next().getQuadricErrorMatrix());
+			hm.put(v, qem);
+		}
 	}
 	
 	

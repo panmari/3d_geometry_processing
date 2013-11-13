@@ -3,7 +3,12 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Point4f;
 import javax.vecmath.Vector3f;
+
 import myutils.MyMath;
 /**
  * Implementation of a face for the {@link HalfEdgeStructure}
@@ -33,6 +38,17 @@ public class Face extends HEElement {
 		Vector3f cross = new Vector3f();
 		cross.cross(anEdge.asVector(), anEdge.next.asVector());
 		return cross.length()/2;
+	}
+	
+	public Matrix4f getQuadricErrorMatrix() {
+		Matrix4f ppT = new Matrix4f();
+		Point4f p = new Point4f(anEdge.start().getPos());
+		p.w = - normal().dot(new Vector3f(anEdge.start().getPos()));
+		ppT.m00 = p.x*p.x; ppT.m01 = p.x*p.y; ppT.m02 = p.x*p.z; ppT.m03 = p.x*p.w;
+		ppT.m10 = p.y*p.x; ppT.m11 = p.y*p.y; ppT.m12 = p.y*p.z; ppT.m13 = p.y*p.w;
+		ppT.m20 = p.z*p.x; ppT.m21 = p.z*p.y; ppT.m22 = p.z*p.z; ppT.m23 = p.z*p.w;
+		ppT.m30 = p.w*p.x; ppT.m31 = p.w*p.y; ppT.m32 = p.w*p.z; ppT.m33 = p.w*p.w;
+		return ppT;
 	}
 	
 	/**
