@@ -42,8 +42,9 @@ public class Face extends HEElement {
 	
 	public Matrix4f getQuadricErrorMatrix() {
 		Matrix4f ppT = new Matrix4f();
-		Point4f p = new Point4f(anEdge.start().getPos());
-		p.w = - normal().dot(new Vector3f(anEdge.start().getPos()));
+		Vector3f n = normal();
+		Point4f p = new Point4f(n);
+		p.w = - n.dot(new Vector3f(anEdge.end().getPos()));
 		ppT.m00 = p.x*p.x; ppT.m01 = p.x*p.y; ppT.m02 = p.x*p.z; ppT.m03 = p.x*p.w;
 		ppT.m10 = p.y*p.x; ppT.m11 = p.y*p.y; ppT.m12 = p.y*p.z; ppT.m13 = p.y*p.w;
 		ppT.m20 = p.z*p.x; ppT.m21 = p.z*p.y; ppT.m22 = p.z*p.z; ppT.m23 = p.z*p.w;

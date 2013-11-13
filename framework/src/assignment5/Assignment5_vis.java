@@ -27,7 +27,7 @@ import openGL.objects.Transformation;
  */
 public class Assignment5_vis {
 
-	public static final float epsilon = 0.01f;
+	public static final float epsilon = 0.04f;
 	
 	public static void main(String[] args) throws Exception{
 		WireframeMesh wf = ObjReader.read("objs/bunny_ear.obj", true);

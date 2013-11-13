@@ -305,8 +305,9 @@ public abstract class GLDisplayable {
 	public String toString() {
 		if (this.name != null)
 			return this.name;
+		String name;
 		try {
-			String name = new File(vert_shader_file).getName() + " " +
+			name = new File(vert_shader_file).getName() + " " +
 					new File(frag_shader_file).getName();
 			if (geom_shader_file != null)
 				name += " " + new File(geom_shader_file).getName();
