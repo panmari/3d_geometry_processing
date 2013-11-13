@@ -3,9 +3,11 @@ package assignment5;
 import glWrapper.GLHalfedgeStructure;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -97,21 +99,44 @@ public class HalfEdgeCollapse {
 		// around e.end() before the collapse is finished.
 		makeV2ERefSafe(e);
 
+		deadVertices.add(e.start());
 		// Make incident edges of e.start point to e.end
 		Iterator<HalfEdge> iterStart = e.start().iteratorVE();
-		while (iterStart.hasNext())
+		while (iterStart.hasNext()) {
 			iterStart.next().setEnd(e.end());
-
-		e.getNext().getOpposite().setOpposite(e.getPrev().getOpposite());
-		e.getOpposite().getPrev()
-				.setOpposite(e.getOpposite().getNext().getOpposite());
-
-		killFaceWithHalfEdges(e.getFace());
-		killFaceWithHalfEdges(e.getOpposite().getFace());
-		deadVertices.add(e.start());
-
+			//start does not need to be set, bc it's a method anyway
+		}
+		
+		//relink opposites
+		if (e.hasFace()) {
+			relink(e);
+		} else {
+			relinkAtEdge(e);
+		}
+		HalfEdge opp = e.getOpposite();
+		if(opp.hasFace()) {
+			relink(opp);
+		} else {
+			relinkAtEdge(opp);
+		}
 	}
 
+	private void relink(HalfEdge e) {
+		HalfEdge b1 = e.getNext().getOpposite();
+		HalfEdge o1 = e.getPrev().getOpposite();
+		b1.setOpposite(o1); 
+		o1.setOpposite(b1);
+		killFaceWithHalfEdges(e.getFace());
+	}
+	
+	private void relinkAtEdge(HalfEdge e) {
+		HalfEdge y1 = e.getPrev();
+		HalfEdge y2 = e.getNext();
+		y1.setNext(y2);
+		y2.setPrev(y1); 
+		deadEdges.add(e);
+	}
+	
 	private void killFaceWithHalfEdges(Face f) {
 		Iterator<HalfEdge> iter = f.iteratorFE();
 		while (iter.hasNext())
@@ -140,7 +165,7 @@ public class HalfEdgeCollapse {
 		hs.getFaces().removeAll(deadFaces);
 		hs.getVertices().removeAll(deadVertices);
 		hs.getHalfEdges().removeAll(deadEdges);
-		hs.enumerateVertices();
+		//hs.enumerateVertices();
 
 		assertEdgesOk(hs);
 		assertVerticesOk(hs);
@@ -169,7 +194,7 @@ public class HalfEdgeCollapse {
 			}
 		}
 
-		// dont produce dangling edges!
+		// don't produce dangling edges!
 		if (e.start().isOnBoundary() && e.end().isOnBoundary()
 				&& !e.isOnBorder()) {
 			return false;
