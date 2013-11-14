@@ -5,7 +5,10 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Point4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import meshes.Face;
 import meshes.HalfEdge;
@@ -34,11 +37,7 @@ public class QSlim {
 	public QSlim(HalfEdgeStructure hs){
 		
 		for(Vertex v: hs.getVertices()) {
-			Matrix4f qem = new Matrix4f();
-			Iterator<Face> iter = v.iteratorVF();
-			while (iter.hasNext())
-				qem.add(iter.next().getQuadricErrorMatrix());
-			hm.put(v, qem);
+			hm.put(v, makeErrorQuadricFor(v));
 		}
 		for (HalfEdge he: hs.getHalfEdges()) {
 			new PotentialCollapse(he);
@@ -56,7 +55,7 @@ public class QSlim {
 		while (target > 0) {
 			target -= collapsCheapestEdge();
 		}
-		
+		hec.finish();
 	}
 	
 	
@@ -66,18 +65,38 @@ public class QSlim {
 	 */
 	public int collapsCheapestEdge(){
 		PotentialCollapse pc = collapses.poll();
-		if (pc.isDeleted)
+		if (pc.isDeleted || hec.isEdgeDead(pc.he))
 			return 0;
 		HalfEdge he = pc.he;
-		if (hec.isCollapseMeshInv(he, he.end().getPos()) ||
+		if (hec.isCollapseMeshInv(he, pc.targetPosition) ||
 				!HalfEdgeCollapse.isEdgeCollapsable(he)) {
 			new PotentialCollapse(he, (pc.cost + 0.1f)*10);
 			return 0;
 		}
-		hec.collapseEdge(he);
-		for (HalfEdge deadHE: hec.deadEdges)
-			mostRecentCollapse.get(deadHE).isDeleted = true;
+		
+		//TODO: Update some error quadrics
+		hec.collapseEdge(he, pc.targetPosition);
+	
+		updateEdgesAround(he.end());
 		return 1;
+	}
+	
+	private Matrix4f makeErrorQuadricFor(Vertex v) {
+		Matrix4f qem = new Matrix4f();
+		Iterator<Face> iter = v.iteratorVF();
+		while (iter.hasNext())
+			qem.add(iter.next().getQuadricErrorMatrix());
+		return qem;
+	}
+	
+	private void updateEdgesAround(Vertex v) {
+		hm.put(v, makeErrorQuadricFor(v));
+		Iterator<HalfEdge> iter = v.iteratorVE();
+		while (iter.hasNext()) {
+			HalfEdge he = iter.next();
+			new PotentialCollapse(he);
+			new PotentialCollapse(he.getOpposite());
+		}
 	}
 
 	/**
@@ -90,13 +109,21 @@ public class QSlim {
 		float cost;
 		HalfEdge he;
 		boolean isDeleted;
-		Vector3f targetPosition;
+		Point3f targetPosition;
 		
+		/**
+		 * Constructor also inserts this collapse into priority queue, marks
+		 * older collapse of this edge as deleted and puts itself as most
+		 * recent collapse into hashmap.
+		 * @param he
+		 * @param cost
+		 */
 		PotentialCollapse(HalfEdge he, float cost) {
 			this.he = he;	
-			this.targetPosition = new Vector3f();
+			targetPosition =  new Point3f();
 			targetPosition.add(he.end().getPos(), he.start().getPos());
 			targetPosition.scale(1/2f);
+
 			computeCost(cost);
 		}
 		
@@ -108,11 +135,16 @@ public class QSlim {
 			if (cost == 0.f) {
 				Matrix4f qem = new Matrix4f();
 				qem.add(hm.get(he.start()), hm.get(he.end()));
-				Vector3f Qp = new Vector3f(targetPosition);
+				Vector4f Qp = new Vector4f(targetPosition);
+				Qp.w = 1;
 				qem.transform(Qp);
-				this.cost = Qp.dot(targetPosition);
+				Vector4f t = new Vector4f(targetPosition);
+				t.w = 1;
+				this.cost = Qp.dot(t);
 			}
 			else this.cost = cost;
+			if(mostRecentCollapse.containsKey(he))
+				mostRecentCollapse.get(he).isDeleted = true;
 			collapses.add(this);
 			mostRecentCollapse.put(he, this);
 		}
@@ -120,6 +152,11 @@ public class QSlim {
 		@Override
 		public int compareTo(PotentialCollapse other) {
 			return (int) Math.signum(this.cost - other.cost);
+		}
+		
+		@Override
+		public String toString() {
+			return he.toString() + ": " + cost;
 		}
 	}
 

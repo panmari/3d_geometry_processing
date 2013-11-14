@@ -84,6 +84,12 @@ public class HalfEdgeCollapse {
 
 	}
 
+	void collapseEdge(HalfEdge he) {
+		Point3f target = new Point3f();
+		target.add(he.end().getPos(), he.start().getPos());
+		target.scale(1/2f);
+		collapseEdge(he, target);
+	}
 	/**
 	 * collapse a single halfedge, but don't remove the dead halfedges faces and
 	 * vertices from the halfedges structure. It colapses e.start onto e.end
@@ -92,13 +98,13 @@ public class HalfEdgeCollapse {
 	 * @param e
 	 * @param hs
 	 */
-	void collapseEdge(HalfEdge e) {
+	<T extends Tuple3f> void collapseEdge(HalfEdge e, T target) {
 
 		// First step:
 		// relink the vertices to safe edges. don't iterate
 		// around e.end() before the collapse is finished.
 		makeV2ERefSafe(e);
-
+		e.end().getPos().set(target);
 		deadVertices.add(e.start());
 		// Make incident edges of e.start point to e.end
 		Iterator<HalfEdge> iterStart = e.start().iteratorVE();
@@ -220,7 +226,7 @@ public class HalfEdgeCollapse {
 	 * @param newPos
 	 * @return
 	 */
-	public boolean isCollapseMeshInv(HalfEdge e, Point3f newPos) {
+	public <T extends Tuple3f> boolean isCollapseMeshInv(HalfEdge e, T newPos) {
 		return isFaceFlipStart(e, newPos)
 				|| isFaceFlipStart(e.getOpposite(), newPos);
 	}
@@ -232,7 +238,7 @@ public class HalfEdgeCollapse {
 	 * @param newPos
 	 * @return
 	 */
-	private boolean isFaceFlipStart(HalfEdge e, Point3f newPos) {
+	private <T extends Tuple3f> boolean isFaceFlipStart(HalfEdge e, T newPos) {
 		Iterator<HalfEdge> it = e.start().iteratorVE();
 		HalfEdge current, next;
 		Vector3f e1 = new Vector3f(), e2 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f();
