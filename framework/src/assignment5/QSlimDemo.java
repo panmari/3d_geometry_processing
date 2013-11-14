@@ -15,12 +15,15 @@ import meshes.reader.ObjReader;
 public class QSlimDemo {
 
 	public static void main(String[] args) throws Exception{
-		WireframeMesh wf = ObjReader.read("objs/dragon.obj", true);
+		WireframeMesh wf = ObjReader.read("objs/dragon3.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
 		GLHalfedgeStructure untouched = new GLHalfedgeStructure(hs);
 		QSlim qs = new QSlim(hs);
-		qs.simplify(48500);
+		long before = System.currentTimeMillis();
+		qs.simplify(50000);
+		long after = System.currentTimeMillis();
+		System.out.println("Took " + (after - before)/1000f + " seconds");
 		
 		MyDisplay d = new MyDisplay();
 		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
