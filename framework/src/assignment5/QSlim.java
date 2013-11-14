@@ -77,7 +77,7 @@ public class QSlim {
 		//TODO: Update some error quadrics
 		hec.collapseEdge(he, pc.targetPosition);
 	
-		updateEdgesAround(he.end());
+		updateEdgesAround(he.end(), pc.qem);
 		return 1;
 	}
 	
@@ -89,8 +89,8 @@ public class QSlim {
 		return qem;
 	}
 	
-	private void updateEdgesAround(Vertex v) {
-		hm.put(v, makeErrorQuadricFor(v));
+	private void updateEdgesAround(Vertex v, Matrix4f qem) {
+		hm.put(v, qem);
 		Iterator<HalfEdge> iter = v.iteratorVE();
 		while (iter.hasNext()) {
 			HalfEdge he = iter.next();
@@ -110,6 +110,7 @@ public class QSlim {
 		HalfEdge he;
 		boolean isDeleted;
 		Point3f targetPosition;
+		Matrix4f qem;
 		
 		/**
 		 * Constructor also inserts this collapse into priority queue, marks
@@ -120,11 +121,25 @@ public class QSlim {
 		 */
 		PotentialCollapse(HalfEdge he, float cost) {
 			this.he = he;	
+			computeCost(cost);
+		}
+		
+		private void computeSimpleTargetPosition() {
 			targetPosition =  new Point3f();
 			targetPosition.add(he.end().getPos(), he.start().getPos());
 			targetPosition.scale(1/2f);
-
-			computeCost(cost);
+		}
+		
+		private void computeOptimalTargetPosition(Matrix4f qem) {
+			Matrix4f qOpt = new Matrix4f(qem);
+			qOpt.setRow(3, 0, 0, 0, 1);
+			if (qOpt.determinant() != 0) {
+				qOpt.invert();
+				Point3f optPos = new Point3f();
+				qOpt.transform(optPos); //assumes w=1 automatically 
+				targetPosition = optPos;
+			} else
+				computeSimpleTargetPosition();
 		}
 		
 		PotentialCollapse(HalfEdge he) {
@@ -133,8 +148,9 @@ public class QSlim {
 		
 		private void computeCost(float cost) {
 			if (cost == 0.f) {
-				Matrix4f qem = new Matrix4f();
+				qem = new Matrix4f();
 				qem.add(hm.get(he.start()), hm.get(he.end()));
+				computeOptimalTargetPosition(qem);
 				Vector4f Qp = new Vector4f(targetPosition);
 				Qp.w = 1;
 				qem.transform(Qp);
