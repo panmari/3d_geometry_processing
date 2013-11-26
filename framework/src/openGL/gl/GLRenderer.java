@@ -10,6 +10,7 @@ import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.vecmath.Tuple3f;
 
+import openGL.gl.interactive.GLUpdateable;
 import openGL.interfaces.SceneManager;
 import openGL.interfaces.SceneManagerIterator;
 import openGL.interfaces.Shader;
@@ -132,6 +133,16 @@ public class GLRenderer {
 		// send the object to the GPU in each pass.
 		if (vertexData.getVAO() == null) {
 			initArrayBuffer(vertexData);
+			vertexData.getVAO().rewind();
+		}
+		
+		
+		
+		//hack in vertex buffer refreshments
+		if(vertexData instanceof GLUpdateable){
+			GLUpdateable glupd = (GLUpdateable) vertexData;
+			updateArrayBuffer(glupd);
+			vertexData.getVAO().rewind();
 		}
 
 		// Set modelview and projection matrices in shader (has to be done in
@@ -157,7 +168,29 @@ public class GLRenderer {
 
 	
 	
+		
 	
+	private void updateArrayBuffer(GLUpdateable data) {
+		ListIterator<GLUpdateable.VertexElement> itr = data.getElements()
+				.listIterator(0);
+		
+		while(itr.hasNext()){
+			GLDisplayable.VertexElement e = itr.next();
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, data.getVAO().getNextVBO());
+			
+			if(data.wantUpdate(e.glName)){
+				gl.glBufferData(GL.GL_ARRAY_BUFFER, e.getData().length * 4,
+						FloatBuffer.wrap(e.getData()), GL.GL_DYNAMIC_DRAW);
+				
+				data.didUpdate(e.glName);
+			}
+			
+		}
+		
+		// bind the default vertex array object
+		gl.glBindVertexArray(0);
+	}
+
 	private void initArrayBuffer(GLDisplayable data) {
 		// Make a vertex array object (VAO) for this shape
 		data.setVAO(new GLVertexArrayObject(gl, data.getElements().size() + 1));

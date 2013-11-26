@@ -95,22 +95,24 @@ public class TrackballListener implements MouseListener, MouseMotionListener{
 			return;
 		}
 
+		
 		Dimension winSize = e.getComponent().getSize();
 		Point next = e.getPoint();
 		next.translate(-winSize.width/2, -winSize.height/2);
-		
-		Matrix4f rot = new Matrix4f();
-		AxisAngle4f temp = resolve(last, next, winSize);
-		rot.set(temp);
-		
-		for(Shape s: shapes){
-			Transformation t = new Transformation();
-			t.mul(rot,s.getTransformation());
-			s.setTransformation(t);
+	
+		if(!e.isControlDown()){
+			Matrix4f rot = new Matrix4f();
+			AxisAngle4f temp = resolve(last, next, winSize);
+			rot.set(temp);
+			
+			for(Shape s: shapes){
+				Transformation t = new Transformation();
+				t.mul(rot,s.getTransformation());
+				s.setTransformation(t);
+			}
 		}
-		
-		last = next;
 		display.updateDisplay();
+		last = next;
 	}
 
 	@Override

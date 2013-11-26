@@ -42,6 +42,12 @@ public class GLVertexArrayObject {
 
 	public void bind() {
 		gl.glBindVertexArray(vao.get(0));
+		
+	}
+	
+	public void rewind(){
+		vbo.rewind();
+		vao.rewind();
 	}
 
 }
