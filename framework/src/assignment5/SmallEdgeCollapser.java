@@ -23,8 +23,8 @@ public class SmallEdgeCollapser {
 			for(HalfEdge h: hs.getHalfEdges()) {
 				if (h.asVector().length() > threshold ||
 						hec.isEdgeDead(h) ||
-						hec.isCollapseMeshInv(h, h.end().getPos()) ||
-						!HalfEdgeCollapse.isEdgeCollapsable(h))
+						!HalfEdgeCollapse.isEdgeCollapsable(h) ||
+						hec.isCollapseMeshInv(h, h.end().getPos()) )
 					continue;
 				// mark the halfedge on untouched object
 				color.set(h.start().index, new Color3f(1,1,0));

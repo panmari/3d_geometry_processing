@@ -13,7 +13,7 @@ public class SmallEdgeCollapserDemo {
 		WireframeMesh wf = ObjReader.read("objs/buddha.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
-		GLHalfedgeStructure untouched = SmallEdgeCollapser.collapse(hs, 0.01f);
+		GLHalfedgeStructure untouched = SmallEdgeCollapser.collapse(hs, 0.5f);
 		
 		MyDisplay d = new MyDisplay();
 		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
@@ -26,3 +26,4 @@ public class SmallEdgeCollapserDemo {
 		d.addToDisplay(untouched);
 	}
 }
+	

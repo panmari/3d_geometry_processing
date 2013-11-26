@@ -51,7 +51,7 @@ public class Face extends HEElement {
 		ppT.m10 = p.y*p.x; ppT.m11 = p.y*p.y; ppT.m12 = p.y*p.z; ppT.m13 = p.y*p.w;
 		ppT.m20 = p.z*p.x; ppT.m21 = p.z*p.y; ppT.m22 = p.z*p.z; ppT.m23 = p.z*p.w;
 		ppT.m30 = p.w*p.x; ppT.m31 = p.w*p.y; ppT.m32 = p.w*p.z; ppT.m33 = p.w*p.w;
-		Vector4f v = new Vector4f(1,1,1, 1);
+		Vector4f v = new Vector4f(1,1,1,1);
 		ppT.transform(v);
 		if (Float.isNaN(v.lengthSquared()) || Float.isInfinite(v.lengthSquared()))
 			return new Matrix4f();

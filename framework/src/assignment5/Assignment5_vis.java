@@ -39,6 +39,7 @@ public class Assignment5_vis {
 				"shaders/trimesh_flat.geom");
 		QSlim qs = new QSlim(hs);
 		MyDisplay d = new MyDisplay();
+		qs.simplify(10);
 		d.addToDisplay(glHs);
 		for (Vertex v: qs.hm.keySet()) {
 			Matrix3f m = new Matrix3f();

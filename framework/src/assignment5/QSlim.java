@@ -58,6 +58,8 @@ public class QSlim {
 	public void simplify(int target){
 		while (target < hs.getVertices().size() - hec.deadVertices.size()) {
 			collapsCheapestEdge();
+			if (hec.deadVertices.size() % 10000 == 0)
+				System.out.println("Killed vertices: " + hec.deadVertices.size());
 		}
 		hec.finish();
 	}
@@ -78,7 +80,7 @@ public class QSlim {
 		HalfEdge he = pc.he;
 		if (hec.isCollapseMeshInv(he, pc.targetPosition) ||
 				!HalfEdgeCollapse.isEdgeCollapsable(he)) {
-			new PotentialCollapse(he, (pc.cost + 0.1f)*10);
+			new PotentialCollapse(he, (Math.abs(pc.cost) + 0.1f)*10);
 			return 0;
 		}
 		hec.collapseEdge(he, pc.targetPosition);
@@ -164,7 +166,7 @@ public class QSlim {
 		private void computeOptimalTargetPosition(Matrix4f qem) {
 			Matrix4f Q = new Matrix4f(qem);
 			Q.setRow(3, 0, 0, 0, 1);
-			if (optimal && Q.determinant() != 0) {
+			if (optimal && Math.abs(Q.determinant()) > 0.001f) {
 				Q.invert();
 				Point3f optPos = new Point3f();
 				Q.transform(optPos); //assumes w=1 automatically 
@@ -182,18 +184,19 @@ public class QSlim {
 		 * @param cost
 		 */
 		private void computeCost(float cost) {
-			if (cost == 0.f) {
-				qem = new Matrix4f();
-				qem.add(hm.get(he.start()), hm.get(he.end()));
-				computeOptimalTargetPosition(qem);
-				Vector4f Qp = new Vector4f(targetPosition);
-				Qp.w = 1;
-				qem.transform(Qp);
-				Vector4f t = new Vector4f(targetPosition);
-				t.w = 1;
-				this.cost = Qp.dot(t);
-			}
-			else this.cost = cost;
+			qem = new Matrix4f();
+			qem.add(hm.get(he.start()), hm.get(he.end()));
+			computeOptimalTargetPosition(qem);
+			Vector4f Qp = new Vector4f(targetPosition);
+			Qp.w = 1;
+			qem.transform(Qp);
+			Vector4f t = new Vector4f(targetPosition);
+			t.w = 1;
+			this.cost = Qp.dot(t);
+			if (cost != 0.f) 
+				this.cost = cost;
+			if (cost < 0)
+				System.out.println("Stop, HAMMERTIME!");
 			if(mostRecentCollapse.containsKey(he))
 				mostRecentCollapse.get(he).isDeleted = true;
 			collapses.add(this);
