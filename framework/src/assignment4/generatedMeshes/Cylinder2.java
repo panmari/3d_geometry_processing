@@ -1,24 +1,9 @@
 package assignment4.generatedMeshes;
 
-import glWrapper.GLHalfedgeStructure;
-import glWrapper.GLPointCloud;
-import glWrapper.GLWireframeMesh;
-
-import java.io.IOException;
-
-import javax.vecmath.AxisAngle4f;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import assignment1.Assignment1;
-
-import meshes.HalfEdgeStructure;
-import meshes.PointCloud;
 import meshes.WireframeMesh;
-import meshes.exception.DanglingTriangleException;
-import meshes.exception.MeshNotOrientedException;
-import openGL.MyDisplay;
 
 public class Cylinder2 {
 	

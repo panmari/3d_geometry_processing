@@ -86,7 +86,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 	/**
 	 * Update the list of objects on display.
 	 */
-	private void updateWhatsOnDisplay() {
+	void updateWhatsOnDisplay() {
 
 		whatsOnDisplay.removeAll();
 		whatsOnDisplay.add(new JLabel("On Display:"));

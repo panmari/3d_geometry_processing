@@ -47,7 +47,9 @@ public class HalfEdgeStructure {
 	public <T extends Tuple3f> void setVerticesTo(ArrayList<T> pos) {
 		for(Vertex v : getVertices()){
 			v.getPos().set(pos.get(v.index));
-	
+		}
+	}
+		
 	public HalfEdgeStructure(HalfEdgeStructure hs) {
 		faces = new ArrayList<Face>();
 		edges = new ArrayList<HalfEdge>();
