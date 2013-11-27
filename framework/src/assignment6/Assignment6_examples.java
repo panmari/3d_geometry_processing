@@ -171,7 +171,7 @@ public class Assignment6_examples {
 	 * @param c
 	 * @return
 	 */
-	private static HashSet<Integer> collectBoundary(HalfEdgeStructure hs,
+	public static HashSet<Integer> collectBoundary(HalfEdgeStructure hs,
 			int dist, Constraint c) {
 		HashSet<Integer> has_jm1_dist = new HashSet<>();
 		for(Vertex v : hs.getVertices()){

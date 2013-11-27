@@ -47,8 +47,8 @@ public class RAPS_modelling {
 	CSRMatrix L_deform;
 	
 	//allocate righthand sides and x only once.
-	ArrayList<Point3f> b;
-	ArrayList<Point3f> x;
+	public ArrayList<Point3f> b;
+	public ArrayList<Point3f> x;
 
 	//sets of vertex indices that are constrained.
 	private HashSet<Integer> keepFixed;
@@ -104,14 +104,14 @@ public class RAPS_modelling {
 	 * Good place to do the cholesky decompositoin
 	 */
 	public void updateL() {
-		float w = 100f; //weight of user constraint
+		float w = 10000f; //weight of user constraint
 		int nrVertices = hs_originl.getVertices().size();
 		M_constraints = new CSRMatrix(0, nrVertices);
 		for (int i = 0; i < nrVertices; i++) {
 			if (keepFixed.contains(i) || deform.contains(i)) {
 				ArrayList<col_val> row = M_constraints.addRow();
 				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
-				Collections.sort(row);
+				//Collections.sort(row);  //no need to sort, since only 1 entry
 			} else {
 				M_constraints.addRow();
 			}
@@ -141,7 +141,7 @@ public class RAPS_modelling {
 		this.transformTarget(t);
 		for(int i = 0; i < nRefinements; i++) {
 			optimalPositions();
-			System.out.println("Raps iteration " + i + " done!");
+			System.out.println("RAPS iteration " + i + " done!");
 		}
 	}
 	
@@ -183,10 +183,12 @@ public class RAPS_modelling {
 	 */
 	private void init_b_x(HalfEdgeStructure hs) {
 		b = new ArrayList<Point3f>();
+		x = new ArrayList<Point3f>();
 		for(int i = 0; i < hs.getVertices().size(); i++){
 			b.add(new Point3f(0,0,0));
+			x.add(new Point3f(1,1,1));
 		}
-		x = hs.getVerticesAsPointArray();
+		//x = hs.getVerticesAsPointArray();
 	}
 	
 	
@@ -207,7 +209,7 @@ public class RAPS_modelling {
 	private void compute_b() {
 		reset_b();
 		//computing b according to eq on assignment sheet
-		for (Vertex v: hs_originl.getVertices()) {
+		for (Vertex v: hs_deformed.getVertices()) {
 			Iterator<HalfEdge> iter = v.iteratorVE();
 			while (iter.hasNext()) {
 				HalfEdge he = iter.next();

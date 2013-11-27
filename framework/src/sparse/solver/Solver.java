@@ -29,6 +29,8 @@ public abstract class Solver {
 			bX.add(t.x);
 			bY.add(t.y);
 			bZ.add(t.z);
+		}
+		for (Tuple3f t: x) {
 			xX.add(t.x);
 			xY.add(t.y);
 			xZ.add(t.z);
@@ -36,6 +38,7 @@ public abstract class Solver {
 		solve(m, bX, xX);
 		solve(m, bY, xY);
 		solve(m, bZ, xZ);
+		x.clear();
 		for (int i = 0; i < b.size(); i++){
 			x.add((T) new Vector3f(xX.get(i),xY.get(i),xZ.get(i)));
 		}
