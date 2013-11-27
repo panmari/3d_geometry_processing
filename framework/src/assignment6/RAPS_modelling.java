@@ -6,11 +6,15 @@ import java.util.HashSet;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import assignment4.LMatrices;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import sparse.CSRMatrix;
+import sparse.CSRMatrix.col_val;
+import sparse.solver.Solver;
 
 
 
@@ -40,13 +44,18 @@ public class RAPS_modelling {
 	CSRMatrix L_deform;
 	
 	//allocate righthand sides and x only once.
-	ArrayList<Float>[] b;
-	ArrayList<Float> x;
+	ArrayList<Point3f> b;
+	ArrayList<Point3f> x;
 
 	//sets of vertex indices that are constrained.
 	private HashSet<Integer> keepFixed;
 	private HashSet<Integer> deform;
+	
+	private Solver solver;
 
+	private CSRMatrix LTranspose;
+
+	private CSRMatrix M_constraints;
 		
 	
 	
@@ -64,6 +73,7 @@ public class RAPS_modelling {
 		
 		
 		init_b_x(hs);
+		L_cotan = LMatrices.mixedCotanLaplacian(hs);
 		
 	}
 	
@@ -74,7 +84,6 @@ public class RAPS_modelling {
 	public void keep(Collection<Integer> verts_idx) {
 		this.keepFixed.clear();
 		this.keepFixed.addAll(verts_idx);
-
 	}
 	
 	/**
@@ -92,7 +101,22 @@ public class RAPS_modelling {
 	 * Good place to do the cholesky decompositoin
 	 */
 	public void updateL() {
-		//do your stuff
+		float w = 100f; //weight of user constraint
+		int nrVertices = hs_originl.getVertices().size();
+		M_constraints = new CSRMatrix(0, nrVertices);
+		for (int i = 0; i < nrVertices; i++) {
+			if (keepFixed.contains(i) || deform.contains(i)) {
+				ArrayList<col_val> row = M_constraints.addRow();
+				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
+			}
+		}
+			
+		L_deform = new CSRMatrix(0, nrVertices);
+		CSRMatrix LTL = new CSRMatrix(0, nrVertices);
+		LTranspose = L_cotan.transposed();
+		LTranspose.multParallel(L_cotan, LTL);
+		L_deform.add(LTL, M_constraints);
+		solver = new Cholesky(L_deform);
 	}
 	
 	/**
@@ -143,16 +167,13 @@ public class RAPS_modelling {
 	 * @param hs
 	 */
 	private void init_b_x(HalfEdgeStructure hs) {
-		b = new ArrayList[3];
-		for(int i = 0; i < 3; i++){
-			b[i] = new ArrayList<>(hs.getVertices().size());
-			for(int j = 0; j < hs.getVertices().size(); j++){
-				b[i].add(0.f);
-			}
+		b = new ArrayList<Point3f>();
+		for(int i = 0; i < hs.getVertices().size(); i++){
+			b.add(new Point3f(0,0,0));
 		}
-		x = new ArrayList<>(hs.getVertices().size());
-		for(int j = 0; j < hs.getVertices().size(); j++){
-			x.add(0.f);
+		x = new ArrayList<Point3f>();
+		for(int i = 0; i < hs.getVertices().size(); i++){
+			x.add(new Point3f(0,0,0));
 		}
 	}
 	
@@ -172,9 +193,16 @@ public class RAPS_modelling {
 	 */
 	private void compute_b() {
 		reset_b();
-		//do your stuff...
+		//TODO: assemble b
 		
-		
+		// Change to *normalized* form of b
+		ArrayList<Point3f> bNew = new ArrayList<Point3f>();
+		LTranspose.multTuple(b, bNew);
+		ArrayList<Point3f> verticesNew = new ArrayList<Point3f>();
+		M_constraints.multTuple(hs_deformed.getVerticesAsPointArray(), verticesNew);
+		for (int i = 0; i < b.size(); i++)
+			bNew.get(i).add(verticesNew.get(i));
+		b = bNew;
 	}
 
 
@@ -183,10 +211,10 @@ public class RAPS_modelling {
 	 * helper method
 	 */
 	private void reset_b() {
-		for(int i = 0 ; i < 3; i++){
-			for(int j = 0; j < b[i].size(); j++){
-				b[i].set(j,0.f);
-			}
+		for(Point3f p: b){
+			p.x = 0;
+			p.y = 0;
+			p.z = 0;
 		}
 	}
 

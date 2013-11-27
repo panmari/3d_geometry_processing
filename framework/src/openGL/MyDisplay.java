@@ -72,7 +72,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 		
 		
 		//layout and stuff
-		this.setSize(700, 500);
+		this.setSize(900, 700);
 		this.setLocationRelativeTo(null); // center of screen
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(renderPanel.getCanvas(), BorderLayout.CENTER);
@@ -129,7 +129,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 	 */
 	public void updateDisplay(){
 		renderPanel.getCanvas().repaint();
-		//whatsOnDisplay.validate();
+		this.validate();
 	}
 	
 	

@@ -10,6 +10,7 @@ import no.uib.cipr.matrix.sparse.CompRowMatrix;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
 import sparse.SparseTools;
+import sparse.solver.Solver;
 
 /**
  * Implementation/ wrapper of a Cholesky Solver.
@@ -20,14 +21,14 @@ import sparse.SparseTools;
  * @author Alf
  *
  */
-public class Cholesky {
+public class Cholesky extends Solver {
 
 	
 	private DenseCholesky chl;
 	DenseMatrix b;
 	private CSRMatrix sparse_u;
 	private CSRMatrix sparse_uT;
-	
+	private CSRMatrix m; //the passed matrix
 	ArrayList<Float> z;
 
 	
@@ -40,6 +41,7 @@ public class Cholesky {
 	 */
 	public Cholesky(CSRMatrix m){
 		assert(m.nCols == m.nRows);
+		this.m = m;
 		CompRowMatrix mat = SparseTools.createCRMatrix(m);
 		
 		z = new ArrayList<>();
@@ -154,5 +156,12 @@ public class Cholesky {
 	public void solve(ArrayList<Float> b, ArrayList<Float> x){
 		forwardSubst(z, b);
 		backwardSubst(x, z);
+	}
+
+	@Override
+	public void solve(CSRMatrix mat, ArrayList<Float> b, ArrayList<Float> x) {
+		if (this.m != mat)
+			throw new RuntimeException("Cholesky solver was initialized with other matrix, can not solve other matrix!");
+		solve(b,x);
 	}
 }
