@@ -59,7 +59,9 @@ public class RAPS_modelling {
 	private CSRMatrix LTranspose;
 
 	private CSRMatrix M_constraints;
-		
+	//for the svd.
+	Linalg3x3 l = new Linalg3x3(10);// argument controls number of iterations for ed/svd decompositions 
+									//3 = very low precision but high speed. 3 seems to be good enough
 	
 	
 	
@@ -141,6 +143,7 @@ public class RAPS_modelling {
 		this.transformTarget(t);
 		for(int i = 0; i < nRefinements; i++) {
 			optimalPositions();
+			optimalRotations();
 			System.out.println("RAPS iteration " + i + " done!");
 		}
 	}
@@ -188,7 +191,6 @@ public class RAPS_modelling {
 			b.add(new Point3f(0,0,0));
 			x.add(new Point3f(1,1,1));
 		}
-		//x = hs.getVerticesAsPointArray();
 	}
 	
 	
@@ -251,32 +253,53 @@ public class RAPS_modelling {
 	 * the original and deformed positions.
 	 */
 	public void optimalRotations() {
-		//for the svd.
-		Linalg3x3 l = new Linalg3x3(10);// argument controls number of iterations for ed/svd decompositions 
-										//3 = very low precision but high speed. 3 seems to be good enough
-			
+		
 		//Note: slightly better results are achieved when the absolute of cotangent
 		//weights w_ij are used instead of plain cotangent weights.		
 			
-		//do your stuff..
+		for (int i = 0; i < rotations.size(); i++) {
+			//Matrix3f R = rotations.get(i);
+			Matrix3f S_i = new Matrix3f();
+			Vertex v_deformed = hs_deformed.getVertices().get(i);
+			Vertex v_orig = hs_originl.getVertices().get(i);
+			Iterator<HalfEdge> iter_deformed = v_deformed.iteratorVE();
+			Iterator<HalfEdge> iter_orig = v_orig.iteratorVE();
+			while (iter_deformed.hasNext() || iter_orig.hasNext()) { //throws exception if not same sized iters, bc bad!
+				HalfEdge he_orig = iter_orig.next();
+				Matrix3f ppT = compute_ppT(iter_deformed.next().asVector(), he_orig.asVector());
+				float w_ij = Math.abs(he_orig.cotanWeights()); // abs does prevent artifacts
+				ppT.mul(w_ij); 
+				S_i.add(ppT);
+			}
+			rotations.set(i, makeNewRotationFor(S_i));
+		}
 		
 	}
+	private Matrix3f makeNewRotationFor(Matrix3f S_i) {
+		Matrix3f U = new Matrix3f();
+		Matrix3f V = new Matrix3f();
+		l.svd(S_i, U, new Matrix3f(), V);
+		// make U_tilde with positive determinant by inverting last column possibly (if not already positive)
+		if (U.determinant() < 0) {
+			Vector3f lastCol = new Vector3f();
+			U.getColumn(2, lastCol);
+			lastCol.negate();
+			U.setColumn(2, lastCol);
+		}
+		U.transpose(); // U_tilde^T
+		V.mul(U); // new R_i
+		return V;
+	}
 
-	
-
-
-	
-	
-
-	private void compute_ppT(Vector3f p, Vector3f p2, Matrix3f pp2T) {
+	private Matrix3f compute_ppT(Vector3f p, Vector3f p2) {
 		assert(p.x*0==0);
 		assert(p.y*0==0);
 		assert(p.z*0==0);
-
+		Matrix3f pp2T = new Matrix3f();
 		pp2T.m00 = p.x*p2.x; pp2T.m01 = p.x*p2.y; pp2T.m02 = p.x*p2.z; 
 		pp2T.m10 = p.y*p2.x; pp2T.m11 = p.y*p2.y; pp2T.m12 = p.y*p2.z; 
 		pp2T.m20 = p.z*p2.x; pp2T.m21 = p.z*p2.y; pp2T.m22 = p.z*p2.z; 
-
+		return pp2T;
 	}
 
 
