@@ -2,7 +2,9 @@ package assignment6;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
@@ -10,6 +12,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import assignment4.LMatrices;
+import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import sparse.CSRMatrix;
@@ -108,6 +111,9 @@ public class RAPS_modelling {
 			if (keepFixed.contains(i) || deform.contains(i)) {
 				ArrayList<col_val> row = M_constraints.addRow();
 				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
+				Collections.sort(row);
+			} else {
+				M_constraints.addRow();
 			}
 		}
 			
@@ -117,6 +123,13 @@ public class RAPS_modelling {
 		LTranspose.multParallel(L_cotan, LTL);
 		L_deform.add(LTL, M_constraints);
 		solver = new Cholesky(L_deform);
+		//fill rotations with id
+		rotations = new ArrayList<Matrix3f>();
+		for (int i = 0; i < nrVertices; i++) {
+			Matrix3f id = new Matrix3f();
+			id.setIdentity();
+			rotations.add(id);
+		}
 	}
 	
 	/**
@@ -126,8 +139,10 @@ public class RAPS_modelling {
 	 */
 	public void deform(Matrix4f t, int nRefinements){
 		this.transformTarget(t);
-		
-		//RAPS algorithm,,
+		for(int i = 0; i < nRefinements; i++) {
+			optimalPositions();
+			System.out.println("Raps iteration " + i + " done!");
+		}
 	}
 	
 
@@ -171,10 +186,7 @@ public class RAPS_modelling {
 		for(int i = 0; i < hs.getVertices().size(); i++){
 			b.add(new Point3f(0,0,0));
 		}
-		x = new ArrayList<Point3f>();
-		for(int i = 0; i < hs.getVertices().size(); i++){
-			x.add(new Point3f(0,0,0));
-		}
+		x = hs.getVerticesAsPointArray();
 	}
 	
 	
@@ -183,17 +195,30 @@ public class RAPS_modelling {
 	 * Compute optimal positions for the current rotations.
 	 */
 	public void optimalPositions(){
-	
-		//do your stuff...
+		compute_b();
+		solver.solveTuple(L_deform, b, x);
+		hs_deformed.setVerticesTo(x);
 	}
 	
 
 	/**
-	 * compute the righthand side for the position optimization
+	 * compute the right hand side for the position optimization
 	 */
 	private void compute_b() {
 		reset_b();
-		//TODO: assemble b
+		//computing b according to eq on assignment sheet
+		for (Vertex v: hs_originl.getVertices()) {
+			Iterator<HalfEdge> iter = v.iteratorVE();
+			while (iter.hasNext()) {
+				HalfEdge he = iter.next();
+				Matrix3f R = new Matrix3f(rotations.get(he.start().index));
+				R.add(rotations.get(he.end().index));
+				Vector3f vec = he.asVector();
+				R.transform(vec);
+				vec.scale(he.cotanWeights()*0.5f);
+				b.get(v.index).add(vec);
+			}
+		}
 		
 		// Change to *normalized* form of b
 		ArrayList<Point3f> bNew = new ArrayList<Point3f>();

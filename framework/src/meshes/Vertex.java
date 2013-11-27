@@ -121,13 +121,8 @@ public class Vertex extends HEElement{
 		Vector3f sum = new Vector3f();
 		while(iter.hasNext()) {
 			HalfEdge current = iter.next();
-			// demeter is crying qq
-			float alpha = current.getNext().getIncidentAngle();
-			float beta = current.getOpposite().getNext().getIncidentAngle();
-			float cot_alpha = MyMath.cot(alpha);
-			float cot_beta = MyMath.cot(beta);
 			Vector3f v = current.asVector();
-			v.scale(cot_alpha + cot_beta);
+			v.scale(current.cotanWeights());
 			sum.add(v);
 		}		
 		return 1/(getAMixed()*4)*sum.length();

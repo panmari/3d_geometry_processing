@@ -29,6 +29,9 @@ public abstract class Solver {
 			bX.add(t.x);
 			bY.add(t.y);
 			bZ.add(t.z);
+			xX.add(t.x);
+			xY.add(t.y);
+			xZ.add(t.z);
 		}
 		solve(m, bX, xX);
 		solve(m, bY, xY);

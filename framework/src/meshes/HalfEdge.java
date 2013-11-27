@@ -2,6 +2,8 @@ package meshes;
 
 import javax.vecmath.Vector3f;
 
+import myutils.MyMath;
+
 /**
  * Implementation of a half-edge for the {@link HalfEdgeStructure}
  * @author Alf
@@ -148,4 +150,11 @@ public class HalfEdge extends HEElement{
 		return asVector().lengthSquared();
 	}
 	
+	public float cotanWeights() {
+		float alpha = this.getNext().getIncidentAngle();
+		float beta = this.getOpposite().getNext().getIncidentAngle();
+		float cot_alpha = MyMath.cot(alpha);
+		float cot_beta = MyMath.cot(beta);
+		return cot_alpha + cot_beta;
+	}
 }

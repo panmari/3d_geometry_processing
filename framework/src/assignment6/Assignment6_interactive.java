@@ -2,20 +2,14 @@ package assignment6;
 
 import glWrapper.GLUpdatableHEStructure;
 
-import java.io.IOException;
-
 import javax.vecmath.Vector3f;
 
 import meshes.HEData3d;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import meshes.WireframeMesh;
-import meshes.exception.DanglingTriangleException;
-import meshes.exception.MeshNotOrientedException;
 import meshes.reader.ObjReader;
 import openGL.MyPickingDisplay;
-import assignment4.Assignment4_2_smoothing;
-import assignment4.generatedMeshes.Cylinder2;
 
 
 
@@ -61,7 +55,7 @@ public class Assignment6_interactive {
 
 	
 	/**
-	 * demonstrates the usage of an updateable GlHalfEdgeStructure
+	 * demonstrates the usage of an updatable GlHalfEdgeStructure
 	 * @throws Exception
 	 */
 	private static void interactivityDemo() throws Exception {
