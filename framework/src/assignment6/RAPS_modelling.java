@@ -17,6 +17,7 @@ import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import sparse.CSRMatrix;
 import sparse.CSRMatrix.col_val;
+import sparse.solver.JMTSolver;
 import sparse.solver.Solver;
 
 
@@ -42,7 +43,7 @@ public class RAPS_modelling {
 	//boundary vertices.
 	//It can be computed once at setup time and then be reused
 	//to compute the matrix needed for position optimization
-	CSRMatrix L_cotan;
+	public CSRMatrix L_cotan;
 	//The matrix used when solving for optimal positions
 	CSRMatrix L_deform;
 	
@@ -62,6 +63,8 @@ public class RAPS_modelling {
 	//for the svd.
 	Linalg3x3 l = new Linalg3x3(10);// argument controls number of iterations for ed/svd decompositions 
 									//3 = very low precision but high speed. 3 seems to be good enough
+
+	private ArrayList<Point3f> bNormed;
 	
 	private final static float w = 100f; //weight of user constraint
 
@@ -125,6 +128,7 @@ public class RAPS_modelling {
 		LTranspose.multParallel(L_cotan, LTL);
 		L_deform.add(LTL, M_constraints);
 		solver = new Cholesky(L_deform);
+		//solver = new JMTSolver();
 		//fill rotations with id
 		rotations = new ArrayList<Matrix3f>();
 		for (int i = 0; i < nrVertices; i++) {
@@ -180,7 +184,7 @@ public class RAPS_modelling {
 	 */
 	public void optimalPositions(){
 		compute_b();
-		solver.solveTuple(L_deform, b, x);
+		solver.solveTuple(L_deform, bNormed, x);
 		hs_deformed.setVerticesTo(x);
 	}
 	
@@ -199,19 +203,18 @@ public class RAPS_modelling {
 				R.add(rotations.get(he.end().index));
 				Vector3f vec = he.asVector();
 				R.transform(vec);
-				vec.scale(he.cotanWeights()*0.5f);
+				vec.scale(he.cotanWeights()*-0.5f);
 				b.get(v.index).add(vec);
 			}
 		}
 		
-		// Change to *normalized* form of b
-		ArrayList<Point3f> bNew = new ArrayList<Point3f>();
-		LTranspose.multTuple(b, bNew);
+		// Change to *normalized* form of b, keep b for tests
+		bNormed = new ArrayList<Point3f>();
+		LTranspose.multTuple(b, bNormed);
 		ArrayList<Point3f> verticesNew = new ArrayList<Point3f>();
 		M_constraints.multTuple(hs_deformed.getVerticesAsPointArray(), verticesNew);
 		for (int i = 0; i < b.size(); i++)
-			bNew.get(i).add(verticesNew.get(i));
-		b = bNew;
+			bNormed.get(i).add(verticesNew.get(i));
 	}
 
 

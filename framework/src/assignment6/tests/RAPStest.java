@@ -16,7 +16,7 @@ import meshes.WireframeMesh;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import static myutils.MyJunitAsserts.*;
 import assignment4.generatedMeshes.Cylinder2;
 import assignment6.Constraint;
 import assignment6.RAPS_modelling;
@@ -25,6 +25,8 @@ import static assignment6.Assignment6_examples.*;
 public class RAPStest {
 
 	private RAPS_modelling modeler;
+	private HashSet<Integer> boundary1;
+	private HashSet<Integer> boundary2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,29 +39,29 @@ public class RAPStest {
 		GLUpdatableHEStructure glhs = new GLUpdatableHEStructure(hs);
 		//generate he struture
 		//mask of the boundary vertices
-		HashSet<Integer> boundary1 = collectBoundary(hs, 3, new Constraint() {
+		boundary1 = collectBoundary(hs, 3, new Constraint() {
 			public boolean isEligible(Vertex v) {
 				return v.getPos().x < 0.5f;
 			}
 		});
 		
 		//mask of the vertices to transform
-		HashSet<Integer> boundary2 = collectBoundary(hs, 3, new Constraint() {
+		boundary2 = collectBoundary(hs, 3, new Constraint() {
 			public boolean isEligible(Vertex v) {
 				return v.getPos().x > 0;
 			}
 		});		
 		modeler = new RAPS_modelling(hs);
 		
-		modeler.keep(boundary1);
-		modeler.target(boundary2);
-		modeler.updateL();
-		
 		
 	}
 
 	@Test
 	public void testSimpleTranslation() {
+		modeler.keep(boundary1);
+		modeler.target(boundary2);
+		modeler.updateL();
+		
 		//Demo 1: a simple deformation
 		Matrix4f t = new Matrix4f();
 		t.setIdentity();
@@ -71,5 +73,24 @@ public class RAPStest {
 		//show some points in the middle of bent area
 		for (int i = 500; i < 550; i++)
 			System.out.println(initial.get(i) + "\t" + modeler.x.get(i));
+	}	
+	
+	@Test
+	public void testNoDeformation() {
+		modeler.keep(new HashSet<Integer>());
+		modeler.target(new HashSet<Integer>());
+		modeler.updateL();
+		//Demo 1: a simple deformation
+		Matrix4f t = new Matrix4f();
+		t.setIdentity();
+		//t.setTranslation(new Vector3f(-0.8f,1.5f,0));
+		
+		//where the magic will happen
+		modeler.deform(t, 1);
+		ArrayList<Point3f> p = modeler.getOriginalCopy().getVerticesAsPointArray();
+		ArrayList<Point3f> Lp = new ArrayList<Point3f>();
+		modeler.L_cotan.multTuple(p, Lp);
+		for (int i = 500; i < 550; i++)
+			assertEquals(Lp.get(i), modeler.b.get(i));
 	}	
 }
