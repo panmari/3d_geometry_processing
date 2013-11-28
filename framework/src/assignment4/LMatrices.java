@@ -50,13 +50,17 @@ public class LMatrices {
 	 * @param hs
 	 * @return
 	 */
-	public static CSRMatrix mixedCotanLaplacian(HalfEdgeStructure hs){
+	public static CSRMatrix mixedCotanLaplacian(HalfEdgeStructure hs, boolean normalized){
 		CSRMatrix m = new CSRMatrix(0, hs.getVertices().size());
 		for(Vertex v: hs.getVertices()) {
 			ArrayList<col_val> row = m.addRow();
 			if (v.isOnBoundary()) 
 				continue; //leave row empty
-			float aMixed = v.getAMixed();
+			float aMixed;
+			if (normalized)
+				aMixed = v.getAMixed();
+			else
+				aMixed = 1;
 			//copy paste from vertex.getCurvature() (I'm so sorry)
 			Iterator<HalfEdge> iter = v.iteratorVE();
 			float sum = 0;
@@ -76,6 +80,10 @@ public class LMatrices {
 			Collections.sort(row);
 		}
 		return m;
+	}
+	
+	public static CSRMatrix mixedCotanLaplacian(HalfEdgeStructure hs){
+		return mixedCotanLaplacian(hs, true);
 	}
 	
 	/**

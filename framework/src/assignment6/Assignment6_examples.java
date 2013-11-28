@@ -88,7 +88,7 @@ public class Assignment6_examples {
 		modeler.updateL();
 		
 		//where the magic will happen
-		modeler.deform(t, nRefinements);
+		modeler.deform(t, 1);
 
 
 		glhs.updatePosition();

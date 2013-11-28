@@ -63,7 +63,8 @@ public class RAPS_modelling {
 	Linalg3x3 l = new Linalg3x3(10);// argument controls number of iterations for ed/svd decompositions 
 									//3 = very low precision but high speed. 3 seems to be good enough
 	
-	
+	private final static float w = 100f; //weight of user constraint
+
 	
 	/**
 	 * The mesh to be deformed
@@ -78,7 +79,7 @@ public class RAPS_modelling {
 		
 		
 		init_b_x(hs);
-		L_cotan = LMatrices.mixedCotanLaplacian(hs);
+		L_cotan = LMatrices.mixedCotanLaplacian(hs, false);
 		
 	}
 	
@@ -106,7 +107,6 @@ public class RAPS_modelling {
 	 * Good place to do the cholesky decompositoin
 	 */
 	public void updateL() {
-		float w = 10000f; //weight of user constraint
 		int nrVertices = hs_originl.getVertices().size();
 		M_constraints = new CSRMatrix(0, nrVertices);
 		for (int i = 0; i < nrVertices; i++) {
