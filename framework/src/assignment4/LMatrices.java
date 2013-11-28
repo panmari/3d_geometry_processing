@@ -60,7 +60,7 @@ public class LMatrices {
 			if (normalized)
 				aMixed = v.getAMixed();
 			else
-				aMixed = 1;
+				aMixed = 1/2f;
 			//copy paste from vertex.getCurvature() (I'm so sorry)
 			Iterator<HalfEdge> iter = v.iteratorVE();
 			float sum = 0;

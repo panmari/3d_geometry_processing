@@ -160,30 +160,12 @@ public class RAPS_modelling {
 			}
 		}
 	}
-	
-	
-	/**
-	 * ArrayList keyed with the vertex indices.
-	 * @return
-	 */
 	public ArrayList<Matrix3f> getRotations() {
 		return rotations;
 	}
-
-	/**
-	 * Getter for undeformed version of the mesh
-	 * @return
-	 */
 	public HalfEdgeStructure getOriginalCopy() {
 		return hs_originl;
 	}
-	
-	
-
-	/**
-	 * initialize b and x
-	 * @param hs
-	 */
 	private void init_b_x(HalfEdgeStructure hs) {
 		b = new ArrayList<Point3f>();
 		x = new ArrayList<Point3f>();
@@ -191,9 +173,7 @@ public class RAPS_modelling {
 			b.add(new Point3f(0,0,0));
 			x.add(new Point3f(1,1,1));
 		}
-	}
-	
-	
+	}	
 	
 	/**
 	 * Compute optimal positions for the current rotations.
@@ -211,7 +191,7 @@ public class RAPS_modelling {
 	private void compute_b() {
 		reset_b();
 		//computing b according to eq on assignment sheet
-		for (Vertex v: hs_deformed.getVertices()) {
+		for (Vertex v: hs_originl.getVertices()) {
 			Iterator<HalfEdge> iter = v.iteratorVE();
 			while (iter.hasNext()) {
 				HalfEdge he = iter.next();
