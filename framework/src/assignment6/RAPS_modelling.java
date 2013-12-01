@@ -31,7 +31,7 @@ public class RAPS_modelling {
 
 	//ArrayList containing all optimized rotations,
 	//keyed by vertex.index
-	ArrayList<Matrix3f> rotations;
+	public ArrayList<Matrix3f> rotations;
 	
 	//A copy of the original half-edge structure. This is needed  to compute the correct
 	//rotation matrices.
@@ -61,7 +61,8 @@ public class RAPS_modelling {
 
 	private CSRMatrix M_constraints;
 	//for the svd.
-	Linalg3x3 l = new Linalg3x3(10);// argument controls number of iterations for ed/svd decompositions 
+	SVDProvider l = //new LinalgVecmath();
+									new Linalg3x3(3);// argument controls number of iterations for ed/svd decompositions 
 									//3 = very low precision but high speed. 3 seems to be good enough
 
 	private ArrayList<Point3f> bNormed;
@@ -121,14 +122,17 @@ public class RAPS_modelling {
 				M_constraints.addRow();
 			}
 		}
-			
+		
 		L_deform = new CSRMatrix(0, nrVertices);
 		CSRMatrix LTL = new CSRMatrix(0, nrVertices);
 		LTranspose = L_cotan.transposed();
 		LTranspose.multParallel(L_cotan, LTL);
 		L_deform.add(LTL, M_constraints);
-		solver = new Cholesky(L_deform);
-		//solver = new JMTSolver();
+		if (deform.isEmpty())
+			solver = new JMTSolver();
+		else
+			solver = new Cholesky(L_deform);
+		
 		//fill rotations with id
 		rotations = new ArrayList<Matrix3f>();
 		for (int i = 0; i < nrVertices; i++) {
@@ -146,8 +150,8 @@ public class RAPS_modelling {
 	public void deform(Matrix4f t, int nRefinements){
 		this.transformTarget(t);
 		for(int i = 0; i < nRefinements; i++) {
+			optimalRotations();	
 			optimalPositions();
-			optimalRotations();
 			System.out.println("RAPS iteration " + i + " done!");
 		}
 	}
@@ -241,7 +245,6 @@ public class RAPS_modelling {
 		//weights w_ij are used instead of plain cotangent weights.		
 			
 		for (int i = 0; i < rotations.size(); i++) {
-			//Matrix3f R = rotations.get(i);
 			Matrix3f S_i = new Matrix3f();
 			Vertex v_deformed = hs_deformed.getVertices().get(i);
 			Vertex v_orig = hs_originl.getVertices().get(i);
@@ -249,8 +252,9 @@ public class RAPS_modelling {
 			Iterator<HalfEdge> iter_orig = v_orig.iteratorVE();
 			while (iter_deformed.hasNext() || iter_orig.hasNext()) { //throws exception if not same sized iters, bc bad!
 				HalfEdge he_orig = iter_orig.next();
-				Matrix3f ppT = compute_ppT(iter_deformed.next().asVector(), he_orig.asVector());
-				float w_ij = Math.abs(he_orig.cotanWeights()); // abs does prevent artifacts
+				HalfEdge he_deformed = iter_deformed.next();
+				Matrix3f ppT = compute_ppT(he_orig.asVector(), he_deformed.asVector());
+				float w_ij = Math.abs(he_deformed.cotanWeights()); // abs does prevent artifacts
 				ppT.mul(w_ij); 
 				S_i.add(ppT);
 			}
@@ -259,9 +263,17 @@ public class RAPS_modelling {
 		
 	}
 	private Matrix3f makeNewRotationFor(Matrix3f S_i) {
+		if (S_i.epsilonEquals(new Matrix3f(), 0.01f)) {
+			//return id if null matrix given
+			Matrix3f id = new Matrix3f();
+			id.setIdentity();
+			return id;
+		}
+		
 		Matrix3f U = new Matrix3f();
 		Matrix3f V = new Matrix3f();
-		l.svd(S_i, U, new Matrix3f(), V);
+		Matrix3f D = new Matrix3f();
+		l.svd(S_i, U, D, V);
 		// make U_tilde with positive determinant by inverting last column possibly (if not already positive)
 		if (U.determinant() < 0) {
 			Vector3f lastCol = new Vector3f();
@@ -271,6 +283,9 @@ public class RAPS_modelling {
 		}
 		U.transpose(); // U_tilde^T
 		V.mul(U); // new R_i
+		//TODO: check if this is necessary...
+		if (Float.isNaN(V.determinant()))
+			V.setIdentity();
 		return V;
 	}
 
@@ -284,12 +299,4 @@ public class RAPS_modelling {
 		pp2T.m20 = p.z*p2.x; pp2T.m21 = p.z*p2.y; pp2T.m22 = p.z*p2.z; 
 		return pp2T;
 	}
-
-
-	
-	
-
-
-
-
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -16,6 +17,7 @@ import meshes.WireframeMesh;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import static myutils.MyJunitAsserts.*;
 import assignment4.generatedMeshes.Cylinder2;
 import assignment6.Constraint;
@@ -71,10 +73,13 @@ public class RAPStest {
 		modeler.deform(t, 1);
 		ArrayList<Point3f> initial = modeler.getOriginalCopy().getVerticesAsPointArray();
 		//show some points in the middle of bent area
-		for (int i = 500; i < 550; i++)
-			System.out.println(initial.get(i) + "\t" + modeler.x.get(i));
+//		for (int i = 500; i < 550; i++)
+//			System.out.println(initial.get(i) + "\t" + modeler.x.get(i));
 	}	
 	
+	/**
+	 * Rotations should stay identity
+	 */
 	@Test
 	public void testNoDeformation() {
 		modeler.keep(new HashSet<Integer>());
@@ -86,11 +91,22 @@ public class RAPStest {
 		//t.setTranslation(new Vector3f(-0.8f,1.5f,0));
 		
 		//where the magic will happen
-		modeler.deform(t, 1);
+		modeler.deform(t, 5);
 		ArrayList<Point3f> p = modeler.getOriginalCopy().getVerticesAsPointArray();
 		ArrayList<Point3f> Lp = new ArrayList<Point3f>();
 		modeler.L_cotan.multTuple(p, Lp);
-		for (int i = 500; i < 550; i++)
+		Matrix3f id = new Matrix3f();
+		
+		for (int i = 0; i < modeler.b.size(); i++) {
+			//ignore boundary
+			if (modeler.getOriginalCopy().getVertices().get(i).isOnBoundary())
+				continue;
 			assertEquals(Lp.get(i), modeler.b.get(i));
+		}
+		id.setIdentity();
+		for (int i = 0; i < modeler.rotations.size(); i++) {
+			Matrix3f rot = modeler.rotations.get(i);
+			assertEquals(id, rot);
+		}
 	}	
 }
