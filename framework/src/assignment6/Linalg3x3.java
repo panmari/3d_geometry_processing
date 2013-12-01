@@ -1,5 +1,6 @@
 package assignment6;
 
+import javax.vecmath.GMatrix;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -22,7 +23,7 @@ import javax.vecmath.Vector3f;
  * @author Alf
  *
  */
-public class Linalg3x3 {
+public class Linalg3x3 implements SVDProvider {
 
 	
 	//allocate data only once.
