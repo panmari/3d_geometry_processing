@@ -150,8 +150,8 @@ public class RAPS_modelling {
 	public void deform(Matrix4f t, int nRefinements){
 		this.transformTarget(t);
 		for(int i = 0; i < nRefinements; i++) {
-			optimalRotations();	
 			optimalPositions();
+			optimalRotations();	
 			System.out.println("RAPS iteration " + i + " done!");
 		}
 	}
