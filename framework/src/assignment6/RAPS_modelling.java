@@ -263,13 +263,6 @@ public class RAPS_modelling {
 		
 	}
 	private Matrix3f makeNewRotationFor(Matrix3f S_i) {
-		if (S_i.epsilonEquals(new Matrix3f(), 0.01f)) {
-			//return id if null matrix given
-			Matrix3f id = new Matrix3f();
-			id.setIdentity();
-			return id;
-		}
-		
 		Matrix3f U = new Matrix3f();
 		Matrix3f V = new Matrix3f();
 		Matrix3f D = new Matrix3f();
@@ -283,9 +276,6 @@ public class RAPS_modelling {
 		}
 		U.transpose(); // U_tilde^T
 		V.mul(U); // new R_i
-		//TODO: check if this is necessary...
-		if (Float.isNaN(V.determinant()))
-			V.setIdentity();
 		return V;
 	}
 

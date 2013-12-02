@@ -78,7 +78,7 @@ public class Assignment6_examples {
 			HashSet<Integer> set2, Matrix4f t, int nRefinements) {
 		MyDisplay disp = new MyDisplay();
 		GLUpdatableHEStructure glhs = new GLUpdatableHEStructure(hs);
-		
+		glhs.setName("Deformed");
 		disp.addToDisplay(glhs);
 		
 		RAPS_modelling modeler = new RAPS_modelling(hs);
@@ -88,8 +88,7 @@ public class Assignment6_examples {
 		modeler.updateL();
 		
 		//where the magic will happen
-		modeler.deform(t, 1);
-
+		modeler.deform(t,50);
 
 		glhs.updatePosition();
 		disp.updateDisplay();

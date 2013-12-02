@@ -1,6 +1,5 @@
 package assignment6;
 
-import javax.vecmath.GMatrix;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -198,6 +197,11 @@ public class Linalg3x3 implements SVDProvider {
 		float s = R.getElement(p, q)/ (float) Math.sqrt(
 				R.getElement(q, q)*R.getElement(q, q) + R.getElement(p, q)*R.getElement(p, q) );
 
+		//invalidity...
+		boolean r_pq_zero = R.getElement(p, q)*R.getElement(p, q) < 1e-10;
+		c = r_pq_zero? 1:c;
+		s = r_pq_zero? 0:s;
+		
 		buff.setIdentity();
 		buff.setElement(p,p,c);
 		buff.setElement(p,q,-s);
@@ -247,9 +251,14 @@ public class Linalg3x3 implements SVDProvider {
 		boolean b = ata.getElement(p,q)*ata.getElement(p,q) <
 				Math.pow((ata.getElement(p,p) -
 						ata.getElement(q,q)),2);
+				
+				
 		float omega = 1.f/(float)Math.sqrt(ata.getElement(p,q)*ata.getElement(p,q) +
 				Math.pow((ata.getElement(p,p) -
 						ata.getElement(q,q)),2));
+		
+		//Look out for NANs
+		b = b && (omega*0 == 0);
 		
 		s= (b? omega* ata.getElement(p,q) : sqrt_0p5);
 		c= (b? omega* (ata.getElement(p,p) -ata.getElement(q,q)) : sqrt_0p5);
