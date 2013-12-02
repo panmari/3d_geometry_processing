@@ -112,16 +112,7 @@ public class RAPS_modelling {
 	 */
 	public void updateL() {
 		int nrVertices = hs_originl.getVertices().size();
-		M_constraints = new CSRMatrix(0, nrVertices);
-		for (int i = 0; i < nrVertices; i++) {
-			if (keepFixed.contains(i) || deform.contains(i)) {
-				ArrayList<col_val> row = M_constraints.addRow();
-				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
-				//Collections.sort(row);  //no need to sort, since only 1 entry
-			} else {
-				M_constraints.addRow();
-			}
-		}
+		updateConstraints();
 		
 		L_deform = new CSRMatrix(0, nrVertices);
 		CSRMatrix LTL = new CSRMatrix(0, nrVertices);
@@ -139,6 +130,20 @@ public class RAPS_modelling {
 			Matrix3f id = new Matrix3f();
 			id.setIdentity();
 			rotations.add(id);
+		}
+	}
+	
+	private void updateConstraints() {
+		int nrVertices = hs_originl.getVertices().size();
+		M_constraints = new CSRMatrix(0, nrVertices);
+		for (int i = 0; i < nrVertices; i++) {
+			if (keepFixed.contains(i) || deform.contains(i)) {
+				ArrayList<col_val> row = M_constraints.addRow();
+				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
+				//Collections.sort(row);  //no need to sort, since only 1 entry
+			} else {
+				M_constraints.addRow();
+			}
 		}
 	}
 	
