@@ -3,6 +3,7 @@ package assignment6;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -54,6 +55,7 @@ public class RAPS_modelling {
 	//sets of vertex indices that are constrained.
 	private HashSet<Integer> keepFixed;
 	private HashSet<Integer> deform;
+	private HashMap<HalfEdge, Float> cotanWeights;
 	
 	private Solver solver;
 
@@ -80,7 +82,7 @@ public class RAPS_modelling {
 		
 		this.keepFixed = new HashSet<>();
 		this.deform = new HashSet<>();
-		
+		this.cotanWeights = new HashMap<HalfEdge, Float>();
 		
 		init_b_x(hs);
 		L_cotan = LMatrices.mixedCotanLaplacian(hs, false);
@@ -113,6 +115,9 @@ public class RAPS_modelling {
 	public void updateL() {
 		int nrVertices = hs_originl.getVertices().size();
 		updateConstraints();
+		for (HalfEdge he: hs_originl.getHalfEdges()) {
+			cotanWeights.put(he, he.cotanWeights());
+		}
 		
 		L_deform = new CSRMatrix(0, nrVertices);
 		CSRMatrix LTL = new CSRMatrix(0, nrVertices);
@@ -137,12 +142,12 @@ public class RAPS_modelling {
 		int nrVertices = hs_originl.getVertices().size();
 		M_constraints = new CSRMatrix(0, nrVertices);
 		for (int i = 0; i < nrVertices; i++) {
+			ArrayList<col_val> row = M_constraints.addRow();
 			if (keepFixed.contains(i) || deform.contains(i)) {
-				ArrayList<col_val> row = M_constraints.addRow();
 				row.add(new col_val(i, w*w)); //add w square to constrained vertex diagonal
 				//Collections.sort(row);  //no need to sort, since only 1 entry
-			} else {
-				M_constraints.addRow();
+			} else if (hs_originl.getVertices().get(i).isOnBoundary()) {
+				row.add(new col_val(i, w));
 			}
 		}
 	}
@@ -212,7 +217,12 @@ public class RAPS_modelling {
 				R.add(rotations.get(he.end().index));
 				Vector3f vec = he.asVector();
 				R.transform(vec);
-				vec.scale(he.cotanWeights()*-0.5f);
+				if (v.isOnBoundary())
+					vec.scale(0);
+				else {
+					float w = cotanWeights.get(he)*-0.5f;
+					vec.scale(w);
+				}
 				b.get(v.index).add(vec);
 			}
 		}
@@ -244,11 +254,7 @@ public class RAPS_modelling {
 	 * Compute the optimal rotations for 1-neighborhoods, given
 	 * the original and deformed positions.
 	 */
-	public void optimalRotations() {
-		
-		//Note: slightly better results are achieved when the absolute of cotangent
-		//weights w_ij are used instead of plain cotangent weights.		
-			
+	public void optimalRotations() {			
 		for (int i = 0; i < rotations.size(); i++) {
 			Matrix3f S_i = new Matrix3f();
 			Vertex v_deformed = hs_deformed.getVertices().get(i);
@@ -259,7 +265,7 @@ public class RAPS_modelling {
 				HalfEdge he_orig = iter_orig.next();
 				HalfEdge he_deformed = iter_deformed.next();
 				Matrix3f ppT = compute_ppT(he_orig.asVector(), he_deformed.asVector());
-				float w_ij = Math.abs(he_deformed.cotanWeights()); // abs does prevent artifacts
+				float w_ij = Math.abs(cotanWeights.get(he_orig)); // abs does prevent artifacts
 				ppT.mul(w_ij); 
 				S_i.add(ppT);
 			}
