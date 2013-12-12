@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import javax.vecmath.Tuple2f;
 import javax.vecmath.Tuple3f;
 
 import openGL.objects.Transformation;
@@ -88,6 +89,20 @@ public abstract class GLDisplayable {
 			dataArray[idx*3] = t.x;
 			dataArray[idx*3 + 1] = t.y;
 			dataArray[idx*3 + 2] = t.z;
+		}
+		if (name.equals("position"))
+			this.addElement(dataArray, Semantic.POSITION, 3);
+		else
+			this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
+	}
+	
+	public <T extends Tuple2f> void add2D(ArrayList<T> data, String name) {
+		float[] dataArray = new float[data.size()*3];
+		for (int idx = 0; idx < data.size(); idx++) {
+			Tuple2f t = data.get(idx);
+			dataArray[idx*3] = t.x;
+			dataArray[idx*3 + 1] = t.y;
+			dataArray[idx*3 + 2] = 1;
 		}
 		if (name.equals("position"))
 			this.addElement(dataArray, Semantic.POSITION, 3);

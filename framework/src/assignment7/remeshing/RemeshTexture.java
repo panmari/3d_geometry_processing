@@ -18,6 +18,9 @@ public class RemeshTexture {
 	private HashMap<Point2i, List<Face>> textureGrid = new HashMap<>();
 	private static final int CELL_NUMBER = 10;
 
+	/**
+	 * @param mesh a Half Edge Structure that needs to be remeshed.
+	 */
 	public RemeshTexture(HalfEdgeStructure mesh) {
 		for (int i = 0; i < CELL_NUMBER; i++) {
 			for (int j = 0; j < CELL_NUMBER; j++) {
