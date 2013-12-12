@@ -3,6 +3,7 @@ package meshes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 
 /**
@@ -15,10 +16,12 @@ public class WireframeMesh {
 
 	public ArrayList<Point3f> vertices;
 	public ArrayList<int[]> faces;
+	public ArrayList<Point2f> texCoords;
 	
 	public WireframeMesh(){
 		vertices = new ArrayList<Point3f>();
 		faces = new ArrayList<>();
+		texCoords = new ArrayList<>();
 	}
 
 	private int[] currentFace = new int[3];

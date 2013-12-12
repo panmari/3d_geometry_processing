@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -20,18 +21,13 @@ public class ObjReader {
 	public static class RawData{
 		
 		public ArrayList<Point3f> vertices = new ArrayList<Point3f>();
-		public ArrayList<float[]> texCoords = new ArrayList<float[]>();
+		public ArrayList<Point2f> texCoords = new ArrayList<>();
 		public ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
 		public ArrayList<int[][]> faces = new ArrayList<int[][]>();
 		public boolean hasNormals, hasTex;
 		public float xMin, xMax, yMin, yMax, zMin, zMax;
 		
 		public RawData(){
-			vertices = new ArrayList<Point3f>();
-			texCoords = new ArrayList<float[]>();
-			normals = new ArrayList<Vector3f>();
-			faces = new ArrayList<int[][]>();
-			
 			hasNormals = hasTex = false;
 			
 			xMin = Float.MAX_VALUE;
@@ -80,7 +76,7 @@ public class ObjReader {
 		
 		myMesh.vertices = data.vertices;
 		myMesh.faces = new ArrayList<int[]>();
-		
+		myMesh.texCoords = data.texCoords;
 		for(int[][] fc : data.faces){
 			int[] face = new int[fc.length];
 			for(int i = 0; i < face.length; i++){
@@ -150,9 +146,9 @@ public class ObjReader {
 				data.normals.add(n);
 			} else if (s[0].compareTo("vt") == 0) {
 				// Texture
-				float[] t = new float[2];
-				t[0] = Float.valueOf(s[1]).floatValue();
-				t[1] = Float.valueOf(s[2]).floatValue();
+				Point2f t = new Point2f();
+				t.x = Float.valueOf(s[1]).floatValue();
+				t.y = Float.valueOf(s[2]).floatValue();
 				data.texCoords.add(t);
 			} else if (s[0].compareTo("f") == 0) {
 				// Indices

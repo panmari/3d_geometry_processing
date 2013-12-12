@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
@@ -37,6 +38,7 @@ public class HalfEdgeStructure {
 	private ArrayList<HalfEdge> edges;
 	ArrayList<Face> faces;
 	ArrayList<Vertex> vertices;
+	public ArrayList<Point2f> texCoords;
 	
 	public HalfEdgeStructure(){
 		faces = new ArrayList<Face>();
@@ -150,11 +152,13 @@ public class HalfEdgeStructure {
 	public void init(WireframeMesh m) throws MeshNotOrientedException, DanglingTriangleException{
 		
 		//add all vertices
+		Iterator<Point2f> iter = m.texCoords.iterator();
 		for(Point3f v: m.vertices){
-			vertices.add(new Vertex(v));
+			vertices.add(new Vertex(v, iter.next()));
 			
 		}
-		
+		this.texCoords = m.texCoords;
+
 		// local vars... 
 		int j;
 		Point2i key;

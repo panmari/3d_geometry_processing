@@ -3,6 +3,7 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
@@ -21,13 +22,20 @@ public class Vertex extends HEElement{
 	
 	/**The index of the vertex, mainly used for toString()*/
 	public int index;
+	public Point2f tex;
 
 	public Vertex(Point3f v) {
-		pos = new Point3f(v);
-		anEdge = null;
+		this(v, null);
 	}
 	
 	
+	public Vertex(Point3f v, Point2f tex) {
+		pos = new Point3f(v);
+		anEdge = null;
+		this.tex = tex;
+	}
+
+
 	public Point3f getPos() {
 		return pos;
 	}

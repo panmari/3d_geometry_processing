@@ -1,10 +1,12 @@
 package meshes;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point4f;
 import javax.vecmath.Vector3f;
@@ -20,6 +22,7 @@ public class Face extends HEElement {
 
 	//an adjacent edge, which is positively oriented with respect to the face.
 	private HalfEdge anEdge;
+	private Matrix3f texEdgeFunctions;
 	
 	public Face(){
 		anEdge = null;
@@ -206,5 +209,32 @@ public class Face extends HEElement {
 		n.cross(iter.next().asVector(), iter.next().asVector());
 		n.normalize();
 		return n;
+	}
+
+	public boolean contains(Point2f texCoord) {
+		Vector3f v = bilinearInterpolationWeights(texCoord);
+		for (float f: new float[]{v.x, v.y, v.z}) {
+			if (f < 0)
+				return false;
+		}
+		return true;
+	}
+
+	public Vector3f bilinearInterpolationWeights(Point2f texCoord) {
+		if (texEdgeFunctions == null) {
+			texEdgeFunctions = new Matrix3f();
+			Iterator<Vertex> iter = this.iteratorFV();
+			Point2f v1 = iter.next().tex;
+			Point2f v2 = iter.next().tex;
+			Point2f v3 = iter.next().tex;
+			texEdgeFunctions.setRow(0, v1.x, v1.y, 1);
+			texEdgeFunctions.setRow(1, v2.x, v2.y, 1);
+			texEdgeFunctions.setRow(2, v3.x, v3.y, 1);
+			texEdgeFunctions.invert();
+			texEdgeFunctions.transpose();
+		}
+		Vector3f v = new Vector3f(texCoord.x, texCoord.y, 1);
+		texEdgeFunctions.transform(v);
+		return v;
 	}
 }
