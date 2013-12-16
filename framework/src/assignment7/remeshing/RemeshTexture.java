@@ -1,10 +1,13 @@
 package assignment7.remeshing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.media.j3d.BoundingBox;
+import javax.media.j3d.Bounds;
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -28,11 +31,9 @@ public class RemeshTexture {
 			}
 		}
 		for(Face f: mesh.getFaces()) {
-			// assert that indices are within +/-1 of each other.
-			Iterator<Vertex> iter = f.iteratorFV();
-			while (iter.hasNext()) {
-				Vertex v = iter.next();
-				Point2i cell = cellCoordinate(v.tex);
+			// assert that the faces are small enough, ie indices are within +/-1 of each other.
+			for(Point2f corner: new BoundingBox(f)) {
+				Point2i cell = cellCoordinate(corner);
 				textureGrid.get(cell).add(f);
 			}
 		}
@@ -66,4 +67,38 @@ public class RemeshTexture {
 		interpolatedPosition.scaleAdd(weights.z, new Point3f(iterV.next().getPos()), interpolatedPosition);
 		return interpolatedPosition;
 	}
+	
+	/**
+	 * Creates a bounding box around the texture coordinates of the given face. 
+	 * The corners of the bounding box can be iterated.
+	 */
+	private class BoundingBox implements Iterable<Point2f>{
+		Point2f upperLeft = new Point2f(Float.MIN_VALUE, Float.MIN_VALUE);
+		Point2f lowerRight = new Point2f(Float.MAX_VALUE, Float.MAX_VALUE);
+		BoundingBox(Face f) {
+			Iterator<Vertex> iter = f.iteratorFV();
+			while (iter.hasNext()) {
+				Point2f tex = iter.next().tex;
+				if (upperLeft.x < tex.x) 
+					upperLeft.x = tex.x;
+				if (upperLeft.y < tex.y) 
+					upperLeft.y = tex.y;
+				if (lowerRight.x > tex.x) 
+					lowerRight.x = tex.x;
+				if (lowerRight.y > tex.y) 
+					lowerRight.y = tex.y;
+			}
+		}
+		
+		/**
+		 * Iterate over the corners of this bounding box
+		 */
+		@Override
+		public Iterator<Point2f> iterator() {
+			Point2f[] p = new Point2f[]{upperLeft, new Point2f(upperLeft.x, lowerRight.y), 
+					lowerRight, new Point2f(lowerRight.x, upperLeft.y)};
+			return Arrays.asList(p).iterator();
+		}
+	}
+	
 }

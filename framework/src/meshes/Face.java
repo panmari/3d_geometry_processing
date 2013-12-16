@@ -211,7 +211,7 @@ public class Face extends HEElement {
 		return n;
 	}
 	
-	private final float EPSILON = -0.01f;
+	private final float EPSILON = -0.0001f;
 	
 	public boolean contains(Point2f texCoord) {
 		Vector3f v = bilinearInterpolationWeights(texCoord);
