@@ -56,7 +56,10 @@ public class HalfEdgeStructure {
 		faces = new ArrayList<Face>();
 		edges = new ArrayList<HalfEdge>();
 		vertices = new ArrayList<Vertex>();
-		
+		this.texCoords = new ArrayList<>();
+		for(Point2f p: hs.texCoords) {
+			texCoords.add(new Point2f(p));
+		}
 		HashMap<Face, Face> f2f = new HashMap<>();
 		for(Face f: hs.getFaces()){
 			Face newFace = new Face();
@@ -65,7 +68,7 @@ public class HalfEdgeStructure {
 		}
 		HashMap<Vertex, Vertex> v2v = new HashMap<>();
 		for(Vertex v: hs.getVertices()){
-			Vertex newV = new Vertex(new Point3f(v.getPos()));
+			Vertex newV = new Vertex(new Point3f(v.getPos()), new Point2f(v.tex));
 			vertices.add(newV);
 			v2v.put(v, newV);
 		}
@@ -155,8 +158,8 @@ public class HalfEdgeStructure {
 		Iterator<Point2f> iter = m.texCoords.iterator();
 		for(Point3f v: m.vertices){
 			vertices.add(new Vertex(v, iter.next()));
-			
 		}
+		this.enumerateVertices();
 		this.texCoords = m.texCoords;
 
 		// local vars... 
@@ -263,9 +266,6 @@ public class HalfEdgeStructure {
 		if(dangling){
 			throw new DanglingTriangleException();
 		}
-		
-		
-		this.enumerateVertices();
 		
 	}
 
