@@ -157,4 +157,8 @@ public class HalfEdge extends HEElement{
 		float cot_beta = MyMath.cot(beta);
 		return cot_alpha + cot_beta;
 	}
+
+	public void setFace(Face f) {
+		this.incident_f = f;
+	}
 }
