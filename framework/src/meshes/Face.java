@@ -210,11 +210,13 @@ public class Face extends HEElement {
 		n.normalize();
 		return n;
 	}
-
+	
+	private final float EPSILON = -0.01f;
+	
 	public boolean contains(Point2f texCoord) {
 		Vector3f v = bilinearInterpolationWeights(texCoord);
 		for (float f: new float[]{v.x, v.y, v.z}) {
-			if (f < 0)
+			if (f < EPSILON)
 				return false;
 		}
 		return true;
