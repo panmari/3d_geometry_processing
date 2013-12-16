@@ -14,7 +14,9 @@ import java.util.Stack;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
 
+import assignment5.Assignment5_vis;
 import openGL.MyDisplay;
 import openGL.gl.GLDisplayable;
 import meshes.Face;
@@ -29,9 +31,7 @@ import meshes.reader.ObjReader;
 
 public class Remeshing {
 
-	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {
-		// TODO Auto-generated method stub
-		
+	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {		
 		WireframeMesh face1 = ObjReader.read("objs/texface.obj", false);
 		WireframeMesh face2 = ObjReader.read("objs/texface2.obj", false);
 		List<WireframeMesh> meshes = Arrays.asList(new WireframeMesh[]{face1, face2});
@@ -44,6 +44,7 @@ public class Remeshing {
 			glhs.setName("Input");
 			d.addToDisplay(glhs);
 		}
+		
 		for (WireframeMesh m: meshes) { 
 			GLDisplayable glhs = new GLWireframeMesh(m);
 			glhs.add2D(m.texCoords, "position");
@@ -81,13 +82,31 @@ public class Remeshing {
 		}
 
 		handleDeathNote();
-		
+		printEulerCharacteristic();
 	}
 	
+	/**
+	 * Should be 1 for disk topology. If its something else, there might be holes in the 
+	 * mesh.
+	 */
+	private void printEulerCharacteristic() {
+		for (HalfEdgeStructure hs: results) {
+			int euler = hs.getVertices().size() - hs.getHalfEdges().size()/2 + hs.getFaces().size();
+			System.out.println(euler);
+		}
+	}
+
+	/**
+	 * Deletes all vertices that could not be interpolated on EVERY mesh.
+	 * Since this might lead to dangling triangles, they need to be removed as well. 
+	 * TODO: dangling triangles should be the same on every mesh, could be refactored to only be
+	 * computed once an then removed from every mesh.
+	 */
 	private void handleDeathNote() {
-		System.out.println("Going to remove " + deathNote.size() + " vertices");
+		System.out.println("Going to remove " + deathNote.size() + " vertices in every mesh");
 		ArrayList<WireframeMesh> wmResults = new ArrayList<>();
 		for (HalfEdgeStructure hs: this.results) {
+			
 			HashSet<HalfEdge> deadEdges = new HashSet<>();
 			HashSet<Face> deathFaces = new HashSet<>();
 			for (int idx: deathNote) { 
@@ -137,7 +156,6 @@ public class Remeshing {
 				if (maxComponent.size() < c.size())
 					maxComponent = c;
 			}
-			components.remove(maxComponent);
 			HashSet<Vertex> livingVertices = new HashSet<>();
 			// find all vertices belonging to maximum component
 			for(Face livingFace: maxComponent) {
@@ -146,9 +164,11 @@ public class Remeshing {
 					livingVertices.add(livingVertexIter.next());
 			}
 			hs.getVertices().retainAll(livingVertices);
+			System.out.println(hs.getVertices().get(740).index);
 			hs.getFaces().retainAll(maxComponent);
 			wmResults.add(new WireframeMesh(hs));
 		}
+		
 		results.clear();
 		for (WireframeMesh wm: wmResults) {
 			HalfEdgeStructure hs = new HalfEdgeStructure();
@@ -160,10 +180,11 @@ public class Remeshing {
 			}
 			results.add(hs);
 		}
+		
 	}
 
 	private HalfEdgeStructure remesh(HalfEdgeStructure hs) {
-		// Copy topology from reference mesh.
+		// Copy reference mesh.
 		HalfEdgeStructure remeshed = new HalfEdgeStructure(this.reference);
 		RemeshTexture rt = new RemeshTexture(hs);
 		
@@ -179,8 +200,6 @@ public class Remeshing {
 				p.set(newPos);
 			}
 		}
-		// Delete every vertex that wasn't mappable.
-		//remeshed.removeVertices(deathNote);
 		return remeshed;
 	}
 
@@ -190,5 +209,7 @@ public class Remeshing {
 	 */
 	private void determineReferenceMesh(List<HalfEdgeStructure> facesHs) {
 		this.reference = facesHs.get(0);
+		// TODO: the reference mesh does not need remeshing, just the death note handled.
+		//facesHs.remove(reference); 
 	}
 }
