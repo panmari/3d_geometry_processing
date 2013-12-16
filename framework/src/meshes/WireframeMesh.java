@@ -2,6 +2,7 @@ package meshes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
@@ -14,14 +15,28 @@ import javax.vecmath.Point3f;
  */
 public class WireframeMesh {
 
-	public ArrayList<Point3f> vertices;
-	public ArrayList<int[]> faces;
-	public ArrayList<Point2f> texCoords;
+	public ArrayList<Point3f> vertices = new ArrayList<>();
+	public ArrayList<int[]> faces = new ArrayList<>();
+	public ArrayList<Point2f> texCoords = new ArrayList<>();
+	
+	public WireframeMesh(HalfEdgeStructure hs) {
+		hs.enumerateVertices();
+		
+		for(Vertex v : hs.getVertices()){
+			vertices.add(new Point3f(v.getPos()));
+			texCoords.add(new Point2f(v.tex));
+		}
+		for(Face f : hs.getFaces()){
+			Iterator<Vertex> iter = f.iteratorFV();
+			int[] fc = { iter.next().index,
+					iter.next().index,
+					iter.next().index };
+			faces.add(fc);
+		}
+	
+	}
 	
 	public WireframeMesh(){
-		vertices = new ArrayList<Point3f>();
-		faces = new ArrayList<>();
-		texCoords = new ArrayList<>();
 	}
 
 	private int[] currentFace = new int[3];
