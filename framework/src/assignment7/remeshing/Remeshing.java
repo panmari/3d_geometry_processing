@@ -31,6 +31,13 @@ import meshes.reader.ObjReader;
 
 public class Remeshing {
 
+	/**
+	 * Main can be called for testing
+	 * @param args
+	 * @throws IOException
+	 * @throws MeshNotOrientedException
+	 * @throws DanglingTriangleException
+	 */
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {		
 		WireframeMesh face1 = ObjReader.read("objs/texface.obj", false);
 		WireframeMesh face2 = ObjReader.read("objs/texface2.obj", false);
@@ -92,7 +99,8 @@ public class Remeshing {
 	private void printEulerCharacteristic() {
 		for (HalfEdgeStructure hs: results) {
 			int euler = hs.getVertices().size() - hs.getHalfEdges().size()/2 + hs.getFaces().size();
-			System.out.println(euler);
+			if (euler != 1)
+				throw new AssertionError("Topology is not that of a disk anymore!");
 		}
 	}
 
@@ -164,7 +172,6 @@ public class Remeshing {
 					livingVertices.add(livingVertexIter.next());
 			}
 			hs.getVertices().retainAll(livingVertices);
-			System.out.println(hs.getVertices().get(740).index);
 			hs.getFaces().retainAll(maxComponent);
 			wmResults.add(new WireframeMesh(hs));
 		}
@@ -175,8 +182,7 @@ public class Remeshing {
 			try {
 				hs.init(wm);
 			} catch (MeshNotOrientedException | DanglingTriangleException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Reconstructed Halfedge structure seems invalid: " + e.getMessage());
 			}
 			results.add(hs);
 		}
