@@ -9,6 +9,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point4f;
+import javax.vecmath.SingularMatrixException;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
@@ -232,8 +233,14 @@ public class Face extends HEElement {
 			texEdgeFunctions.setRow(0, v1.x, v1.y, 1);
 			texEdgeFunctions.setRow(1, v2.x, v2.y, 1);
 			texEdgeFunctions.setRow(2, v3.x, v3.y, 1);
-			texEdgeFunctions.invert();
-			texEdgeFunctions.transpose();
+			try {
+				texEdgeFunctions.invert();
+				texEdgeFunctions.transpose();
+			} catch(SingularMatrixException m) {
+				texEdgeFunctions.setIdentity();
+				texEdgeFunctions.mul(-1);
+				System.err.println("Could not compute edge functions of " + v1 + v2 + v3);
+			}
 		}
 		Vector3f v = new Vector3f(texCoord.x, texCoord.y, 1);
 		texEdgeFunctions.transform(v);

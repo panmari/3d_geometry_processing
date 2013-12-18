@@ -3,6 +3,7 @@ package assignment7.tests;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
@@ -10,6 +11,7 @@ import javax.vecmath.Vector3f;
 
 import meshes.Face;
 import meshes.HalfEdgeStructure;
+import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
@@ -67,6 +69,17 @@ public class FaceTextureCoordinateTest {
 		assertTrue(face.contains(new Point2f(.1f,-.5f)));
 		assertTrue(face.contains(new Point2f(.2f,-.5f)));
 		assertTrue(face.contains(new Point2f(-.1f,-.5f)));
+	}
+	
+	@Test
+	public void testOutsideDegeneratedTriangle() {
+		Iterator<Vertex> iter = face.iteratorFV();
+		iter.next().tex.set(new Point2f(1,1));
+		iter.next().tex.set(new Point2f(1,1));
+		iter.next().tex.set(new Point2f(1,1));
+		assertFalse(face.contains(new Point2f(.1f,-.5f)));
+		assertFalse(face.contains(new Point2f(.2f,-.5f)));
+		assertFalse(face.contains(new Point2f(-.1f,-.5f)));
 	}
 	
 	@Test
