@@ -5,29 +5,24 @@ import glWrapper.GLWireframeMesh;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
-import javax.vecmath.Vector3f;
 
-import assignment5.Assignment5_vis;
-import openGL.MyDisplay;
-import openGL.gl.GLDisplayable;
 import meshes.Face;
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
-import meshes.Point2i;
 import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
 import meshes.reader.ObjReader;
+import meshes.reader.ObjWriter;
+import openGL.MyDisplay;
+import openGL.gl.GLDisplayable;
 
 public class Remeshing {
 
@@ -38,12 +33,13 @@ public class Remeshing {
 	 * @throws MeshNotOrientedException
 	 * @throws DanglingTriangleException
 	 */
-	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {		
-		WireframeMesh face1 = ObjReader.read("objs/texface.obj", false);
-		WireframeMesh face2 = ObjReader.read("objs/texface2.obj", false);
-		List<WireframeMesh> meshes = Arrays.asList(new WireframeMesh[]{face1, face2});
-		
+	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {	
+		String[] names = {"cedric", "gian", "michael", "michele", "stefan", "tiziano"};
+		List<WireframeMesh> meshes = new ArrayList<>();
+		for (String name: names)
+			meshes.add(ObjReader.read("objs/" + name + "_tex.obj", false));
 		Remeshing r = new Remeshing(meshes);
+		r.dumpResults(names);
 		MyDisplay d = new MyDisplay();
 		for (WireframeMesh m: meshes) { 
 			GLDisplayable glhs = new GLWireframeMesh(m);
@@ -82,25 +78,43 @@ public class Remeshing {
 		}
 		
 		determineReferenceMesh(meshHs);
-		
-		for (HalfEdgeStructure hs: meshHs) {
+		List<HalfEdgeStructure> remeshHs = new ArrayList<>(meshHs);
+		remeshHs.remove(this.reference);
+		results.add(this.reference);
+		for (HalfEdgeStructure hs: remeshHs) {
 			HalfEdgeStructure hsRemeshed = remesh(hs);
 			this.results.add(hsRemeshed);
 		}
 
 		handleDeathNote();
-		printEulerCharacteristic();
+		validateCharacteristic();
+	}
+	
+	private void dumpResults(String[] names) throws IOException {
+		if (names.length != results.size())
+			throw new IllegalArgumentException("I don't have that amount of results! :'(");
+		for (int i = 0; i < names.length; i++) {
+			ObjWriter writer = new ObjWriter(names[i] + "_remeshed.obj");
+			writer.write(results.get(i));
+			writer.close();
+		}
 	}
 	
 	/**
 	 * Should be 1 for disk topology. If its something else, there might be holes in the 
 	 * mesh.
 	 */
-	private void printEulerCharacteristic() {
+	private void validateCharacteristic() {
+		int nrVertices = results.get(0).getVertices().size();
+		int nrFaces = results.get(0).getFaces().size();
 		for (HalfEdgeStructure hs: results) {
 			int euler = hs.getVertices().size() - hs.getHalfEdges().size()/2 + hs.getFaces().size();
 			if (euler != 1)
 				throw new AssertionError("Topology is not that of a disk anymore!");
+			if(nrVertices != hs.getVertices().size())
+				throw new AssertionError("Meshes don't have same number of vertices!");
+			if(nrFaces != hs.getFaces().size())
+				throw new AssertionError("Meshes don't have same number of vertices!");
 		}
 	}
 
