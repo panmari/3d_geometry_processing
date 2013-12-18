@@ -19,7 +19,7 @@ import meshes.Vertex;
 
 public class RemeshTexture {
 	private HashMap<Point2i, List<Face>> textureGrid = new HashMap<>();
-	private static final int CELL_NUMBER = 10;
+	private static final int CELL_NUMBER = 11;
 
 	/**
 	 * @param mesh a Half Edge Structure that needs to be remeshed.
@@ -40,7 +40,7 @@ public class RemeshTexture {
 	}
 	
 	private Point2i cellCoordinate(Point2f texCoord) {
-		return new Point2i((int) (texCoord.x*CELL_NUMBER), (int) (texCoord.y * CELL_NUMBER));
+		return new Point2i((int) (texCoord.x*(CELL_NUMBER-1)), (int) (texCoord.y * (CELL_NUMBER-1)));
 	}
 	
 	private Face findFaceAround(Point2f texCoord) {
