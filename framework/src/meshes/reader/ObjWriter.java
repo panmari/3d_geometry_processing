@@ -37,6 +37,11 @@ public class ObjWriter {
 		}
 	}
 	
+	/**
+	 * TODO: if writeTexcoord is not called later on, it will do very bad things [tm]
+	 * @param hs
+	 * @throws IOException
+	 */
 	public void write(HalfEdgeStructure hs) throws IOException {
 		hs.enumerateVertices();
 		for(Vertex v: hs.getVertices()){

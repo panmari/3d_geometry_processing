@@ -68,7 +68,11 @@ public class HalfEdgeStructure {
 		}
 		HashMap<Vertex, Vertex> v2v = new HashMap<>();
 		for(Vertex v: hs.getVertices()){
-			Vertex newV = new Vertex(new Point3f(v.getPos()), new Point2f(v.tex));
+			Vertex newV;
+			if (v.tex != null)
+				newV = new Vertex(new Point3f(v.getPos()), new Point2f(v.tex));
+			else
+				newV = new Vertex(new Point3f(v.getPos()));
 			vertices.add(newV);
 			v2v.put(v, newV);
 		}

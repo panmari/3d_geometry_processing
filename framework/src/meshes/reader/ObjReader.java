@@ -108,12 +108,13 @@ public class ObjReader {
 		RawData data = new RawData();
 		
 		data.hasNormals = true;
-		data.hasTex= true;
+		data.hasTex = true;
 
 		// Extents for normalization
 		reader = new BufferedReader(new FileReader(fileName));
 
 		String line = null;
+		int vtCount = 0;
 		while ((line = reader.readLine()) != null) {
 			// Read line
 			String[] s = line.split("\\s+");
@@ -148,6 +149,7 @@ public class ObjReader {
 				 Float.valueOf(s[3]).floatValue());
 				data.normals.add(n);
 			} else if (s[0].compareTo("vt") == 0) {
+				vtCount++;
 				// Texture
 				Point2f t = new Point2f();
 				t.x = Float.valueOf(s[1]).floatValue();
@@ -189,6 +191,9 @@ public class ObjReader {
 			}
 		}
 		reader.close();
+		
+		if (vtCount == 0)
+			data.hasTex = false;
 		
 		if(normalize){
 			data.normalize();
