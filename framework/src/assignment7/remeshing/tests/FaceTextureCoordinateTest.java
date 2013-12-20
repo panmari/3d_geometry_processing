@@ -1,4 +1,4 @@
-package assignment7.tests;
+package assignment7.remeshing.tests;
 
 import static org.junit.Assert.*;
 
