@@ -74,17 +74,16 @@ public class ObjReader {
 		
 		RawData data = readRawData(fileName, normalize);
 		WireframeMesh myMesh = new WireframeMesh();
-		
+		myMesh.hasTexture = data.hasTex;
 		myMesh.vertices = data.vertices;
 		myMesh.faces = new ArrayList<int[]>();
-		if (data.hasTex) {
-			myMesh.texCoords = new ArrayList<>(Collections.nCopies(data.vertices.size(), new Point2f(-100, -100)));
-		}
+		myMesh.texCoords = new ArrayList<>(Collections.nCopies(data.vertices.size(), new Point2f(-100, -100)));
 		for(int[][] fc : data.faces){
 			int[] face = new int[fc.length];
 			for(int i = 0; i < face.length; i++){
 				face[i] = fc[i][0] -1; //make it 0-based
-				myMesh.texCoords.set(fc[i][0] - 1, data.texCoords.get(fc[i][1] - 1));
+				if(data.hasTex)
+					myMesh.texCoords.set(fc[i][0] - 1, data.texCoords.get(fc[i][1] - 1));
 			}
 			myMesh.faces.add(face);
 		}

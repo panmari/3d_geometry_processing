@@ -41,6 +41,7 @@ public class WireframeMesh {
 
 	private int[] currentFace = new int[3];
 	private int currentFaceIdx = 0;
+	public boolean hasTexture;
 	
 	/**
 	 * Zomfg this is way to complicated for what I'm trying to do... I could just go on gl-level...

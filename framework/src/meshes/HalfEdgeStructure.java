@@ -156,8 +156,12 @@ public class HalfEdgeStructure {
 		
 		//add all vertices
 		Iterator<Point2f> iter = m.texCoords.iterator();
+		
 		for(Point3f v: m.vertices){
-			vertices.add(new Vertex(v, iter.next()));
+			if (m.hasTexture)
+				vertices.add(new Vertex(v, iter.next()));
+			else
+				vertices.add(new Vertex(v));
 		}
 		this.enumerateVertices();
 		this.texCoords = m.texCoords;
