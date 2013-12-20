@@ -1,18 +1,15 @@
 package assignment1;
 
 import glWrapper.GLHalfedgeStructure;
-import glWrapper.GLWireframeMesh;
 
 import java.io.IOException;
 
-import openGL.MyDisplay;
-import openGL.gl.GLDisplayable;
-import meshes.HEData1d;
 import meshes.HalfEdgeStructure;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
 import meshes.reader.ObjReader;
+import openGL.MyDisplay;
 
 /**
  * 
@@ -25,36 +22,31 @@ public class SmoothingDemo {
 		//Load a wireframe mesh
 		WireframeMesh m = ObjReader.read("./objs/dragon.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
-		
+		HalfEdgeStructure smoothed = new HalfEdgeStructure();
+		HalfEdgeStructure moreSmoothed = new HalfEdgeStructure();
 		//create a half-edge structure out of the wireframe description.
 		//As not every mesh can be represented as a half-edge structure
 		//exceptions could occur.
 		try {
 			hs.init(m);
+			smoothed.init(m);
+			moreSmoothed.init(m);
 		} catch (MeshNotOrientedException | DanglingTriangleException e) {
 			e.printStackTrace();
 			return;
 		}
-		
-		
-		//... do something with it, display it ....
-		GLHalfedgeStructure smoothed = new GLHalfedgeStructure(hs);
-		GLHalfedgeStructure smoothedMore = new GLHalfedgeStructure(hs);
-		GLHalfedgeStructure unsmoothed = new GLHalfedgeStructure(hs);
 
-		GLHalfedgeStructure teapot2 = new GLHalfedgeStructure(hs);
-		// you might want to change this constant:
-		smoothed.smooth(1);
-		smoothedMore.smooth(40);
-		
+		GLHalfedgeStructure unsmoothed = new GLHalfedgeStructure(hs);
+		SimpleSmoother.smooth(smoothed,1);
+		SimpleSmoother.smooth(moreSmoothed, 40);
+		GLHalfedgeStructure glSmoothed = new GLHalfedgeStructure(smoothed);
+		GLHalfedgeStructure glmoreSmoothed = new GLHalfedgeStructure(moreSmoothed);
 		MyDisplay disp = new MyDisplay();
-		smoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		glSmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		unsmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
-		smoothedMore.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
-		teapot2.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+		glmoreSmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		disp.addToDisplay(unsmoothed);
-		disp.addToDisplay(smoothed);
-		disp.addToDisplay(smoothedMore);
-		disp.addToDisplay(teapot2);
+		disp.addToDisplay(glSmoothed);
+		disp.addToDisplay(glmoreSmoothed);
 	}
 }
