@@ -48,8 +48,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 	ZoomListener zoomListener;
 	
 	JPanel whatsOnDisplay;
-	
-	float angle;
+	protected JScrollPane eastpane;
 	
 	
 	public MyDisplay(){
@@ -76,7 +75,8 @@ public class MyDisplay extends JFrame implements ActionListener {
 		this.setLocationRelativeTo(null); // center of screen
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(renderPanel.getCanvas(), BorderLayout.CENTER);
-		this.getContentPane().add(new JScrollPane(whatsOnDisplay), BorderLayout.EAST);
+		eastpane = new JScrollPane(whatsOnDisplay);
+		this.getContentPane().add(eastpane, BorderLayout.EAST);
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true); 

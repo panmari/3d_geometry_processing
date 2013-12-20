@@ -23,11 +23,10 @@ public class MorphDisplay extends MyDisplay {
 
 	public MorphDisplay(Morpher morpher) {
 		super();
-
+		this.eastpane.setVisible(false);
 		MorphPanel morphPanel = new MorphPanel(morpher, this);
 		JScrollPane scrollPane = new JScrollPane(morphPanel);
 		this.getContentPane().add(scrollPane, BorderLayout.WEST);
-
 		glHe = new GLMorphHEStructure(morpher.getCurrent());
 		glHe.configurePreferredShader("shaders/trimesh_flat_diff.vert",
 				"shaders/trimesh_flat_diff.frag", "shaders/trimesh_flat_diff.geom");
