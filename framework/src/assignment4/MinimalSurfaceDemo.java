@@ -23,7 +23,7 @@ import sparse.solver.Solver;
 import assignment4.generatedMeshes.Bock;
 import assignment4.generatedMeshes.Cylinder;
 
-public class Assignment4_3_minimalSurfaces {
+public class MinimalSurfaceDemo {
 	
 	
 	public static void main(String[] args) throws Exception{

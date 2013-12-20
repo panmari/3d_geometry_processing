@@ -19,7 +19,7 @@ import sparse.CSRMatrix;
  * @author Alf
  *
  */
-public class Assignment4_2_smoothing {
+public class LsmoothingUmaskDemo {
 
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {
 		WireframeMesh mesh = ObjReader.read("objs/bunny5k.obj", true);

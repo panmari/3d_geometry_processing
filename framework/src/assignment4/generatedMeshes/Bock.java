@@ -11,7 +11,7 @@ import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
 import openGL.MyDisplay;
-import assignment4.Assignment4_3_minimalSurfaces;
+import assignment4.MinimalSurfaceDemo;
 
 public class Bock {
 	
@@ -77,7 +77,7 @@ public class Bock {
 		hs.init(b.result);
 		
 		//HEData3d colors = FixedBoundarySmoothing.binaryColorMap(b.boundary, hs);
-		HEData3d colors = Assignment4_3_minimalSurfaces.binaryColorMap(Assignment4_3_minimalSurfaces.collectBoundary(hs, 1), hs);
+		HEData3d colors = MinimalSurfaceDemo.binaryColorMap(MinimalSurfaceDemo.collectBoundary(hs, 1), hs);
 		GLHalfedgeStructure glHE = new GLHalfedgeStructure(hs);
 		glHE.configurePreferredShader("shaders/trimesh_flatColor3f.vert", 
 				"shaders/trimesh_flatColor3f.frag", 
