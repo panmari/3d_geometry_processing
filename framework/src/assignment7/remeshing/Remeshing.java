@@ -34,13 +34,15 @@ public class Remeshing {
 	 * @throws DanglingTriangleException
 	 */
 	public static void main(String[] args) throws IOException, MeshNotOrientedException, DanglingTriangleException {	
-		String[] names = {"cedric", "gian", "michael", "michele", "stefan", "tiziano"};
+		String[] names = {"aaron", "cedric", "gian", "michael", "michele", "stefan", "tiziano"};
 		List<WireframeMesh> meshes = new ArrayList<>();
 		for (String name: names)
 			meshes.add(ObjReader.read("objs/" + name + "_tex.obj", false));
 		Remeshing r = new Remeshing(meshes);
 		r.dumpResults(names);
 		MyDisplay d = new MyDisplay();
+		
+		// Shows some debugging information
 		for (WireframeMesh m: meshes) { 
 			GLDisplayable glhs = new GLWireframeMesh(m);
 			glhs.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
@@ -56,10 +58,11 @@ public class Remeshing {
 			d.addToDisplay(glhs);
 		}
 		
-		for (HalfEdgeStructure m: r.results) { 
-			GLDisplayable glhs = new GLHalfedgeStructure(m);
+		for (int i = 0; i < names.length; i++) {
+			GLDisplayable glhs = new GLHalfedgeStructure(r.results.get(i));
+			//glhs.configurePreferredShader("shaders/trimesh_flatColor3f.vert","shaders/trimesh_flatColor3f.frag", "shaders/trimesh_flatColor3f.geom");
 			glhs.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
-			glhs.setName("Result");
+			glhs.setName(names[i]);
 			d.addToDisplay(glhs);
 		}
 	}
