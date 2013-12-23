@@ -12,7 +12,6 @@ import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import sparse.CSRMatrix;
 import sparse.MATLAB;
-import sparse.solver.SciPySolver;
 import sparse.solver.Solver;
 
 public class ConformalMapper {
@@ -38,8 +37,7 @@ public class ConformalMapper {
 		CSRMatrix m = new CSRMatrix(0, 2 * hs.getVertices().size());
 		for(Face f: hs.getFaces())
 		{
-			m.append(getMatrix(f), (float) (1.f / Math.max(Math.sqrt(f.getArea()), 0.00000)));
-//			System.out.println(f.area());
+			m.append(getMatrix(f), (float) (1.f / Math.max(Math.sqrt(f.getArea()), 0.00001)));
 		}
 		ArrayList<Float> rhs = new ArrayList<Float>(Collections.nCopies(m.nRows, 0.f));
 		
@@ -94,53 +92,29 @@ public class ConformalMapper {
 	 */
 	public CSRMatrix getMatrix(Face f)
 	{
-		CSRMatrix out = new CSRMatrix(2, 2 * hs.getVertices().size());
 		HalfEdge e_ij = f.getHalfEdge();
 		HalfEdge e_ik = e_ij.getPrev().getOpposite();
 		Vector3f x = e_ij.asVector();
+		x.normalize();
 		Vector3f n = new Vector3f();
 		n.cross(x, e_ik.asVector());
+		n.normalize();
 		Vector3f y = new Vector3f();
 		y.cross(n, x);
-		
-		/*if(x.lengthSquared() == 0 || y.lengthSquared() == 0 || n.lengthSquared() == 0)
-		{
-			CSRMatrix m = new CSRMatrix(0, 2 * hs.getVertices().size());
-			if(x.lengthSquared() == 0)
-			{
-				m.addRow();
-				m.setLastRow(e_ij.start().index, 1);
-				m.setLastRow(e_ij.end().index, -1);
-				m.addRow();
-				m.setLastRow(e_ij.start().index + hs.getVertices().size(), 1);
-				m.setLastRow(e_ij.end().index + hs.getVertices().size(), -1);
-			}
-			if(y.lengthSquared() == 0)
-			{
-				m.addRow();
-				m.setLastRow(e_ik.start().index, 1);
-				m.setLastRow(e_ik.end().index, -1);
-				m.addRow();
-				m.setLastRow(e_ik.start().index + hs.getVertices().size(), 1);
-				m.setLastRow(e_ik.end().index + hs.getVertices().size(), -1);
-			}
-			return m;
-		}*/
-		x.normalize();
-		y.normalize();
-		n.normalize();
 		
 		Vector3f x_i = new Vector3f(0, 0, 0);
 		Vector3f x_j = new Vector3f(e_ij.asVector().length(), 0, 0);
 		Vector3f x_k = new Vector3f(e_ik.asVector().dot(x), e_ik.asVector().dot(y), 0);
 		
-		CSRMatrix m_t = new CSRMatrix(2, 3);
-		m_t.set(0, 0, x_j.y - x_k.y);
-		m_t.set(0, 1, x_k.y - x_i.y);
-		m_t.set(0, 2, x_i.y - x_j.y);
-		m_t.set(1, 0, x_k.x - x_j.x);
-		m_t.set(1, 1, x_i.x - x_k.x);
-		m_t.set(1, 2, x_j.x - x_i.x);
+		CSRMatrix m_t = new CSRMatrix(0, 3);
+		m_t.addRow();
+		m_t.createLastRowEntry(0, x_j.y - x_k.y);
+		m_t.createLastRowEntry(1, x_k.y - x_i.y);
+		m_t.createLastRowEntry(2, x_i.y - x_j.y);
+		m_t.addRow();
+		m_t.createLastRowEntry(0, x_k.x - x_j.x);
+		m_t.createLastRowEntry(1, x_i.x - x_k.x);
+		m_t.createLastRowEntry(2, x_j.x - x_i.x);
 		m_t.scale(1.f / 2.f);
 		
 		CSRMatrix m_t_rot = new CSRMatrix(2, 3);
@@ -153,6 +127,8 @@ public class ConformalMapper {
 		int pos_j = e_ij.end().index;
 		int pos_k = e_ik.end().index;
 		
+		// this is quite ugly :-/
+		CSRMatrix out = new CSRMatrix(2, 2 * hs.getVertices().size());
 		out.set(0, pos_i, m_t_rot.get(0, 0));
 		out.set(1, pos_i, m_t_rot.get(1, 0));
 		out.set(0, pos_j, m_t_rot.get(0, 1));
