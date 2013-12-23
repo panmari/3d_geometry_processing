@@ -579,6 +579,38 @@ public class CSRMatrix {
 		rows.get(rows.size() - 1).add(new col_val(index, value));
 	}
 
+	public void set(int row, int column, float value) {
+		col_val entry = getColumnValue(row, column);
+		if (entry == null) {
+			rows.get(row).add(new col_val(column, value));
+		} else {
+			entry.val = value;
+		}
+	}
+
+	/**
+	 * Throws exception if given row/column does not exist.
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	public float get(int row, int column) {
+		return getColumnValue(row, column).val;
+	}
+	
+	/**
+	 * Returns null if no entry for given column, throws error if row does not exist (yet)
+	 * @param row
+	 * @param column
+	 * @return
+	 */
+	private col_val getColumnValue(int row, int column) {
+		for (col_val entry: rows.get(row)) {
+			if (entry.col == column)
+				return entry;
+		}
+		return null;
+	}
 }
 
 
