@@ -58,7 +58,7 @@ public class ConformalMapDemo {
 		unmorphedTexCoords = new ArrayList<Point2f>(refTexcoords);
 		ArrayList<Point2f> refPos = getLabelCoords(refTexcoords);
 		writeObj(refName, refTexcoords);
-		display(refTexcoords);
+		display("Reference", refTexcoords);
 		
 		for(String name: names)
 		{
@@ -66,7 +66,7 @@ public class ConformalMapDemo {
 			unmorphedTexCoords = new ArrayList<Point2f>(texcoords);
 			delaunayWf = morph(texcoords, refPos, getLabelCoords(texcoords));
 			writeObj(name, texcoords);
-			display(texcoords);
+			display(name, texcoords);
 		}
 		
 		
@@ -188,26 +188,24 @@ public class ConformalMapDemo {
 		writer.close();
 	}
 	
-	public static void display(ArrayList<Point2f> texcoords)
+	public static void display(String name, ArrayList<Point2f> texcoords)
 	{
-//		MyDisplay d = new MyDisplay();
 		GLConstraints glc = new GLConstraints(hs, getLabelCoords(texcoords));
-//		glc.addElement2D(texcoords, Semantic.POSITION, "pos");
 		
 		GLHalfEdgeStructure glhs = new GLHalfEdgeStructure(hs);
 		glhs.addElement2D(texcoords, "position");
 		glhs.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
-		glhs.setName("texture map");
+		glhs.setName(name + ": texture map");
 		
 		GLHalfEdgeStructure glhs2 = new GLHalfEdgeStructure(hs);
 		glhs2.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
-		glhs2.setName("mesh");
+		glhs2.setName(name + ": mesh");
 		
 		if(delaunayWf != null)
 		{
 			GLWireframeMesh glwf2 = new GLWireframeMesh(delaunayWf);
 			glwf2.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
-			glwf2.setName("delaunay triangulation");
+			glwf2.setName(name + ": delaunay triangulation");
 			d.addToDisplay(glwf2);
 		}
 		
