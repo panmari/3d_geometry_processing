@@ -1,6 +1,6 @@
 package assignment4;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class LaplacianDemo {
 				ArrayList<Tuple3f> curvatures = new ArrayList<Tuple3f>();
 				LMatrices.mult(laplacian, hs, curvatures);
 				
-				GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+				GLHalfEdgeStructure glHs = new GLHalfEdgeStructure(hs);
 				glHs.add(curvatures, "curvature");
 				//And show off...
 				
@@ -49,7 +49,7 @@ public class LaplacianDemo {
 				d.addToDisplay(glHs);
 			}
 			//And show off...
-			GLHalfedgeStructure glMesh = new GLHalfedgeStructure(hs);
+			GLHalfEdgeStructure glMesh = new GLHalfEdgeStructure(hs);
 			glMesh.configurePreferredShader("shaders/trimesh_flat.vert",
 					"shaders/trimesh_flat.frag", 
 					"shaders/trimesh_flat.geom");

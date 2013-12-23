@@ -1,6 +1,6 @@
 package assignment4;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.util.ArrayList;
 import java.util.Iterator;

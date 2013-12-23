@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import javax.vecmath.Color3f;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import openGL.MyDisplay;
 import meshes.HalfEdgeStructure;
 import meshes.WireframeMesh;
@@ -18,7 +18,7 @@ public class QSlimDemo {
 		WireframeMesh wf = ObjReader.read("objs/buddha.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
-		GLHalfedgeStructure untouched = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure untouched = new GLHalfEdgeStructure(hs);
 		QSlim qs = new QSlim(hs);
 		long before = System.currentTimeMillis();
 		qs.simplify(5000);
@@ -26,7 +26,7 @@ public class QSlimDemo {
 		System.out.println("Took " + (after - before)/1000f + " seconds");
 		
 		MyDisplay d = new MyDisplay();
-		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure glHs = new GLHalfEdgeStructure(hs);
 		glHs.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");

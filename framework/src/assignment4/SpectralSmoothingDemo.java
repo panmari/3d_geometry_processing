@@ -10,7 +10,7 @@ import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
 import meshes.reader.ObjReader;
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import openGL.MyDisplay;
 
 public class SpectralSmoothingDemo {
@@ -22,7 +22,7 @@ public class SpectralSmoothingDemo {
 		
 		MyDisplay d = new MyDisplay();
 		SpectralSmoothing.boostHighFrequencies(hs, hs.getVertices().size() - 1);
-		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure glHs = new GLHalfEdgeStructure(hs);
 		glHs.configurePreferredShader("shaders/trimesh_flatColor3f.vert", 
 				"shaders/trimesh_flatColor3f.frag", 
 				"shaders/trimesh_flatColor3f.geom");

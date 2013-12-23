@@ -1,6 +1,6 @@
 package assignment3;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import glWrapper.GLHashtree;
 import glWrapper.GLHashtreeVertices;
 import glWrapper.GLWireframeMesh;
@@ -54,7 +54,7 @@ public class Assignment3 {
 		
 		HalfEdgeStructure dualMarchSmooth = new HalfEdgeStructure();
 		dualMarchSmooth.init(dualMarch);
-		GLHalfedgeStructure glDualMarchSmooth = new GLHalfedgeStructure(dualMarchSmooth);
+		GLHalfEdgeStructure glDualMarchSmooth = new GLHalfEdgeStructure(dualMarchSmooth);
 		//glDualMarchSmooth.smooth(1);
 
 		//And show off...

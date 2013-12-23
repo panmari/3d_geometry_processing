@@ -1,6 +1,6 @@
 package assignment1;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public class ValenceShaderDemo {
 		
 		
 		//... do something with it, display it ....
-		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure teapot = new GLHalfEdgeStructure(hs);
 		
 		MyDisplay disp = new MyDisplay();
 		teapot.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);

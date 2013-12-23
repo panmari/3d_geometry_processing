@@ -19,12 +19,12 @@ import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 
 
-public class GLHalfedgeStructure extends GLDisplayable {
+public class GLHalfEdgeStructure extends GLDisplayable {
 
 	private HalfEdgeStructure myHE;
 	HashMap<Object,RenderConfig> glNames;
 	
-	public GLHalfedgeStructure(HalfEdgeStructure e) {
+	public GLHalfEdgeStructure(HalfEdgeStructure e) {
 		super(e.getVertices().size());
 		myHE = e;
 		

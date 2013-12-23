@@ -1,7 +1,7 @@
 package assignment4;
 
 import static org.junit.Assert.fail;
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class SphericalHarmonicsDemo {
 		MyDisplay d = new MyDisplay();
 		int eigenVectorCount = 0;
 		for (ArrayList<Float> eigenVector: eigenVectors) {
-			GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+			GLHalfEdgeStructure glHs = new GLHalfEdgeStructure(hs);
 			ArrayList<Color3f> eigenVectorColor = new ArrayList<Color3f>();
 			float minEV = Collections.min(eigenVector);
 			float maxEV = Collections.max(eigenVector);

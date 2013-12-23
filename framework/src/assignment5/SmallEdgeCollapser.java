@@ -1,6 +1,6 @@
 package assignment5;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +12,8 @@ import meshes.HalfEdgeStructure;
 
 public class SmallEdgeCollapser {
 
- 	public static GLHalfedgeStructure collapse(HalfEdgeStructure hs, float threshold) {
- 		GLHalfedgeStructure untouched = new GLHalfedgeStructure(hs);
+ 	public static GLHalfEdgeStructure collapse(HalfEdgeStructure hs, float threshold) {
+ 		GLHalfEdgeStructure untouched = new GLHalfEdgeStructure(hs);
 		HalfEdgeCollapse hec = new HalfEdgeCollapse(hs);
 		ArrayList<Color3f> color = new ArrayList<Color3f>(Collections.nCopies(untouched.getNumberOfVertices(), new Color3f(0,1,0)));
 		int deadCount = 0;

@@ -1,6 +1,6 @@
 package assignment7.remeshing;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import glWrapper.GLWireframeMesh;
 
 import java.io.IOException;
@@ -52,14 +52,14 @@ public class Remeshing {
 		
 		for (WireframeMesh m: meshes) { 
 			GLDisplayable glhs = new GLWireframeMesh(m);
-			glhs.add2D(m.texCoords, "position");
+			glhs.addElement2D(m.texCoords, "position");
 			glhs.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
 			glhs.setName("Texture coordinates");
 			d.addToDisplay(glhs);
 		}
 		
 		for (int i = 0; i < names.length; i++) {
-			GLDisplayable glhs = new GLHalfedgeStructure(r.results.get(i));
+			GLDisplayable glhs = new GLHalfEdgeStructure(r.results.get(i));
 			//glhs.configurePreferredShader("shaders/trimesh_flatColor3f.vert","shaders/trimesh_flatColor3f.frag", "shaders/trimesh_flatColor3f.geom");
 			glhs.configurePreferredShader("shaders/wiremesh.vert", "shaders/wiremesh.frag", "shaders/wiremesh.geom");
 			glhs.setName(names[i]);

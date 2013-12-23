@@ -1,6 +1,6 @@
 package assignment3;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import glWrapper.GLHashtree;
 import glWrapper.GLHashtreeVertices;
 import glWrapper.GLWireframeMesh;

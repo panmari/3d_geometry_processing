@@ -96,7 +96,7 @@ public abstract class GLDisplayable {
 			this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
 	}
 	
-	public <T extends Tuple2f> void add2D(ArrayList<T> data, String name) {
+	public <T extends Tuple2f> void addElement2D(ArrayList<T> data, String name) {
 		float[] dataArray = new float[data.size()*3];
 		for (int idx = 0; idx < data.size(); idx++) {
 			Tuple2f t = data.get(idx);
@@ -110,7 +110,7 @@ public abstract class GLDisplayable {
 			this.addElement(dataArray, Semantic.USERSPECIFIED, 3, name);
 	}
 	
-	public void addSingle(ArrayList<Float> data, String name) {
+	public void addElement1D(ArrayList<Float> data, String name) {
 		float[] dataArray = new float[data.size()];
 		for (int idx = 0; idx < data.size(); idx++) {
 			dataArray[idx] = data.get(idx);

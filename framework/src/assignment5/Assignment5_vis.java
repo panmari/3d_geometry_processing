@@ -1,6 +1,6 @@
 package assignment5;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import glWrapper.GLWireframeMesh;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class Assignment5_vis {
 		WireframeMesh wf = ObjReader.read("objs/bunny_ear.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
-		GLHalfedgeStructure glHs = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure glHs = new GLHalfEdgeStructure(hs);
 		glHs.configurePreferredShader("shaders/trimesh_flat.vert",
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");

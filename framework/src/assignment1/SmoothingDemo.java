@@ -1,6 +1,6 @@
 package assignment1;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 
 import java.io.IOException;
 
@@ -36,11 +36,11 @@ public class SmoothingDemo {
 			return;
 		}
 
-		GLHalfedgeStructure unsmoothed = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure unsmoothed = new GLHalfEdgeStructure(hs);
 		SimpleSmoother.smooth(smoothed,1);
 		SimpleSmoother.smooth(moreSmoothed, 40);
-		GLHalfedgeStructure glSmoothed = new GLHalfedgeStructure(smoothed);
-		GLHalfedgeStructure glmoreSmoothed = new GLHalfedgeStructure(moreSmoothed);
+		GLHalfEdgeStructure glSmoothed = new GLHalfEdgeStructure(smoothed);
+		GLHalfEdgeStructure glmoreSmoothed = new GLHalfEdgeStructure(moreSmoothed);
 		MyDisplay disp = new MyDisplay();
 		glSmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		unsmoothed.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");

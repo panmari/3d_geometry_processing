@@ -1,6 +1,6 @@
 package assignment1;
 
-import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLHalfEdgeStructure;
 import glWrapper.GLWireframeMesh;
 
 import java.io.IOException;
@@ -37,16 +37,16 @@ public class NormalsDemo {
 		}
 		
 		//... do something with it, display it ....
-		GLHalfedgeStructure teapot = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure teapot = new GLHalfEdgeStructure(hs);
 		teapot.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
 		// you might want to change this constant:
-		GLHalfedgeStructure visualized_normals = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure visualized_normals = new GLHalfEdgeStructure(hs);
 		visualized_normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/visualize_normals.frag", null);
 		
-		GLHalfedgeStructure diffuse_normals = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure diffuse_normals = new GLHalfEdgeStructure(hs);
 		diffuse_normals.configurePreferredShader("shaders/visualize_normals.vert", "shaders/diffuse_normals.frag", null);
 
-		GLHalfedgeStructure geometry_shader_normals = new GLHalfedgeStructure(hs);
+		GLHalfEdgeStructure geometry_shader_normals = new GLHalfEdgeStructure(hs);
 		geometry_shader_normals.configurePreferredShader("shaders/trimesh_flat.vert", 
 				"shaders/trimesh_flat.frag", 
 				"shaders/trimesh_flat.geom");
