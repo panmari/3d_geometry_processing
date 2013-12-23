@@ -74,8 +74,8 @@ public class MATLAB extends Solver {
 	 * @param b
 	 * @throws IOException
 	 */
-	public static void solveMatlab(CSRMatrix mat, String matrixName, String folder, ArrayList<Float> x ,ArrayList<Float> b) throws IOException{
-		File f = new File(folder,"mtlb" + matrixName + ".m");
+	public static void solveMatlab(CSRMatrix mat, String matrixName, ArrayList<Float> x ,ArrayList<Float> b) throws IOException{
+		File f = new File("mtlb" + matrixName + ".m");
 		BufferedWriter w = new BufferedWriter(new FileWriter(f));
 
 		ArrayList<Integer> nzs = new ArrayList<>();
@@ -145,17 +145,17 @@ public class MATLAB extends Solver {
 		}
 	
 		
-		readVector("./matlab/mtlb" + matrixName + ".out", x);
+		readVector("mtlb" + matrixName + ".out", x);
 		
 		
-		BufferedReader r = new BufferedReader(new FileReader("./matlab/out.log"));
+		BufferedReader r = new BufferedReader(new FileReader("out.log"));
 		String line;
 		while((line = r.readLine())!= null){
 			System.out.println(line);
 		}
 		r.close();
 		
-		System.out.println("there, there...");
+		System.out.println("Done!");
 	}
 	
 	
@@ -326,10 +326,14 @@ public class MATLAB extends Solver {
 		r.close();
 	}
 
+	/**
+	 * Solves the given matrix in matlab. The matlab executable needs to be added to the path.
+	 * Some temporary files will be created in the working directory that may be deleted afterwards.
+	 */
 	@Override
 	public void solve(CSRMatrix mat, ArrayList<Float> b, ArrayList<Float> x) {
 		try {
-			solveMatlab(mat, name, "./matlab/", x, b);
+			solveMatlab(mat, name, x, b);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
