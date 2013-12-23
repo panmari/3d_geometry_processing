@@ -575,6 +575,10 @@ public class CSRMatrix {
 		}
 	}
 
+	public void createLastRowEntry(Integer index, float value) {
+		rows.get(rows.size() - 1).add(new col_val(index, value));
+	}
+
 }
 
 
