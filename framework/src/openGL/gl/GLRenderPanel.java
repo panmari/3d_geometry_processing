@@ -69,7 +69,7 @@ public abstract class GLRenderPanel implements RenderPanel {
 	private GLCanvas canvas;
 
 	public GLRenderPanel() {
-		canvas = new GLCanvas();
+		canvas = new GLCanvas(new CLCapabilities(GLProfile.get(GLProfile.GL3)));
 
 		GLEventListener eventListener = new GLRenderContextEventListener(this);
 		canvas.addGLEventListener(eventListener);
